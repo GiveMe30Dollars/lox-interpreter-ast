@@ -22,9 +22,9 @@ class Token {
         std::string literal;
         int line;
     public:
-        Token(TokenType type, std::string lexeme, std::string literal) {}
-        Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {}
-        std::string toString(void) {}
+        Token(TokenType type, std::string lexeme, std::string literal);
+        Token(TokenType type, std::string lexeme);
+        std::string toString(void);
 };
 
 class Scanner{
@@ -34,17 +34,17 @@ class Scanner{
         int curr;
         int line;
         const std::unordered_set<char> symbols;
-        bool isAtEnd(void){}
-        char advance(void){}
-        char peek(void){}
-        char peekNext(void){}
-        bool match(char c){}
-        void addToken(TokenType type){}
+        bool isAtEnd(void);
+        char advance(void);
+        char peek(void);
+        char peekNext(void);
+        bool match(char c);
+        void addToken(TokenType type);
 
     public:
         bool hasError;
         std::vector<Token*> tokens;
-        Scanner(std::string source){}
+        Scanner(std::string source);
     private:
-        void scan(void){}
+        void scan(void);
 };
