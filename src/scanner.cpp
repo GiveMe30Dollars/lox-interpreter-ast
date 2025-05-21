@@ -130,6 +130,7 @@ Scanner::Scanner(std::string source){
     curr = 0;
     line = 1;
     hasError = false;
+    std::cerr << source.length() << "\n";
     scan();
 }
 
