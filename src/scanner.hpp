@@ -53,7 +53,6 @@ class Scanner{
         int start;
         int curr;
         int line;
-        const std::unordered_set<char> symbols;
         bool isAtEnd(void);
         char advance(void);
         char peek(void);

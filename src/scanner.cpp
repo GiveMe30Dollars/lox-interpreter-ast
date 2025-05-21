@@ -45,160 +45,157 @@ bool isLetter (const char c){
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-class Token {
-    // data structure for classifying and storing lexemes during scanning
+
+/*class Token {
     private:
         TokenType type;
         std::string lexeme;
         std::string literal;
         int line;
+};*/
 
-    public:
-        Token(TokenType type, std::string lexeme, std::string literal) {
-            this->type = type;
-            this->lexeme = lexeme;
-            this->literal = literal;
-        }
-        Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {
-            if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
-                std::cerr << "No literal value for token declaration of type " << tokenTypeToString(type) << " !";
-            }
-        }
+Token::Token(TokenType type, std::string lexeme, std::string literal) {
+    this->type = type;
+    this->lexeme = lexeme;
+    this->literal = literal;
+}
+Token::Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {
+    if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
+        std::cerr << "No literal value for token declaration of type " << tokenTypeToString(type) << " !";
+    }
+}
 
-        std::string toString() {
-            return tokenTypeToString(type) + " " + lexeme + " " + literal;
-        }
-};
+std::string Token::toString() {
+    return tokenTypeToString(type) + " " + lexeme + " " + literal;
+}
 
-class Scanner{
+
+/*class Scanner{
     private:
         std::string source;
         int start;
         int curr;
         int line;
-
-        bool isAtEnd(){
-            // returns true if at end of source
-            return curr >= source.length();
-        }
-        char advance(){
-            // consumes and returns the upcoming character
-            return source[curr++];
-        }
-        char peek(){
-            // returns the upcoming character without consuming it
-            return source[curr];
-        }
-        char peekNext(){
-            // returns the second upcoming character without consuming it
-            return source[curr+1];
-        }
-        bool match(char c){
-            // checks if upcoming character matches c. If yes, consume the character and return true
-            if (isAtEnd() || peek() != c) return false;
-            else {
-                advance();
-                return true;
-            }
-        }
-        void addToken(TokenType type){
-            // add token based on pointers
-            std::string lexeme = source.substr(start, curr - start);
-
-            if (type = STRING) tokens.push_back(new Token(type, lexeme, lexeme));
-            else tokens.push_back(new Token(type, lexeme));
-        }
-
     public:
         bool hasError;
         std::vector<Token*> tokens;
+};*/
 
-        Scanner(std::string source){
-            // initializes scanner object
-            // immediately scans the source text and generates corresponding tokens in the order they appear
-            this->source = source;
-            this->tokens = {};
-            start = 0;
-            curr = 0;
-            line = 1;
-            hasError = false;
-            scan();
-        }
+bool Scanner::isAtEnd(){
+    // returns true if at end of source
+    return curr >= source.length();
+}
+char Scanner::advance(){
+    // consumes and returns the upcoming character
+    return source[curr++];
+}
+char Scanner::peek(){
+    // returns the upcoming character without consuming it
+    return source[curr];
+}
+char Scanner::peekNext(){
+    // returns the second upcoming character without consuming it
+    return source[curr+1];
+}
+bool Scanner::match(char c){
+    // checks if upcoming character matches c. If yes, consume the character and return true
+    if (isAtEnd() || peek() != c) return false;
+    else {
+        advance();
+        return true;
+    }
+}
+void Scanner::addToken(TokenType type){
+    // add token based on pointers
+    std::string lexeme = source.substr(start, curr - start);
 
-    private:
-        void scan(){
+    if (type = STRING) tokens.push_back(new Token(type, lexeme, lexeme));
+    else tokens.push_back(new Token(type, lexeme));
+}
 
-            // execute until end of source
-            while (!isAtEnd()){
+Scanner::Scanner(std::string source){
+    // initializes scanner object
+    // immediately scans the source text and generates corresponding tokens in the order they appear
+    this->source = source;
+    this->tokens = {};
+    start = 0;
+    curr = 0;
+    line = 1;
+    hasError = false;
+    scan();
+}
 
-                // switch on current character
-                char c = advance();
-                switch (c){
+void Scanner::scan(){
+    // execute until end of source
+    while (!isAtEnd()){
 
-                    // single-letter symbols (except slash)
-                    case '(': addToken(LEFT_PAREN); break;
-                    case ')': addToken(RIGHT_PAREN); break;
-                    case '{': addToken(LEFT_BRACE); break;
-                    case '}': addToken(RIGHT_BRACE); break;
-                    case ',': addToken(COMMA); break;
-                    case '.': addToken(DOT); break;
-                    case '-': addToken(MINUS); break;
-                    case '+': addToken(PLUS); break;
-                    case ';': addToken(SEMICOLON); break;
-                    case '*': addToken(STAR); break;
+        // switch on current character
+        char c = advance();
+        switch (c){
 
-                    // single or double-letter symbols
-                    case '=':
-                        addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
-                    case '!':
-                        addToken(match('=') ? BANG_EQUAL : BANG); break;
-                    case '>':
-                        addToken(match('=') ? GREATER_EQUAL : GREATER); break;
-                    case '<':
-                        addToken(match('=') ? LESS_EQUAL : LESS); break;
+            // single-letter symbols (except slash)
+            case '(': addToken(LEFT_PAREN); break;
+            case ')': addToken(RIGHT_PAREN); break;
+            case '{': addToken(LEFT_BRACE); break;
+            case '}': addToken(RIGHT_BRACE); break;
+            case ',': addToken(COMMA); break;
+            case '.': addToken(DOT); break;
+            case '-': addToken(MINUS); break;
+            case '+': addToken(PLUS); break;
+            case ';': addToken(SEMICOLON); break;
+            case '*': addToken(STAR); break;
 
-                    // slash or comment
-                    // if is comment, escape all characters up to \n
-                    case '/':
-                        if (match('/')){
-                            // if is comment, escape all characters until linebreak
-                            // (do not consume \n character)
-                            while (!isAtEnd() && peek() != '\n') advance();
-                        } else {
-                            addToken(SLASH);
-                        }
-                        break;
+            // single or double-letter symbols
+            case '=':
+                addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
+            case '!':
+                addToken(match('=') ? BANG_EQUAL : BANG); break;
+            case '>':
+                addToken(match('=') ? GREATER_EQUAL : GREATER); break;
+            case '<':
+                addToken(match('=') ? LESS_EQUAL : LESS); break;
 
-                    // string literals
-                    // read until closing double quotation mark
-                    // throw error if it doesn't exist
-                    case '"': 
-                        while (!isAtEnd()){
-                            if (advance() == '"'){
-                                addToken(STRING);
-                                break;
-                            }
-                        }
-                        std::cerr << "[line " << line << "] Error: Unterminated string.";
-                        hasError = true;
-                        break;
-
-                    // blankspace and linebreaks
-                    case ' ': break;
-                    case '\t': break;
-                    case '\n':
-                        line++; break;
-
-                    // unhandled characters
-                    default:
-                        std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
-                        break;
+            // slash or comment
+            // if is comment, escape all characters up to \n
+            case '/':
+                if (match('/')){
+                    // if is comment, escape all characters until linebreak
+                    // (do not consume \n character)
+                    while (!isAtEnd() && peek() != '\n') advance();
+                } else {
+                    addToken(SLASH);
                 }
-                
-                start = curr;
-            }
+                break;
 
-            // add end-of-file token
-            addToken(_EOF);
+            // string literals
+            // read until closing double quotation mark
+            // throw error if it doesn't exist
+            case '"': 
+                while (!isAtEnd()){
+                    if (advance() == '"'){
+                        addToken(STRING);
+                        break;
+                    }
+                }
+                std::cerr << "[line " << line << "] Error: Unterminated string.";
+                hasError = true;
+                break;
+
+            // blankspace and linebreaks
+            case ' ': break;
+            case '\t': break;
+            case '\n':
+                line++; break;
+
+            // unhandled characters
+            default:
+                std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
+                break;
         }
-};
+        
+        start = curr;
+    }
+
+    // add end-of-file token
+    addToken(_EOF);
+}
