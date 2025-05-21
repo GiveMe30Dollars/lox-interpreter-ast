@@ -54,13 +54,13 @@ bool isLetter (const char c){
         int line;
 };*/
 
-Token::Token(TokenType type, std::string lexeme, std::string literal) {
+Token::Token(TokenType type, std::string lexeme, std::string literalString) {
     this->type = type;
     this->lexeme = lexeme;
-    this->literalString = literal;
+    this->literalString = literalString;
 }
 Token::Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null"){}
-Token::Token(TokenType type, std::string lexeme, double literalNumber) : Token(type, lexeme, lexeme){
+Token::Token(TokenType type, std::string lexeme, std::string literal, double literalNumber) : Token(type, lexeme, literal){
     this->literalNumber = literalNumber;
 }
 
@@ -115,7 +115,9 @@ void Scanner::addToken(TokenType type){
     }
     else if (type == NUMBER){
         double val = stod(lexeme);
-        tokens.push_back(new Token(type, lexeme, val));
+        std::string literal = lexeme;
+        if (floor(val) == val) literal = lexeme + ".0";
+        tokens.push_back(new Token(type, lexeme, literal, val));
     }
     else tokens.push_back(new Token(type, lexeme, "null"));
 }

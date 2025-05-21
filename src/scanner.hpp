@@ -36,18 +36,17 @@ bool isDigit(const char c);
 bool isLetter(const char c);
 
 class Token {
-    private:
-        std::string literalString = "null";
-        double literalNumber = 0;
     public:
         TokenType type;
         std::string lexeme;
+        std::string literalString = "null";
+        double literalNumber = 0;
         int line;
-        Token(TokenType type, std::string lexeme, std::string literal);
+        Token(TokenType type, std::string lexeme, std::string literalString);
         Token(TokenType type, std::string lexeme);
-        Token(TokenType type, std::string lexeme, double literalNumber);
+        Token(TokenType type, std::string lexeme, std::string literalString, double literalNumber);
         std::string toString(void);
-        
+
 };
 
 class Scanner{
