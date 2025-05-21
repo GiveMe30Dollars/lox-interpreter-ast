@@ -97,13 +97,27 @@ int main(int argc, char *argv[]) {
             Token* curr;
             switch (file_contents[i]){
                 case '(':
-                    curr = new Token(LEFT_PAREN, "(", "null"); break;
+                    curr = new Token(LEFT_PAREN, "("); break;
                 case ')':
-                    curr = new Token(RIGHT_PAREN, ")", "null"); break;
+                    curr = new Token(RIGHT_PAREN, ")"); break;
                 case '{':
-                    curr = new Token(LEFT_BRACE, "{", "null"); break;
+                    curr = new Token(LEFT_BRACE, "{"); break;
                 case '}':
-                    curr = new Token(RIGHT_BRACE, "}", "null"); break;
+                    curr = new Token(RIGHT_BRACE, "}"); break;
+
+                case ',':
+                    curr = new Token(COMMA, ","); break;
+                case '.':
+                    curr = new Token(DOT, "."); break;
+                case '-':
+                    curr = new Token(MINUS, "-"); break;
+                case '+':
+                    curr = new Token(PLUS, "+"); break;
+                case ';':
+                    curr = new Token(SEMICOLON, ";"); break;
+                case '*':
+                    curr = new Token(STAR, "*"); break;
+
                 default: 
                     std::cerr << "Invalid literal at index " << i << " !";
                     return 1;
