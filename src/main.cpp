@@ -4,6 +4,8 @@
 #include <sstream>
 #include <string>
 
+#include "token.h"
+
 std::string read_file_contents(const std::string& filename);
 
 int main(int argc, char *argv[]) {
@@ -35,16 +37,15 @@ int main(int argc, char *argv[]) {
                 default: break;
             }
         }
-        std::cout << "EOF null";
+        //Token* eof = createEOF();
+        //eof->toString();
+        std::cout << "EOF  null";
         return 0;
         
     } else {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
     }
-
-    
-
     return 0;
 }
 
