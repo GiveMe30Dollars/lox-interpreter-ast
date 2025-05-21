@@ -42,7 +42,7 @@ class Scanner{
         bool hasError;
         std::vector<Token*> tokens;
         Scanner(std::string source);
-        std::vector<Token*> Scanner::scan(void);
+        std::vector<Token*> scan(void);
     private:
         void scanStringLiteral(void);
         void scanNumber(void);
