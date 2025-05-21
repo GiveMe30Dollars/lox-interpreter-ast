@@ -29,6 +29,25 @@ enum TokenType {
     _EOF
 };
 
+std::string tokenTypeToString(TokenType type){
+    switch (type){
+        case LEFT_PAREN: return "LEFT_PAREN";
+        case RIGHT_PAREN: return "RIGHT_PAREN";
+        case LEFT_BRACE: return "LEFT_BRACE";
+        case RIGHT_BRACE: return "RIGHT_BRACE";
+
+        case IDENTIFIER: return "IDENTIFIER";
+        case STRING: return "STRING";
+        case NUMBER: return "NUMBER";
+
+        case _EOF: return "EOF";
+
+        default:
+            std::cerr << "Unhandled toString call for TokenType!";
+            return "";
+    }
+}
+
 class Token {
     private:
         TokenType type;
@@ -41,9 +60,16 @@ class Token {
             this->lexeme = lexeme;
             this->literal = literal;
         }
+        Token(TokenType type, std::string lexeme) {
+            if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
+                std::cerr << "Invalid token declaration for " << tokenTypeToString(type) << " !";
+            } else {
+                Token(type, lexeme, "null");
+            }
+        }
 
         std::string toString() {
-            return type + " " + lexeme + " " + literal;
+            return tokenTypeToString(type) + " " + lexeme + " " + literal;
         }
 };
 
@@ -71,20 +97,20 @@ int main(int argc, char *argv[]) {
             Token* curr;
             switch (file_contents[i]){
                 case '(':
-                    curr = new Token(LEFT_PAREN, "(", ""); break;
+                    curr = new Token(LEFT_PAREN, "(", "null"); break;
                 case ')':
-                    curr = new Token(RIGHT_PAREN, ")", ""); break;
+                    curr = new Token(RIGHT_PAREN, ")", "null"); break;
                 case '{':
-                    curr = new Token(LEFT_BRACE, "{", ""); break;
+                    curr = new Token(LEFT_BRACE, "{", "null"); break;
                 case '}':
-                    curr = new Token(RIGHT_BRACE, "}", ""); break;
+                    curr = new Token(RIGHT_BRACE, "}", "null"); break;
                 default: 
                     std::cerr << "Invalid literal at index " << i << " !";
                     return 1;
             }
             std::cout << curr->toString();
         }
-        std::cout << (new Token(_EOF, "", ""))->toString();
+        std::cout << (new Token(_EOF, "", "null"))->toString();
         return 0;
         
     } else {
