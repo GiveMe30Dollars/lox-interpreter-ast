@@ -161,7 +161,7 @@ class Scanner{
                         hasError = true;
                         break;
                 }
-                if (!t) tokens.push_back(t);
+                if (t != nullptr) tokens.push_back(t);
                 start = curr;
             }
             tokens.push_back(new Token(_EOF, ""));
@@ -187,12 +187,10 @@ int main(int argc, char *argv[]) {
 
     if (command == "tokenize") {
         std::string file_contents = read_file_contents(argv[2]);
-                
-        for (int i = 0; i < file_contents.length(); i++){
-            Scanner* scanner = new Scanner(file_contents);
-            for (Token* t : scanner->tokens) std::cout << t->toString() << "\n";
-            return scanner->hasError ? 65 : 0;
-        }
+          
+        Scanner* scanner = new Scanner(file_contents);
+        for (Token* t : scanner->tokens) std::cout << t->toString() << "\n";
+        return scanner->hasError ? 65 : 0;
         
     } else {
         std::cerr << "Unknown command: " << command << std::endl;
