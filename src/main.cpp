@@ -43,6 +43,7 @@ std::string tokenTypeToString(TokenType type){
         case MINUS: return "MINUS";
         case PLUS: return "PLUS";
         case SEMICOLON: return "SEMICOLON";
+        case SLASH: return "SLASH";
         case STAR: return "STAR";
 
         case BANG: return "BANG";
