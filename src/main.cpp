@@ -1,10 +1,4 @@
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
-
-std::string read_file_contents(const std::string& filename);
+#include "main.h"
 
 int main(int argc, char *argv[]) {
     // Disable output buffering
@@ -25,10 +19,8 @@ int main(int argc, char *argv[]) {
         std::string file_contents = read_file_contents(argv[2]);
         
         // Uncomment this block to pass the first stage
-         
         if (!file_contents.empty()) {
-            std::cerr << "Scanner not implemented" << std::endl;
-            return 1;
+            scanner(file_contents);
         }
         std::cout << "EOF  null" << std::endl; // Placeholder, replace this line when implementing the scanner
         
@@ -36,6 +28,8 @@ int main(int argc, char *argv[]) {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
     }
+
+
 
     return 0;
 }
