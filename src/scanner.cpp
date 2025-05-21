@@ -197,6 +197,7 @@ void Scanner::scan(){
         
         // move start from token created
         start = curr;
+        if (isAtEnd()) break;
     }
     
     // add end-of-file token
