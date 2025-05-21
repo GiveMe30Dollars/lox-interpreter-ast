@@ -110,7 +110,7 @@ void Scanner::addToken(TokenType type){
     std::cerr << start << " " << curr << "\n";
     std::string lexeme = source.substr(start, curr - start);
 
-    if (type = STRING){
+    if (type == STRING){
         std::string literal = lexeme.substr(1, lexeme.length() - 2);
         tokens.push_back(new Token(type, lexeme, literal));
     }
@@ -197,7 +197,6 @@ void Scanner::scan(){
         
         // move start from token created
         start = curr;
-        if (isAtEnd()) break;
     }
     
     // add end-of-file token
