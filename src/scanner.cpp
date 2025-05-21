@@ -115,7 +115,7 @@ void Scanner::addToken(TokenType type){
     else if (type == NUMBER){
         double val = stod(lexeme);
         std::string literal = lexeme;
-        if (floor(val) == val) literal = lexeme + ".0";
+        if (floor(val) == val) literal = std::to_string(val) + ".0";
         tokens.push_back(new Token(type, lexeme, literal, val));
     }
     else tokens.push_back(new Token(type, lexeme, "null"));
