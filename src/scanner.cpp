@@ -41,10 +41,12 @@ std::string tokenTypeToString(const TokenType type){
 bool isDigit(const char c){
     return (c >= '0' && c <= '9');
 }
-bool isLetter (const char c){
+bool isAlpha (const char c){
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 }
-
+bool isAlphaNumeric (const char c){
+    return isDigit(c) || isAlpha(c);
+}
 
 /*class Token {
     private:
@@ -196,7 +198,7 @@ void Scanner::scan(){
                 if (isDigit(c)){
                     scanNumber();
                 }
-                else if (isLetter(c)){
+                else if (isAlpha(c)){
                     scanIdentifier();
                 } 
                 else {
@@ -251,6 +253,6 @@ void Scanner::scanNumber(){
 
 void Scanner::scanIdentifier(){
     // read until all letters consumed
-    while (isLetter(peek())) advance();
+    while (isAlphaNumeric(peek())) advance();
     addToken(IDENTIFIER);
 }

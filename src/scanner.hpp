@@ -34,7 +34,8 @@ enum TokenType {
 
 std::string tokenTypeToString(const TokenType type);
 bool isDigit(const char c);
-bool isLetter(const char c);
+bool isAlpha(const char c);
+bool isAlphaNumeric(const char c);
 
 class Token {
     public:
