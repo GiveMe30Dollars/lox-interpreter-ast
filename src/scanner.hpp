@@ -36,6 +36,11 @@ bool isDigit(const char c);
 bool isLetter(const char c);
 
 class Token {
+    private:
+        TokenType type;
+        std::string lexeme;
+        std::string literal;
+        int line;
     public:
         Token(TokenType type, std::string lexeme, std::string literal);
         Token(TokenType type, std::string lexeme);
@@ -44,6 +49,11 @@ class Token {
 
 class Scanner{
     private:
+        std::string source;
+        int start;
+        int curr;
+        int line;
+        const std::unordered_set<char> symbols;
         bool isAtEnd(void);
         char advance(void);
         char peek(void);
