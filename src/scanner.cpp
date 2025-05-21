@@ -107,6 +107,7 @@ bool Scanner::match(char c){
 }
 void Scanner::addToken(TokenType type){
     // add token based on pointers
+    std::cerr << start << " " << curr << "\n";
     std::string lexeme = source.substr(start, curr - start);
 
     if (type = STRING){
@@ -211,9 +212,9 @@ void Scanner::scanStringLiteral(){
       return;
     }
 
-    // The closing ".
+    // the closing "
     advance();
 
-    // Trim the surrounding quotes.
+    // trim the surrounding quotes
     addToken(STRING);
 }
