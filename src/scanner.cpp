@@ -134,6 +134,7 @@ void Scanner::scan(){
 
         // switch on current character
         char c = advance();
+        std::cerr << c << "\n";
         switch (c){
 
             // single-letter symbols (except slash)
