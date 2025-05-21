@@ -176,6 +176,15 @@ class Scanner{
                     case '<':
                         addToken(match('=') ? LESS_EQUAL : LESS); break;
 
+                    case '/':
+                        if (match('/')){
+                            while (peek() != '\n') advance();
+                        } else {
+                            addToken(SLASH);
+                        }
+                        break;
+                    case '\n':
+                        line++; break;
 
                     default: 
                         std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
