@@ -45,8 +45,14 @@ std::string tokenTypeToString(TokenType type){
         case SEMICOLON: return "SEMICOLON";
         case STAR: return "STAR";
 
+        case BANG: return "BANG";
+        case BANG_EQUAL: return "BANG_EQUAL";
         case EQUAL: return "EQUAL";
         case EQUAL_EQUAL: return "EQUAL_EQUAL";
+        case GREATER: return "GREATER";
+        case GREATER_EQUAL: return "GREATER_EQUAL";
+        case LESS: return "LESS";
+        case LESS_EQUAL: return "LESS_EQUAL";
 
         case IDENTIFIER: return "IDENTIFIER";
         case STRING: return "STRING";
@@ -163,6 +169,9 @@ class Scanner{
 
                     case '=':
                         addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
+                    case '!':
+                        addToken(match('=') ? BANG_EQUAL : BANG); break;
+
 
                     default: 
                         std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
