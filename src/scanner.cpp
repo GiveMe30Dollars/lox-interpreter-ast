@@ -135,11 +135,13 @@ Scanner::Scanner(std::string source){
 }
 
 void Scanner::scan(){
+
     // execute until end of source
     while (!isAtEnd()){
 
         // switch on current character
         char c = advance();
+        std::cerr << c << "\n";
         switch (c){
 
             // single-letter symbols (except slash)
@@ -184,7 +186,8 @@ void Scanner::scan(){
 
             // string literal
             case '"': 
-                scanStringLiteral(); break;
+                scanStringLiteral(); 
+                break;
 
             // unhandled characters
             default:
