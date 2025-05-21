@@ -185,6 +185,9 @@ class Scanner{
                             addToken(SLASH);
                         }
                         break;
+
+                    case ' ': break;
+                    case '\t': break;
                     case '\n':
                         line++; break;
 
