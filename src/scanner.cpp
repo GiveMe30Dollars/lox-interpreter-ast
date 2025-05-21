@@ -130,7 +130,6 @@ Scanner::Scanner(std::string source){
     curr = 0;
     line = 1;
     hasError = false;
-    std::cerr << source.length() << "\n";
     scan();
 }
 
@@ -141,7 +140,6 @@ void Scanner::scan(){
 
         // switch on current character
         char c = advance();
-        std::cerr << c << "\n";
         switch (c){
 
             // single-letter symbols (except slash)
@@ -191,7 +189,8 @@ void Scanner::scan(){
 
             // unhandled characters
             default:
-                error(line, "Unexpected character: " + c);
+                std::string unhandledErr = "Unexpected character: " + c;
+                error(line, unhandledErr);
                 break;
         }
         
