@@ -36,6 +36,13 @@ std::string tokenTypeToString(TokenType type){
         case LEFT_BRACE: return "LEFT_BRACE";
         case RIGHT_BRACE: return "RIGHT_BRACE";
 
+        case COMMA: return "COMMA";
+        case DOT: return "DOT";
+        case MINUS: return "MINUS";
+        case PLUS: return "PLUS";
+        case SEMICOLON: return "SEMICOLON";
+        case STAR: return "STAR";
+
         case IDENTIFIER: return "IDENTIFIER";
         case STRING: return "STRING";
         case NUMBER: return "NUMBER";
