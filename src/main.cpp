@@ -99,6 +99,7 @@ class Scanner{
         int line;
 
         bool isAtEnd(){
+            // returns true if at end of source
             return start >= source.length();
         }
         char advance(){
@@ -178,7 +179,7 @@ class Scanner{
 
                     case '/':
                         if (match('/')){
-                            while (peek() != '\n') advance();
+                            while (!isAtEnd() && peek() != '\n') advance();
                         } else {
                             addToken(SLASH);
                         }
