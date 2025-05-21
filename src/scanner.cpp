@@ -188,6 +188,7 @@ void Scanner::scan(){
         
         // move start from token created
         start = curr;
+        std::cerr << start << "\n";
     }
     
     // add end-of-file token
