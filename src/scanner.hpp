@@ -37,14 +37,17 @@ bool isLetter(const char c);
 
 class Token {
     private:
+        std::string literalString = "null";
+        double literalNumber = 0;
+    public:
         TokenType type;
         std::string lexeme;
-        std::string literal;
         int line;
-    public:
         Token(TokenType type, std::string lexeme, std::string literal);
         Token(TokenType type, std::string lexeme);
+        Token(TokenType type, std::string lexeme, double literalNumber);
         std::string toString(void);
+        
 };
 
 class Scanner{
@@ -68,4 +71,5 @@ class Scanner{
     private:
         void scan(void);
         void scanStringLiteral(void);
+        void scanNumber(void);
 };

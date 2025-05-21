@@ -57,16 +57,15 @@ bool isLetter (const char c){
 Token::Token(TokenType type, std::string lexeme, std::string literal) {
     this->type = type;
     this->lexeme = lexeme;
-    this->literal = literal;
+    this->literalString = literal;
 }
-Token::Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {
-    if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
-        std::cerr << "No literal value for token declaration of type " << tokenTypeToString(type) << " !";
-    }
+Token::Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null"){}
+Token::Token(TokenType type, std::string lexeme, double literalNumber) : Token(type, lexeme, lexeme){
+    this->literalNumber = literalNumber;
 }
 
 std::string Token::toString() {
-    return tokenTypeToString(type) + " " + lexeme + " " + literal;
+    return tokenTypeToString(type) + " " + lexeme + " " + literalString;
 }
 
 
@@ -114,7 +113,11 @@ void Scanner::addToken(TokenType type){
         std::string literal = lexeme.substr(1, lexeme.length() - 2);
         tokens.push_back(new Token(type, lexeme, literal));
     }
-    else tokens.push_back(new Token(type, lexeme));
+    else if (type == NUMBER){
+        double val = stod(lexeme);
+        tokens.push_back(new Token(type, lexeme, val));
+    }
+    else tokens.push_back(new Token(type, lexeme, "null"));
 }
 void Scanner::error(int line, std::string message){
     std::cerr << "[line " << line << "] Error: " << message << "\n";
@@ -187,10 +190,14 @@ void Scanner::scan(){
                 scanStringLiteral(); 
                 break;
 
-            // unhandled characters
+            // numbers, identifiers, keywords and unhandled characters
             default:
-                std::string unhandledErr = "Unexpected character: " + std::string(1,c);
-                error(line, unhandledErr);
+                if (isDigit(c)){
+                    scanNumber();
+                } else {
+                    std::string unhandledErr = "Unexpected character: " + std::string(1,c);
+                    error(line, unhandledErr);
+                }
                 break;
         }
         
@@ -218,4 +225,21 @@ void Scanner::scanStringLiteral(){
     advance();
     
     addToken(STRING);
+}
+
+void Scanner::scanNumber(){
+    // read until curr is not a digit
+    while (isDigit(peek())) advance();
+
+    // continue reading if and only if:
+    // curr is '.' and the next character is a digit
+    // repeat until all consecutive digits consumed
+    if (peek() == '.' && isDigit(peekNext())){
+        // consume '.'
+        advance();
+        // consume subsequent consecutive digits
+        while (isDigit(peek())) advance();
+    }
+
+    addToken(NUMBER);
 }
