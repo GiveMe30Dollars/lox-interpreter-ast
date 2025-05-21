@@ -109,7 +109,10 @@ void Scanner::addToken(TokenType type){
     // add token based on pointers
     std::string lexeme = source.substr(start, curr - start);
 
-    if (type = STRING) tokens.push_back(new Token(type, lexeme, lexeme));
+    if (type = STRING){
+        std::string literal = lexeme.substr(1, lexeme.length() - 2);
+        tokens.push_back(new Token(type, lexeme, literal));
+    }
     else tokens.push_back(new Token(type, lexeme));
 }
 
