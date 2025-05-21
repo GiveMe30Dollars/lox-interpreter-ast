@@ -139,7 +139,6 @@ void Scanner::scan(){
 
         // switch on current character
         char c = advance();
-        std::cerr << c << "\n";
         switch (c){
 
             // single-letter symbols (except slash)
@@ -176,15 +175,15 @@ void Scanner::scan(){
                 }
                 break;
 
-            // string literal
-            case '"': 
-                scanStringLiteral(); break;
-
             // blankspace and linebreaks
             case ' ': break;
             case '\t': break;
             case '\n':
                 line++; break;
+
+            // string literal
+            case '"': 
+                scanStringLiteral(); break;
 
             // unhandled characters
             default:
@@ -212,9 +211,8 @@ void Scanner::scanStringLiteral(){
       return;
     }
 
-    // the closing "
+    // consume the closing "
     advance();
-
-    // trim the surrounding quotes
+    
     addToken(STRING);
 }
