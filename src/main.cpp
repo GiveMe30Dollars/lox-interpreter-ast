@@ -50,7 +50,7 @@ std::string tokenTypeToString(TokenType type){
         case _EOF: return "EOF";
 
         default:
-            std::cerr << "Unhandled toString call for TokenType!";
+            std::cerr << "Unhandled tokenTypeToString call for TokenType!";
             return "";
     }
 }
@@ -67,11 +67,9 @@ class Token {
             this->lexeme = lexeme;
             this->literal = literal;
         }
-        Token(TokenType type, std::string lexeme) {
+        Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {
             if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
                 std::cerr << "Invalid token declaration for " << tokenTypeToString(type) << " !";
-            } else {
-                Token(type, lexeme, "null");
             }
         }
 
