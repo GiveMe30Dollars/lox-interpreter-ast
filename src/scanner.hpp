@@ -11,6 +11,17 @@
 
 #pragma once
 
+/*
+    HEADER FILES SHOUD DECLARE:
+        PUBLIC variables
+        PUBLIC functions
+        PUBLIC classes
+            This includes public and private variables,
+            public and private functions,
+            and main and delegated constructors.
+    Declarations include variable names, functions and their parameters.
+*/
+
 enum TokenType {
     // Single-character tokens.
     LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -32,8 +43,6 @@ enum TokenType {
     _EOF
 };
 
-const std::unordered_map<std::string,TokenType> reservedKeywords;
-std::string tokenTypeToString(const TokenType type);
 bool isDigit(const char c);
 bool isAlpha(const char c);
 bool isAlphaNumeric(const char c);
