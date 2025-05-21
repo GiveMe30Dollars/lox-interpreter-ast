@@ -189,7 +189,7 @@ void Scanner::scan(){
 
             // unhandled characters
             default:
-                std::string unhandledErr = "Unexpected character: " + c;
+                std::string unhandledErr = "Unexpected character: " + std::string(1,c);
                 error(line, unhandledErr);
                 break;
         }
