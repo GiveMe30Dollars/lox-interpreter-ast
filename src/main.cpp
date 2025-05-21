@@ -32,10 +32,23 @@ int main(int argc, char *argv[]) {
         std::string file_contents = read_file_contents(argv[2]);
           
         Scanner* scanner = new Scanner(file_contents);
-        for (Token* t : scanner->tokens) std::cout << t->toString() << "\n";
+        std::vector<Token*> tokens = scanner->scan();
+        for (Token* t : tokens) std::cout << t->toString() << "\n";
         return scanner->hasError ? 65 : 0;
         
-    } else {
+    } 
+
+    if (command == "parse"){
+        std::string file_contents = read_file_contents(argv[2]);
+          
+        Scanner* scanner = new Scanner(file_contents);
+        std::vector<Token*> tokens = scanner->scan();
+
+        return 0;
+    }
+    
+    
+    else {
         std::cerr << "Unknown command: " << command << std::endl;
         return 1;
     }

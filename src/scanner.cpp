@@ -1,103 +1,5 @@
 #include "scanner.hpp"
-
-const std::unordered_map<TokenType,std::string> tokenTypeName = {
-    {LEFT_PAREN, "LEFT_PAREN"}, 
-    {RIGHT_PAREN, "RIGHT_PAREN"},
-    {LEFT_BRACE, "LEFT_BRACE"}, 
-    {RIGHT_BRACE, "RIGHT_BRACE"},
-
-    {COMMA, "COMMA"}, 
-    {DOT, "DOT"}, 
-    {MINUS, "MINUS"}, 
-    {PLUS, "PLUS"},
-    {SEMICOLON, "SEMICOLON"}, 
-    {SLASH, "SLASH"}, 
-    {STAR, "STAR"},
-
-    {BANG, "BANG"}, 
-    {BANG_EQUAL, "BANG_EQUAL"}, 
-    {EQUAL, "EQUAL"}, 
-    {EQUAL_EQUAL, "EQUAL_EQUAL"},
-    {GREATER, "GREATER"}, 
-    {GREATER_EQUAL, "GREATER_EQUAL"},
-    {LESS, "LESS"}, 
-    {LESS_EQUAL, "LESS_EQUAL"},
-
-    {IDENTIFIER, "IDENTIFIER"}, 
-    {STRING, "STRING"}, 
-    {NUMBER, "NUMBER"},
-
-    {AND,"AND"}, 
-    {CLASS,"CLASS"}, 
-    {ELSE,"ELSE"}, 
-    {FALSE,"FALSE"},
-    {FUN,"FUN"}, 
-    {FOR,"FOR"}, 
-    {IF,"IF"}, 
-    {NIL,"NIL"}, 
-    {OR,"OR"},
-    {PRINT,"PRINT"}, 
-    {RETURN,"RETURN"}, 
-    {SUPER,"SUPER"}, 
-    {THIS,"THIS"},
-    {TRUE,"TRUE"}, 
-    {VAR,"VAR"}, 
-    {WHILE,"WHILE"},
-    
-    {_EOF, "EOF"}
-};
-
-const std::unordered_map<std::string, TokenType> reservedKeywords = {
-    {"and", AND},
-    {"class", CLASS},
-    {"else", ELSE},
-    {"false", FALSE},
-    {"fun", FUN},
-    {"for", FOR},
-    {"if", IF},
-    {"nil", NIL},
-    {"or", OR},
-    {"print", PRINT},
-    {"return", RETURN},
-    {"super", SUPER},
-    {"this", THIS},
-    {"true", TRUE},
-    {"var", VAR},
-    {"while", WHILE},
-};
-
-
-bool isDigit(const char c){
-    return (c >= '0' && c <= '9');
-}
-bool isAlpha (const char c){
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
-}
-bool isAlphaNumeric (const char c){
-    return isDigit(c) || isAlpha(c);
-}
-
-/*class Token {
-    private:
-        TokenType type;
-        std::string lexeme;
-        std::string literal;
-        int line;
-};*/
-
-Token::Token(TokenType type, std::string lexeme, std::string literalString) {
-    this->type = type;
-    this->lexeme = lexeme;
-    this->literalString = literalString;
-}
-Token::Token(TokenType type, std::string lexeme, std::string literal, double literalNumber) : Token(type, lexeme, literal){
-    this->literalNumber = literalNumber;
-}
-
-std::string Token::toString() {
-    return tokenTypeName.at(type) + " " + lexeme + " " + literalString;
-}
-
+#include "token.hpp"
 
 /*class Scanner{
     private:
@@ -142,7 +44,7 @@ void Scanner::addToken(TokenType type){
 
     if (type == STRING){
         std::string literal = lexeme.substr(1, lexeme.length() - 2);
-        tokens.push_back(new Token(type, lexeme, literal));
+        tokens.push_back(new Token(type, lexeme, literal, line));
     }
     else if (type == NUMBER){
         double val = stod(lexeme);
@@ -151,18 +53,19 @@ void Scanner::addToken(TokenType type){
         // overwrite string literal to add .0 if the number is an integer
         if (floor(val) == val)
             literal = std::to_string((int)floor(val)) + ".0";
-        tokens.push_back(new Token(type, lexeme, literal, val));
+        tokens.push_back(new Token(type, lexeme, literal, val, line));
     }
     else if (type == IDENTIFIER){
         // check if identifier is a reserved keyword
+        // if so, add token as reserved TokenType
         if (reservedKeywords.count(lexeme)){
             type = reservedKeywords.at(lexeme);
-            tokens.push_back(new Token(type, lexeme, "null"));
+            tokens.push_back(new Token(type, lexeme, "null", line));
         } else {
-            tokens.push_back(new Token(type, lexeme, "null"));
+            tokens.push_back(new Token(type, lexeme, "null", line));
         }
     }
-    else tokens.push_back(new Token(type, lexeme, "null"));
+    else tokens.push_back(new Token(type, lexeme, "null", line));
 }
 void Scanner::error(int line, std::string message){
     std::cerr << "[line " << line << "] Error: " << message << "\n";
@@ -171,17 +74,16 @@ void Scanner::error(int line, std::string message){
 
 Scanner::Scanner(std::string source){
     // initializes scanner object
-    // immediately scans the source text and generates corresponding tokens in the order they appear
     this->source = source;
+}
+
+std::vector<Token*> Scanner::scan(){
+    // scans the source text and generates corresponding tokens in the order they appear
     this->tokens = {};
     start = 0;
     curr = 0;
     line = 1;
     hasError = false;
-    scan();
-}
-
-void Scanner::scan(){
 
     // execute until end of source
     while (!isAtEnd()){

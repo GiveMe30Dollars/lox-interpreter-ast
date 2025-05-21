@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <cmath>
 
+#include "token.hpp"
+
 #pragma once
 
 /*
@@ -21,44 +23,6 @@
             and main and delegated constructors.
     Declarations include variable names, functions and their parameters.
 */
-
-enum TokenType {
-    // Single-character tokens.
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-
-    // One or two character tokens.
-    BANG, BANG_EQUAL,
-    EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL,
-
-    // Literals.
-    IDENTIFIER, STRING, NUMBER,
-
-    // Keywords.
-    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
-
-    _EOF
-};
-
-bool isDigit(const char c);
-bool isAlpha(const char c);
-bool isAlphaNumeric(const char c);
-
-class Token {
-    public:
-        TokenType type;
-        std::string lexeme;
-        std::string literalString = "null";
-        double literalNumber = 0;
-        int line;
-        Token(TokenType type, std::string lexeme, std::string literalString);
-        Token(TokenType type, std::string lexeme, std::string literalString, double literalNumber);
-        std::string toString(void);
-
-};
 
 class Scanner{
     private:
@@ -78,8 +42,8 @@ class Scanner{
         bool hasError;
         std::vector<Token*> tokens;
         Scanner(std::string source);
+        std::vector<Token*> Scanner::scan(void);
     private:
-        void scan(void);
         void scanStringLiteral(void);
         void scanNumber(void);
         void scanIdentifier();
