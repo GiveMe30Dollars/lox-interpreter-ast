@@ -69,7 +69,7 @@ class Token {
         }
 
         std::string toString() {
-            return tokenTypeToString(type) + " " + lexeme + " " + literal;
+            return tokenTypeToString(type) + " " + lexeme + " " + literal + "\n";
         }
 };
 
