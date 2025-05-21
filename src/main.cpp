@@ -45,6 +45,9 @@ std::string tokenTypeToString(TokenType type){
         case SEMICOLON: return "SEMICOLON";
         case STAR: return "STAR";
 
+        case EQUAL: return "EQUAL";
+        case EQUAL_EQUAL: return "EQUAL_EQUAL";
+
         case IDENTIFIER: return "IDENTIFIER";
         case STRING: return "STRING";
         case NUMBER: return "NUMBER";
@@ -73,7 +76,7 @@ class Token {
         }
         Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null") {
             if (type == TokenType::IDENTIFIER || type == TokenType::STRING || type == TokenType::NUMBER){
-                std::cerr << "Invalid token declaration for " << tokenTypeToString(type) << " !";
+                std::cerr << "No literal value for token declaration of type " << tokenTypeToString(type) << " !";
             }
         }
 
@@ -112,6 +115,9 @@ class Scanner{
                 return true;
             }
         }
+        void addToken(TokenType type){
+            tokens.push_back(new Token(type, source.substr(start, curr - start)));
+        }
 
     public:
         bool hasError;
@@ -131,40 +137,41 @@ class Scanner{
             hasError = false;
 
             while (!isAtEnd()){
-                Token* t = nullptr;
                 char c = advance();
                 switch (c){
                     case '(':
-                        t = new Token(LEFT_PAREN, "("); break;
+                        addToken(LEFT_PAREN); break;
                     case ')':
-                        t = new Token(RIGHT_PAREN, ")"); break;
+                        addToken(RIGHT_PAREN); break;
                     case '{':
-                        t = new Token(LEFT_BRACE, "{"); break;
+                        addToken(LEFT_BRACE); break;
                     case '}':
-                        t = new Token(RIGHT_BRACE, "}"); break;
+                        addToken(RIGHT_BRACE); break;
 
                     case ',':
-                        t = new Token(COMMA, ","); break;
+                        addToken(COMMA); break;
                     case '.':
-                        t = new Token(DOT, "."); break;
+                        addToken(DOT); break;
                     case '-':
-                        t = new Token(MINUS, "-"); break;
+                        addToken(MINUS); break;
                     case '+':
-                        t = new Token(PLUS, "+"); break;
+                        addToken(PLUS); break;
                     case ';':
-                        t = new Token(SEMICOLON, ";"); break;
+                        addToken(SEMICOLON); break;
                     case '*':
-                        t = new Token(STAR, "*"); break;
+                        addToken(STAR); break;
+
+                    case '=':
+                        addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
 
                     default: 
                         std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
                         hasError = true;
                         break;
                 }
-                if (t != nullptr) tokens.push_back(t);
                 start = curr;
             }
-            tokens.push_back(new Token(_EOF, ""));
+            addToken(_EOF);
         }
 };
 
