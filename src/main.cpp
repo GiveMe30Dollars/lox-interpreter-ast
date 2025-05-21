@@ -44,6 +44,8 @@ int main(int argc, char *argv[]) {
         Scanner* scanner = new Scanner(file_contents);
         std::vector<Token*> tokens = scanner->scan();
 
+        std::cout << tokens[0]->lexeme;
+
         return 0;
     }
     
