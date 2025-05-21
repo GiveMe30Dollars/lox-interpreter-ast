@@ -1,41 +1,70 @@
 #include "scanner.hpp"
 
-std::string tokenTypeToString(const TokenType type){
-    // helper function to cast TokenType enum to string
-    switch (type){
-        case LEFT_PAREN: return "LEFT_PAREN";
-        case RIGHT_PAREN: return "RIGHT_PAREN";
-        case LEFT_BRACE: return "LEFT_BRACE";
-        case RIGHT_BRACE: return "RIGHT_BRACE";
+const std::unordered_map<TokenType,std::string> tokenTypeName = {
+    {LEFT_PAREN, "LEFT_PAREN"}, 
+    {RIGHT_PAREN, "RIGHT_PAREN"},
+    {LEFT_BRACE, "LEFT_BRACE"}, 
+    {RIGHT_BRACE, "RIGHT_BRACE"},
 
-        case COMMA: return "COMMA";
-        case DOT: return "DOT";
-        case MINUS: return "MINUS";
-        case PLUS: return "PLUS";
-        case SEMICOLON: return "SEMICOLON";
-        case SLASH: return "SLASH";
-        case STAR: return "STAR";
+    {COMMA, "COMMA"}, 
+    {DOT, "DOT"}, 
+    {MINUS, "MINUS"}, 
+    {PLUS, "PLUS"},
+    {SEMICOLON, "SEMICOLON"}, 
+    {SLASH, "SLASH"}, 
+    {STAR, "STAR"},
 
-        case BANG: return "BANG";
-        case BANG_EQUAL: return "BANG_EQUAL";
-        case EQUAL: return "EQUAL";
-        case EQUAL_EQUAL: return "EQUAL_EQUAL";
-        case GREATER: return "GREATER";
-        case GREATER_EQUAL: return "GREATER_EQUAL";
-        case LESS: return "LESS";
-        case LESS_EQUAL: return "LESS_EQUAL";
+    {BANG, "BANG"}, 
+    {BANG_EQUAL, "BANG_EQUAL"}, 
+    {EQUAL, "EQUAL"}, 
+    {EQUAL_EQUAL, "EQUAL_EQUAL"},
+    {GREATER, "GREATER"}, 
+    {GREATER_EQUAL, "GREATER_EQUAL"},
+    {LESS, "LESS"}, 
+    {LESS_EQUAL, "LESS_EQUAL"},
 
-        case IDENTIFIER: return "IDENTIFIER";
-        case STRING: return "STRING";
-        case NUMBER: return "NUMBER";
+    {IDENTIFIER, "IDENTIFIER"}, 
+    {STRING, "STRING"}, 
+    {NUMBER, "NUMBER"},
 
-        case _EOF: return "EOF";
+    {AND,"AND"}, 
+    {CLASS,"CLASS"}, 
+    {ELSE,"ELSE"}, 
+    {FALSE,"FALSE"},
+    {FUN,"FUN"}, 
+    {FOR,"FOR"}, 
+    {IF,"IF"}, 
+    {NIL,"NIL"}, 
+    {OR,"OR"},
+    {PRINT,"PRINT"}, 
+    {RETURN,"RETURN"}, 
+    {SUPER,"SUPER"}, 
+    {THIS,"THIS"},
+    {TRUE,"TRUE"}, 
+    {VAR,"VAR"}, 
+    {WHILE,"WHILE"},
+    
+    {_EOF, "EOF"}
+};
 
-        default:
-            std::cerr << "Unhandled tokenTypeToString call for TokenType!";
-            return "";
-    }
-}
+const std::unordered_map<std::string, TokenType> reservedKeywords = {
+    {"and", AND},
+    {"class", CLASS},
+    {"else", ELSE},
+    {"false", FALSE},
+    {"fun", FUN},
+    {"for", FOR},
+    {"if", IF},
+    {"nil", NIL},
+    {"or", OR},
+    {"print", PRINT},
+    {"return", RETURN},
+    {"super", SUPER},
+    {"this", THIS},
+    {"true", TRUE},
+    {"var", VAR},
+    {"while", WHILE},
+};
 
 
 bool isDigit(const char c){
@@ -61,13 +90,12 @@ Token::Token(TokenType type, std::string lexeme, std::string literalString) {
     this->lexeme = lexeme;
     this->literalString = literalString;
 }
-Token::Token(TokenType type, std::string lexeme) : Token(type, lexeme, "null"){}
 Token::Token(TokenType type, std::string lexeme, std::string literal, double literalNumber) : Token(type, lexeme, literal){
     this->literalNumber = literalNumber;
 }
 
 std::string Token::toString() {
-    return tokenTypeToString(type) + " " + lexeme + " " + literalString;
+    return tokenTypeName.at(type) + " " + lexeme + " " + literalString;
 }
 
 
@@ -108,6 +136,8 @@ bool Scanner::match(char c){
 }
 void Scanner::addToken(TokenType type){
     // add token based on pointers
+    // special handling for string literals, numbers and identifiers
+
     std::string lexeme = source.substr(start, curr - start);
 
     if (type == STRING){
@@ -117,8 +147,20 @@ void Scanner::addToken(TokenType type){
     else if (type == NUMBER){
         double val = stod(lexeme);
         std::string literal = lexeme;
-        if (floor(val) == val) literal = std::to_string((int)floor(val)) + ".0";
+
+        // overwrite string literal to add .0 if the number is an integer
+        if (floor(val) == val)
+            literal = std::to_string((int)floor(val)) + ".0";
         tokens.push_back(new Token(type, lexeme, literal, val));
+    }
+    else if (type == IDENTIFIER){
+        // check if identifier is a reserved keyword
+        if (reservedKeywords.count(lexeme)){
+            type = reservedKeywords.at(lexeme);
+            tokens.push_back(new Token(type, lexeme, "null"));
+        } else {
+            tokens.push_back(new Token(type, lexeme, "null"));
+        }
     }
     else tokens.push_back(new Token(type, lexeme, "null"));
 }
@@ -252,7 +294,8 @@ void Scanner::scanNumber(){
 }
 
 void Scanner::scanIdentifier(){
-    // read until all letters consumed
+    // reads identifiers and reserved keywords
+    // read until all alphanumeric characters consumed
     while (isAlphaNumeric(peek())) advance();
     addToken(IDENTIFIER);
 }

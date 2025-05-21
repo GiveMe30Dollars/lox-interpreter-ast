@@ -32,6 +32,7 @@ enum TokenType {
     _EOF
 };
 
+const std::unordered_map<std::string,TokenType> reservedKeywords;
 std::string tokenTypeToString(const TokenType type);
 bool isDigit(const char c);
 bool isAlpha(const char c);
@@ -45,7 +46,6 @@ class Token {
         double literalNumber = 0;
         int line;
         Token(TokenType type, std::string lexeme, std::string literalString);
-        Token(TokenType type, std::string lexeme);
         Token(TokenType type, std::string lexeme, std::string literalString, double literalNumber);
         std::string toString(void);
 
