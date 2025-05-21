@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -30,6 +31,7 @@ enum TokenType {
 };
 
 std::string tokenTypeToString(TokenType type){
+    // helper function to cast TokenType enum to string
     switch (type){
         case LEFT_PAREN: return "LEFT_PAREN";
         case RIGHT_PAREN: return "RIGHT_PAREN";
@@ -56,10 +58,12 @@ std::string tokenTypeToString(TokenType type){
 }
 
 class Token {
+    // data structure for classifying and storing lexemes during scanning
     private:
         TokenType type;
         std::string lexeme;
         std::string literal;
+        int line;
 
     public:
         Token(TokenType type, std::string lexeme, std::string literal) {
@@ -74,7 +78,93 @@ class Token {
         }
 
         std::string toString() {
-            return tokenTypeToString(type) + " " + lexeme + " " + literal + "\n";
+            return tokenTypeToString(type) + " " + lexeme + " " + literal;
+        }
+};
+
+class Scanner{
+    private:
+        std::string source;
+        int start;
+        int curr;
+        int line;
+
+        bool isAtEnd(){
+            return start >= source.length();
+        }
+        char advance(){
+            // consumes and returns the upcoming character
+            return source[curr++];
+        }
+        char peek(){
+            // returns the upcoming character without consuming it
+            return source[curr];
+        }
+        char peekNext(){
+            // returns the second upcoming character without consuming it
+            return source[curr+1];
+        }
+        bool match(char c){
+            // checks if upcoming character matches c. If yes, consume the character and return true.
+            if (isAtEnd() || peek() != c) return false;
+            else {
+                advance();
+                return true;
+            }
+        }
+
+    public:
+        bool hasError;
+        std::vector<Token*> tokens;
+
+        Scanner(std::string source){
+            this->source = source;
+            this->tokens = {};
+            scan();
+        }
+
+        void scan(){
+            // main function: scans the source and creates tokens
+            start = 0;
+            curr = 0;
+            line = 1;
+            hasError = false;
+
+            while (!isAtEnd()){
+                Token* t;
+                char c = advance();
+                switch (c){
+                    case '(':
+                        t = new Token(LEFT_PAREN, "("); break;
+                    case ')':
+                        t = new Token(RIGHT_PAREN, ")"); break;
+                    case '{':
+                        t = new Token(LEFT_BRACE, "{"); break;
+                    case '}':
+                        t = new Token(RIGHT_BRACE, "}"); break;
+
+                    case ',':
+                        t = new Token(COMMA, ","); break;
+                    case '.':
+                        t = new Token(DOT, "."); break;
+                    case '-':
+                        t = new Token(MINUS, "-"); break;
+                    case '+':
+                        t = new Token(PLUS, "+"); break;
+                    case ';':
+                        t = new Token(SEMICOLON, ";"); break;
+                    case '*':
+                        t = new Token(STAR, "*"); break;
+
+                    default: 
+                        std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
+                        hasError = true;
+                        break;
+                }
+                tokens.push_back(t);
+                start = curr;
+            }
+            tokens.push_back(new Token(_EOF, ""));
         }
 };
 
@@ -97,40 +187,12 @@ int main(int argc, char *argv[]) {
 
     if (command == "tokenize") {
         std::string file_contents = read_file_contents(argv[2]);
-        
+                
         for (int i = 0; i < file_contents.length(); i++){
-            Token* curr;
-            switch (file_contents[i]){
-                case '(':
-                    curr = new Token(LEFT_PAREN, "("); break;
-                case ')':
-                    curr = new Token(RIGHT_PAREN, ")"); break;
-                case '{':
-                    curr = new Token(LEFT_BRACE, "{"); break;
-                case '}':
-                    curr = new Token(RIGHT_BRACE, "}"); break;
-
-                case ',':
-                    curr = new Token(COMMA, ","); break;
-                case '.':
-                    curr = new Token(DOT, "."); break;
-                case '-':
-                    curr = new Token(MINUS, "-"); break;
-                case '+':
-                    curr = new Token(PLUS, "+"); break;
-                case ';':
-                    curr = new Token(SEMICOLON, ";"); break;
-                case '*':
-                    curr = new Token(STAR, "*"); break;
-
-                default: 
-                    std::cerr << "Invalid literal at index " << i << " !";
-                    return 1;
-            }
-            std::cout << curr->toString();
+            Scanner* scanner = new Scanner(file_contents);
+            for (Token* t : scanner->tokens) std::cout << t->toString() << "\n";
+            return scanner->hasError ? 65 : 0;
         }
-        std::cout << (new Token(_EOF, "", "null"))->toString();
-        return 0;
         
     } else {
         std::cerr << "Unknown command: " << command << std::endl;
