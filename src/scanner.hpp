@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#pragma once
 
 enum TokenType;
 std::string tokenTypeToString(const TokenType type);
