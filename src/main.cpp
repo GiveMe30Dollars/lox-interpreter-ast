@@ -100,7 +100,7 @@ class Scanner{
 
         bool isAtEnd(){
             // returns true if at end of source
-            return start >= source.length();
+            return curr >= source.length();
         }
         char advance(){
             // consumes and returns the upcoming character
