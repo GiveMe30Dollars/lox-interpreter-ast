@@ -167,11 +167,9 @@ void Scanner::scan(){
                 }
                 break;
 
-            // string literals
-            // read until closing double quotation mark
-            // throw error if it doesn't exist
+            // string literal
             case '"': 
-                
+                scanStringLiteral(); break;
 
             // blankspace and linebreaks
             case ' ': break;
@@ -194,6 +192,8 @@ void Scanner::scan(){
 }
 
 void Scanner::scanStringLiteral(){
+    // read until double quotation mark found, then create token
+    // throw an error otherwise
     while (!isAtEnd()){
         if (advance() == '"'){
             addToken(STRING);
