@@ -158,6 +158,7 @@ std::vector<Token*> Scanner::scan(){
     
     // add end-of-file token
     addToken(_EOF);
+    return this->tokens;
 }
 
 void Scanner::scanStringLiteral(){
