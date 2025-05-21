@@ -6,10 +6,62 @@
 
 std::string read_file_contents(const std::string& filename);
 
-enum TokenType;
-class Token;
-Token* createToken(const std::string& literal);
-Token* createEOF(void);
+enum TokenType {
+    // Single-character tokens.
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
+    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+
+    // One or two character tokens.
+    BANG, BANG_EQUAL,
+    EQUAL, EQUAL_EQUAL,
+    GREATER, GREATER_EQUAL,
+    LESS, LESS_EQUAL,
+
+    // Literals.
+    IDENTIFIER, STRING, NUMBER,
+
+    // Keywords.
+    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
+    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
+
+    _EOF
+};
+
+class Token {
+    private:
+        TokenType type;
+        std::string lexeme;
+        std::string literal;
+        int line; 
+
+    public:
+        Token(TokenType type, std::string lexeme, std::string literal) {
+            this->type = type;
+            this->lexeme = lexeme;
+            this->literal = literal;
+            //this->line = line;
+        }
+
+        std::string toString() {
+            return type + " " + lexeme + " " + literal;
+        }
+};
+
+Token* createToken(const std::string& literal){
+    if (literal.length() == 1){
+        switch(literal[0]){
+            case '(':
+                return new Token(TokenType::LEFT_PAREN, "LEFT_PAREN", literal);
+            case ')':
+                return new Token(TokenType::RIGHT_PAREN, "RIGHT_PAREN", literal);
+            default: return nullptr;
+        }
+    }
+    return nullptr;
+}
+Token* createEOF(void){
+    return new Token(TokenType::_EOF, "EOF", "");
+}
 
 
 int main(int argc, char *argv[]) {
@@ -68,59 +120,3 @@ std::string read_file_contents(const std::string& filename) {
 }
 
 
-enum TokenType {
-    // Single-character tokens.
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-
-    // One or two character tokens.
-    BANG, BANG_EQUAL,
-    EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL,
-
-    // Literals.
-    IDENTIFIER, STRING, NUMBER,
-
-    // Keywords.
-    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
-
-    _EOF
-};
-
-class Token {
-    private:
-        TokenType type;
-        std::string lexeme;
-        std::string literal;
-        int line; 
-
-    public:
-        Token(TokenType type, std::string lexeme, std::string literal) {
-            this->type = type;
-            this->lexeme = lexeme;
-            this->literal = literal;
-            //this->line = line;
-        }
-
-        std::string toString() {
-            return type + " " + lexeme + " " + literal;
-        }
-};
-
-Token* createToken(const std::string& literal){
-    if (literal.length() == 1){
-        switch(literal[0]){
-            case '(':
-                return new Token(TokenType::LEFT_PAREN, "LEFT_PAREN", literal);
-            case ')':
-                return new Token(TokenType::RIGHT_PAREN, "RIGHT_PAREN", literal);
-            default: return nullptr;
-        }
-    }
-    return nullptr;
-}
-Token* createEOF(void){
-    return new Token(TokenType::_EOF, "EOF", "");
-}
