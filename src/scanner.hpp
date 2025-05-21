@@ -52,6 +52,8 @@ class Scanner{
         void addToken(TokenType type);
 
     public:
+        bool hasError;
+        std::vector<Token*> tokens;
         Scanner(std::string source);
     private:
         void scan(void);
