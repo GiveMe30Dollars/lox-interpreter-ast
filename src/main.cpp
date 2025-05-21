@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
             }
         }
         std::cout << "EOF null";
-        return 1;
+        return 0;
         
     } else {
         std::cerr << "Unknown command: " << command << std::endl;
