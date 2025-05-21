@@ -115,6 +115,10 @@ void Scanner::addToken(TokenType type){
     }
     else tokens.push_back(new Token(type, lexeme));
 }
+void Scanner::error(int line, std::string message){
+    std::cerr << "[line " << line << "] Error: " << message << "\n";
+    hasError = true;
+}
 
 Scanner::Scanner(std::string source){
     // initializes scanner object
@@ -183,13 +187,12 @@ void Scanner::scan(){
 
             // unhandled characters
             default:
-                std::cerr << "[line " << line << "] Error: Unexpected character: " << c << "\n";
+                error(line, "Unexpected character: " + c);
                 break;
         }
         
         // move start from token created
         start = curr;
-        std::cerr << start << "\n";
     }
     
     // add end-of-file token
@@ -199,13 +202,18 @@ void Scanner::scan(){
 void Scanner::scanStringLiteral(){
     // read until double quotation mark found, then create token
     // throw an error otherwise
-    while (!isAtEnd()){
-        if (advance() == '"'){
-            addToken(STRING);
-            return;
-        }
+    while (peek() != '"' && !isAtEnd()) {
+      if (peek() == '\n') line++;
+      advance();
     }
-    std::cerr << "[line " << line << "] Error: Unterminated string.";
-    hasError = true;
-    return;
+    if (isAtEnd()) {
+      error(line, "Unterminated string.");
+      return;
+    }
+
+    // The closing ".
+    advance();
+
+    // Trim the surrounding quotes.
+    addToken(STRING);
 }

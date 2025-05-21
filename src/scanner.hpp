@@ -59,6 +59,7 @@ class Scanner{
         char peekNext(void);
         bool match(char c);
         void addToken(TokenType type);
+        void error(int line, std::string message);
 
     public:
         bool hasError;
