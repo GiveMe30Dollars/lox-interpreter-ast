@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <unordered_set>
+#include <unordered_map>
 
 std::string read_file_contents(const std::string& filename);
 
@@ -32,14 +34,12 @@ class Token {
         TokenType type;
         std::string lexeme;
         std::string literal;
-        int line; 
 
     public:
         Token(TokenType type, std::string lexeme, std::string literal) {
             this->type = type;
             this->lexeme = lexeme;
             this->literal = literal;
-            //this->line = line;
         }
 
         std::string toString() {
@@ -47,21 +47,6 @@ class Token {
         }
 };
 
-Token* createToken(const std::string& literal){
-    if (literal.length() == 1){
-        switch(literal[0]){
-            case '(':
-                return new Token(TokenType::LEFT_PAREN, "LEFT_PAREN", literal);
-            case ')':
-                return new Token(TokenType::RIGHT_PAREN, "RIGHT_PAREN", literal);
-            default: return nullptr;
-        }
-    }
-    return nullptr;
-}
-Token* createEOF(void){
-    return new Token(TokenType::_EOF, "EOF", "");
-}
 
 
 int main(int argc, char *argv[]) {
@@ -83,19 +68,23 @@ int main(int argc, char *argv[]) {
         std::string file_contents = read_file_contents(argv[2]);
         
         for (int i = 0; i < file_contents.length(); i++){
+            Token* curr;
             switch (file_contents[i]){
                 case '(':
-                    std::cout << "LEFT_PAREN ( null\n";
-                    break;
+                    curr = new Token(LEFT_PAREN, "(", ""); break;
                 case ')':
-                    std::cout << "RIGHT_PAREN ) null\n";
-                    break;
-                default: break;
+                    curr = new Token(RIGHT_PAREN, ")", ""); break;
+                case '{':
+                    curr = new Token(LEFT_BRACE, "{", ""); break;
+                case '}':
+                    curr = new Token(RIGHT_BRACE, "}", ""); break;
+                default: 
+                    std::cerr << "Invalid literal at index " << i << " !";
+                    return 1;
             }
+            curr->toString();
         }
-        //Token* eof = createEOF();
-        //eof->toString();
-        std::cout << "EOF  null";
+        (new Token(_EOF, "", ""))->toString();
         return 0;
         
     } else {
