@@ -171,15 +171,7 @@ void Scanner::scan(){
             // read until closing double quotation mark
             // throw error if it doesn't exist
             case '"': 
-                while (!isAtEnd()){
-                    if (advance() == '"'){
-                        addToken(STRING);
-                        break;
-                    }
-                }
-                std::cerr << "[line " << line << "] Error: Unterminated string.";
-                hasError = true;
-                break;
+                
 
             // blankspace and linebreaks
             case ' ': break;
@@ -193,9 +185,22 @@ void Scanner::scan(){
                 break;
         }
         
+        // move start from token created
         start = curr;
     }
-
+    
     // add end-of-file token
     addToken(_EOF);
+}
+
+void Scanner::scanStringLiteral(){
+    while (!isAtEnd()){
+        if (advance() == '"'){
+            addToken(STRING);
+            return;
+        }
+    }
+    std::cerr << "[line " << line << "] Error: Unterminated string.";
+    hasError = true;
+    return;
 }

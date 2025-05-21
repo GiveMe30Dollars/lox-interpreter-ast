@@ -66,4 +66,5 @@ class Scanner{
         Scanner(std::string source);
     private:
         void scan(void);
+        void scanStringLiteral(void);
 };
