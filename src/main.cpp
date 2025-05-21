@@ -118,20 +118,20 @@ class Scanner{
         std::vector<Token*> tokens;
 
         Scanner(std::string source){
+            // initializes scanner object. immediately scans the source text and generates corresponding tokens in the order they appear
             this->source = source;
             this->tokens = {};
             scan();
         }
 
         void scan(){
-            // main function: scans the source and creates tokens
             start = 0;
             curr = 0;
             line = 1;
             hasError = false;
 
             while (!isAtEnd()){
-                Token* t;
+                Token* t = nullptr;
                 char c = advance();
                 switch (c){
                     case '(':
@@ -161,7 +161,7 @@ class Scanner{
                         hasError = true;
                         break;
                 }
-                tokens.push_back(t);
+                if (!t) tokens.push_back(t);
                 start = curr;
             }
             tokens.push_back(new Token(_EOF, ""));
