@@ -82,9 +82,9 @@ int main(int argc, char *argv[]) {
                     std::cerr << "Invalid literal at index " << i << " !";
                     return 1;
             }
-            curr->toString();
+            std::cout << curr->toString();
         }
-        (new Token(_EOF, "", ""))->toString();
+        std::cout << (new Token(_EOF, "", ""))->toString();
         return 0;
         
     } else {
