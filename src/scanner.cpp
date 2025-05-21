@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "scanner.hpp"
 
 enum TokenType {
     // Single-character tokens.
@@ -125,7 +125,7 @@ class Scanner{
         void addToken(TokenType type){
             // add token based on pointers
             std::string lexeme = source.substr(start, curr - start);
-            
+
             if (type = STRING) tokens.push_back(new Token(type, lexeme, lexeme));
             else tokens.push_back(new Token(type, lexeme));
         }

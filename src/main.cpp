@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include "scanner.h"
+#include "scanner.hpp"
 
 std::string read_file_contents(const std::string& filename);
 
