@@ -42,7 +42,7 @@ bool isDigit(const char c){
     return (c >= '0' && c <= '9');
 }
 bool isLetter (const char c){
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 }
 
 
@@ -195,7 +195,11 @@ void Scanner::scan(){
             default:
                 if (isDigit(c)){
                     scanNumber();
-                } else {
+                }
+                else if (isLetter(c)){
+                    scanIdentifier();
+                } 
+                else {
                     std::string unhandledErr = "Unexpected character: " + std::string(1,c);
                     error(line, unhandledErr);
                 }
@@ -243,4 +247,10 @@ void Scanner::scanNumber(){
     }
 
     addToken(NUMBER);
+}
+
+void Scanner::scanIdentifier(){
+    // read until all letters consumed
+    while (isLetter(peek())) advance();
+    addToken(IDENTIFIER);
 }

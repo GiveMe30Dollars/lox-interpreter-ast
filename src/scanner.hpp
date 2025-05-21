@@ -72,4 +72,5 @@ class Scanner{
         void scan(void);
         void scanStringLiteral(void);
         void scanNumber(void);
+        void scanIdentifier();
 };
