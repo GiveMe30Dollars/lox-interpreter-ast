@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-const static std::unordered_map<TokenType,std::string> tokenTypeName = {
+static std::unordered_map<TokenType,std::string> tokenTypeName = {
     {LEFT_PAREN, "LEFT_PAREN"}, 
     {RIGHT_PAREN, "RIGHT_PAREN"},
     {LEFT_BRACE, "LEFT_BRACE"}, 
@@ -105,6 +105,7 @@ std::string Object::toString(){
             std::cerr << "UNIMPLEMENTED toString type!";
             return "";
     }
+    return "";
 }
 
 

@@ -43,7 +43,7 @@ enum TokenType {
     _EOF
 };
 
-const static std::unordered_map<TokenType,std::string> tokenTypeName;
+static std::unordered_map<TokenType,std::string> tokenTypeName;
 
 bool isDigit(const char c);
 bool isAlpha(const char c);
