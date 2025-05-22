@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
         ASTPrinter printer;
         std::string ast = printer.print(expr);
         std::cout << ast << "\n";
+        for (Token t : tokens) std::cout << t.toString() << "\n";
 
         return 0;
     }
