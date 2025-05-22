@@ -92,8 +92,8 @@ Object Object::objStr(std::string s){
 }
 std::string Object::toString(){
     switch(type){
-        case OBJECT_NIL: return "";
-        case OBJECT_BOOL: return literalBool ? "1" : "0";
+        case OBJECT_NIL: return "null";
+        case OBJECT_BOOL: return literalBool ? "true" : "false";
         case OBJECT_NUM:
             if (floor(literalNumber) == literalNumber) return (std::to_string((int)floor(literalNumber)) + ".0");
             else return std::to_string(literalNumber);

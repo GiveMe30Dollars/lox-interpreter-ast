@@ -48,6 +48,8 @@ bool isAlpha(const char c);
 bool isAlphaNumeric(const char c);
 
 class Object {
+    // Class to represent an arbitrary literal
+    // Pass by value for all subsequent use
     public:
         enum ObjectType {
             OBJECT_NIL, OBJECT_NUM, OBJECT_STR, OBJECT_BOOL
@@ -64,6 +66,8 @@ class Object {
 };
 
 class Token {
+    // Class to represent a token
+    // Pass by value for all subsequent use
     private:
         static std::unordered_map<TokenType,std::string> tokenTypeName;
     public:
