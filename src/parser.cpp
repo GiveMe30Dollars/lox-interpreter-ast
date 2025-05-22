@@ -26,7 +26,7 @@ template<typename... Args>
 bool Parser::match(Args... args){
     // check if any of the TokenTypes given matches the current token
     // if yes, advance and return true
-    for (TokenType t : args){
+    for (TokenType t : args...){
         if (peek().type == t){
             advance();
             return true;
@@ -38,6 +38,8 @@ bool Parser::match(Args... args){
 Token Parser::consume(TokenType t, std::string err){
     if (check(t)) return advance();
     std::cerr << err << "\n";
+    // temp: not error handling
+    return Token(NIL, "ERROR", Object::objNil(), 0);
 }
 
 
