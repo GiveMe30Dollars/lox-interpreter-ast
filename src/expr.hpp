@@ -38,13 +38,14 @@ operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
                | "+"  | "-"  | "*" | "/" ;
 */
 
-class Expr{
-    // Abstract class implementing Expressions. Supports the Visitor pattern with variable return type.
-    // Visitor is passed by reference.
-    public:
-        virtual ~Expr(void) = default;
-        virtual std::any accept(Visitor& v) = 0;
-};
+
+// To resolve circular compilation dependencies between Expr, 
+// its child classes, and Visitor
+// Not including this leads to compile-time errors
+class Literal;
+class Grouping;
+class Unary;
+class Binary;
 
 class Visitor{
     // Abstract class implementing the Visitor design pattern for Expr. supports any return type
@@ -55,6 +56,15 @@ class Visitor{
         virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
         virtual std::any visitBinary(std::shared_ptr<Binary> expr) = 0;
 };
+
+class Expr{
+    // Abstract class implementing Expressions. Supports the Visitor pattern with variable return type.
+    // Visitor is passed by reference.
+    public:
+        virtual ~Expr(void) = default;
+        virtual std::any accept(Visitor& v) = 0;
+};
+
 
 
 class Literal : public Expr, public std::enable_shared_from_this<Literal>{
