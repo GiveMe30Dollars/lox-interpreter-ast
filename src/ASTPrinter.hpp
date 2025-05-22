@@ -1,10 +1,10 @@
 
 #include "expr.hpp"
 
-static class ASTPrinter : Visitor{
+class ASTPrinter : Visitor{
     public:
     // prints a constructed expression via the Visitor design pattern.
-    static std::string print(std::shared_ptr<Expr> expr);
+    std::string print(std::shared_ptr<Expr> expr);
     std::any visitLiteral(std::shared_ptr<Literal> expr);
     std::any visitGrouping(std::shared_ptr<Grouping> expr);
     std::any visitUnary(std::shared_ptr<Unary> expr);
