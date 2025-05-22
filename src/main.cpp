@@ -50,7 +50,6 @@ int main(int argc, char *argv[]) {
         std::shared_ptr<Expr> expr = parser.parse();
         ASTPrinter printer;
         std::string ast = printer.print(expr);
-
         std::cout << ast << "\n";
 
         return 0;
