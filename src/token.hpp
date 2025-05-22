@@ -43,8 +43,6 @@ enum TokenType {
     _EOF
 };
 
-static std::unordered_map<TokenType,std::string> tokenTypeName;
-
 bool isDigit(const char c);
 bool isAlpha(const char c);
 bool isAlphaNumeric(const char c);
@@ -66,6 +64,8 @@ class Object {
 };
 
 class Token {
+    private:
+        static std::unordered_map<TokenType,std::string> tokenTypeName;
     public:
         TokenType type;
         std::string lexeme;

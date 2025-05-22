@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-static std::unordered_map<TokenType,std::string> tokenTypeName = {
+std::unordered_map<TokenType,std::string> Token::tokenTypeName = {
     {LEFT_PAREN, "LEFT_PAREN"}, 
     {RIGHT_PAREN, "RIGHT_PAREN"},
     {LEFT_BRACE, "LEFT_BRACE"}, 
