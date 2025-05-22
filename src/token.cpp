@@ -90,7 +90,7 @@ Object Object::objStr(std::string s){
     obj.literalString = s;
     return obj;
 }
-std::string Object::toString(){
+std::string Object::toString(bool useLox = false){
     switch(type){
         case OBJECT_NIL: return "null";
         case OBJECT_BOOL: return literalBool ? "true" : "false";

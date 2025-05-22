@@ -5,7 +5,7 @@ std::string ASTPrinter::print(std::shared_ptr<Expr> expr){
 }
 
 std::any ASTPrinter::visitLiteral(std::shared_ptr<Literal> curr){
-    return curr->obj.toString();
+    return curr->obj.toString(true);
 }
 
 std::any ASTPrinter::visitGrouping(std::shared_ptr<Grouping> curr){

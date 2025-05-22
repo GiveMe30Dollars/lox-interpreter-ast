@@ -62,7 +62,7 @@ class Object {
         static Object objBool(bool b);
         static Object objNum(double val);
         static Object objStr(std::string str);
-        std::string toString();
+        std::string toString(bool useLox);
 };
 
 class Token {

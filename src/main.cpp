@@ -45,11 +45,9 @@ int main(int argc, char *argv[]) {
           
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
-        for (Token t : tokens) std::cerr << t.toString() << "\n";
 
         Parser parser(tokens);
         std::shared_ptr<Expr> expr = parser.parse();
-        std::cerr << "Parser passed!\n";
         ASTPrinter printer;
         std::string ast = printer.print(expr);
         std::cout << ast << "\n";
