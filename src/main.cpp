@@ -9,6 +9,8 @@
 #include <unordered_map>
 
 #include "scanner.hpp"
+#include "parser.hpp"
+#include "ASTPrinter.hpp"
 
 std::string read_file_contents(const std::string& filename);
 
@@ -44,7 +46,12 @@ int main(int argc, char *argv[]) {
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
 
-        std::cout << tokens[0].lexeme;
+        Parser parser(tokens);
+        std::shared_ptr<Expr> expr = parser.parse();
+        ASTPrinter printer;
+        std::string ast = printer.print(expr);
+
+        std::cout << ast << "\n";
 
         return 0;
     }

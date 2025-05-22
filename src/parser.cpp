@@ -125,4 +125,5 @@ std::shared_ptr<Expr> Parser::primary(){
         consume(RIGHT_PAREN, "Expect ) after expression.");
         return std::make_shared<Grouping>(expr);
     }
+    return nullptr;
 }
