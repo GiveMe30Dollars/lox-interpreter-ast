@@ -92,7 +92,7 @@ Object Object::objStr(std::string s){
 }
 std::string Object::toString(bool useLox = false){
     switch(type){
-        case OBJECT_NIL: return "null";
+        case OBJECT_NIL: return useLox ? "nil" : "null";
         case OBJECT_BOOL: return literalBool ? "true" : "false";
         case OBJECT_NUM:
             // if number is integer, cast to int, then to string and add ".0"
