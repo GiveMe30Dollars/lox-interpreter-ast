@@ -26,7 +26,7 @@ template<typename... Args>
 bool Parser::match(Args... args){
     // check if any of the TokenTypes given matches the current token
     // if yes, advance and return true
-    for (TokenType t : args...){
+    for (const TokenType t : {args...}){
         if (peek().type == t){
             advance();
             return true;
