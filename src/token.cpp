@@ -103,7 +103,7 @@ std::string Object::toString(){
             }
             else {
                 std::string str = std::to_string(literalNumber);
-                str.erase(str.find_last_not_of('0'), std::string::npos);
+                str.erase(str.find_last_not_of('0') + 1, std::string::npos);
                 return str;
             }
         case OBJECT_STR: 
