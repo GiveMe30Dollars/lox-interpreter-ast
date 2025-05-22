@@ -42,8 +42,18 @@ class Expr{
     // Abstract class implementing Expressions. Supports the Visitor pattern with variable return type.
     // Visitor is passed by reference.
     public:
-        virtual std::any accept(Visitor& v) = 0;
         virtual ~Expr(void) = default;
+        virtual std::any accept(Visitor& v) = 0;
+};
+
+class Visitor{
+    // Abstract class implementing the Visitor design pattern for Expr. supports any return type
+    public:
+        virtual ~Visitor() = default;
+        virtual std::any visitLiteral(std::shared_ptr<Literal> expr) = 0;
+        virtual std::any visitGrouping(std::shared_ptr<Grouping> expr) = 0;
+        virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
+        virtual std::any visitBinary(std::shared_ptr<Binary> expr) = 0;
 };
 
 
@@ -78,13 +88,3 @@ class Binary : public Expr, public std::enable_shared_from_this<Binary>{
         std::any accept(Visitor& v) override { return v.visitBinary(shared_from_this()); }
 };
 
-
-class Visitor{
-    // Abstract class implementing the Visitor design pattern, for any return type
-    public:
-        virtual ~Visitor() = default;
-        virtual std::any visitLiteral(std::shared_ptr<Literal> expr) = 0;
-        virtual std::any visitGrouping(std::shared_ptr<Grouping> expr) = 0;
-        virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
-        virtual std::any visitBinary(std::shared_ptr<Binary> expr) = 0;
-};
