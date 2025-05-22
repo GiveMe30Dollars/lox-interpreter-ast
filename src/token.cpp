@@ -95,8 +95,17 @@ std::string Object::toString(){
         case OBJECT_NIL: return "null";
         case OBJECT_BOOL: return literalBool ? "true" : "false";
         case OBJECT_NUM:
-            if (floor(literalNumber) == literalNumber) return (std::to_string((int)floor(literalNumber)) + ".0");
-            else return std::to_string(literalNumber);
+            // if number is integer, cast to int, then to string and add ".0"
+            // otherwise cast to string directly and strip trailing 0s
+            // this ensures all numbers are displayed in at least 1 d.p.
+            if (floor(literalNumber) == literalNumber){
+                return (std::to_string((int)floor(literalNumber)) + ".0");
+            }
+            else {
+                std::string str = std::to_string(literalNumber);
+                str.erase(str.find_last_not_of('0'), std::string::npos);
+                return str;
+            }
         case OBJECT_STR: 
             return literalString;
 
