@@ -1,5 +1,52 @@
 #include "token.hpp"
 
+const static std::unordered_map<TokenType,std::string> tokenTypeName = {
+    {LEFT_PAREN, "LEFT_PAREN"}, 
+    {RIGHT_PAREN, "RIGHT_PAREN"},
+    {LEFT_BRACE, "LEFT_BRACE"}, 
+    {RIGHT_BRACE, "RIGHT_BRACE"},
+
+    {COMMA, "COMMA"}, 
+    {DOT, "DOT"}, 
+    {MINUS, "MINUS"}, 
+    {PLUS, "PLUS"},
+    {SEMICOLON, "SEMICOLON"}, 
+    {SLASH, "SLASH"}, 
+    {STAR, "STAR"},
+
+    {BANG, "BANG"}, 
+    {BANG_EQUAL, "BANG_EQUAL"}, 
+    {EQUAL, "EQUAL"}, 
+    {EQUAL_EQUAL, "EQUAL_EQUAL"},
+    {GREATER, "GREATER"}, 
+    {GREATER_EQUAL, "GREATER_EQUAL"},
+    {LESS, "LESS"}, 
+    {LESS_EQUAL, "LESS_EQUAL"},
+
+    {IDENTIFIER, "IDENTIFIER"}, 
+    {STRING, "STRING"}, 
+    {NUMBER, "NUMBER"},
+
+    {AND,"AND"}, 
+    {CLASS,"CLASS"}, 
+    {ELSE,"ELSE"}, 
+    {FALSE,"FALSE"},
+    {FUN,"FUN"}, 
+    {FOR,"FOR"}, 
+    {IF,"IF"}, 
+    {NIL,"NIL"}, 
+    {OR,"OR"},
+    {PRINT,"PRINT"}, 
+    {RETURN,"RETURN"}, 
+    {SUPER,"SUPER"}, 
+    {THIS,"THIS"},
+    {TRUE,"TRUE"}, 
+    {VAR,"VAR"}, 
+    {WHILE,"WHILE"},
+    
+    {_EOF, "EOF"}
+};
+
 
 bool isDigit(const char c){
     return (c >= '0' && c <= '9');
@@ -11,6 +58,56 @@ bool isAlphaNumeric (const char c){
     return isDigit(c) || isAlpha(c);
 }
 
+/*class Object {
+    enum ObjectType {
+        OBJECT_NIL, OBJECT_NUM, OBJECT_STR, OBJECT_BOOL
+    };
+    ObjectType type;
+    std::string literalString;
+    double literalNumber;
+    ...
+*/
+Object Object::objNil(){
+    Object obj;
+    obj.type = OBJECT_NIL;
+    return obj;
+}
+Object Object::objBool(bool b){
+    Object obj;
+    obj.type = OBJECT_BOOL;
+    obj.literalBool = b;
+    return obj;
+}
+Object Object::objNum(double val){
+    Object obj;
+    obj.type = OBJECT_NUM;
+    obj.literalNumber = val;
+    return obj;
+}
+Object Object::objStr(std::string s){
+    Object obj;
+    obj.type = OBJECT_STR;
+    obj.literalString = s;
+    return obj;
+}
+std::string Object::toString(){
+    switch(type){
+        case OBJECT_NIL: return "";
+        case OBJECT_BOOL: return literalBool ? "1" : "0";
+        case OBJECT_NUM:
+            double val = literalNumber;
+            if (floor(val) == val) return (std::to_string((int)floor(val)) + ".0");
+            else return std::to_string(val);
+        case OBJECT_STR: 
+            return literalString;
+
+        default:
+            std::cerr << "UNIMPLEMENTED toString type!";
+            return "";
+    }
+}
+
+
 /*class Token {
     private:
         TokenType type;
@@ -19,16 +116,13 @@ bool isAlphaNumeric (const char c){
         int line;
 };*/
 
-Token::Token(TokenType type, std::string lexeme, std::string literalString, int line) {
+Token::Token(TokenType type, std::string lexeme, Object literal, int line) {
     this->type = type;
     this->lexeme = lexeme;
-    this->literalString = literalString;
+    this->literal = literal;
     this->line = line;
-}
-Token::Token(TokenType type, std::string lexeme, std::string literal, double literalNumber, int line) : Token(type, lexeme, literal, line){
-    this->literalNumber = literalNumber;
 }
 
 std::string Token::toString() {
-    return tokenTypeName.at(type) + " " + lexeme + " " + literalString;
+    return tokenTypeName.at(type) + " " + lexeme + " " + literal.toString();
 }

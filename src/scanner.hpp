@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <cmath>
 
+// requires tokens
 #include "token.hpp"
 
 #pragma once
@@ -30,6 +31,8 @@ class Scanner{
         int start;
         int curr;
         int line;
+        static std::unordered_map<std::string, TokenType> reservedKeywords;
+
         bool isAtEnd(void);
         char advance(void);
         char peek(void);
@@ -41,6 +44,7 @@ class Scanner{
     public:
         bool hasError;
         std::vector<Token*> tokens;
+        
         Scanner(std::string source);
         std::vector<Token*> scan(void);
     private:

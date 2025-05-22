@@ -1,5 +1,4 @@
 #include "scanner.hpp"
-#include "token.hpp"
 
 /*class Scanner{
     private:
@@ -11,6 +10,26 @@
         bool hasError;
         std::vector<Token*> tokens;
 };*/
+
+std::unordered_map<std::string, TokenType> Scanner::reservedKeywords = {
+    {"and", AND},
+    {"class", CLASS},
+    {"else", ELSE},
+    {"false", FALSE},
+    {"fun", FUN},
+    {"for", FOR},
+    {"if", IF},
+    {"nil", NIL},
+    {"or", OR},
+    {"print", PRINT},
+    {"return", RETURN},
+    {"super", SUPER},
+    {"this", THIS},
+    {"true", TRUE},
+    {"var", VAR},
+    {"while", WHILE},
+};
+
 
 bool Scanner::isAtEnd(){
     // returns true if at end of source
@@ -44,28 +63,23 @@ void Scanner::addToken(TokenType type){
 
     if (type == STRING){
         std::string literal = lexeme.substr(1, lexeme.length() - 2);
-        tokens.push_back(new Token(type, lexeme, literal, line));
+        tokens.push_back(new Token(type, lexeme, Object::objStr(literal), line));
     }
     else if (type == NUMBER){
         double val = stod(lexeme);
-        std::string literal = lexeme;
-
-        // overwrite string literal to add .0 if the number is an integer
-        if (floor(val) == val)
-            literal = std::to_string((int)floor(val)) + ".0";
-        tokens.push_back(new Token(type, lexeme, literal, val, line));
+        tokens.push_back(new Token(type, lexeme, Object::objNum(val), line));
     }
     else if (type == IDENTIFIER){
         // check if identifier is a reserved keyword
         // if so, add token as reserved TokenType
         if (reservedKeywords.count(lexeme)){
             type = reservedKeywords.at(lexeme);
-            tokens.push_back(new Token(type, lexeme, "null", line));
+            tokens.push_back(new Token(type, lexeme, Object::objNil(), line));
         } else {
-            tokens.push_back(new Token(type, lexeme, "null", line));
+            tokens.push_back(new Token(type, lexeme, Object::objNil(), line));
         }
     }
-    else tokens.push_back(new Token(type, lexeme, "null", line));
+    else tokens.push_back(new Token(type, lexeme, Object::objNil(), line));
 }
 void Scanner::error(int line, std::string message){
     std::cerr << "[line " << line << "] Error: " << message << "\n";
