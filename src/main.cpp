@@ -31,20 +31,20 @@ int main(int argc, char *argv[]) {
     if (command == "tokenize") {
         std::string file_contents = read_file_contents(argv[2]);
           
-        Scanner* scanner = new Scanner(file_contents);
-        std::vector<Token*> tokens = scanner->scan();
-        for (Token* t : tokens) std::cout << t->toString() << "\n";
-        return scanner->hasError ? 65 : 0;
+        Scanner scanner(file_contents);
+        std::vector<Token> tokens = scanner.scan();
+        for (Token t : tokens) std::cout << t.toString() << "\n";
+        return scanner.hasError ? 65 : 0;
         
     } 
 
     if (command == "parse"){
         std::string file_contents = read_file_contents(argv[2]);
           
-        Scanner* scanner = new Scanner(file_contents);
-        std::vector<Token*> tokens = scanner->scan();
+        Scanner scanner(file_contents);
+        std::vector<Token> tokens = scanner.scan();
 
-        std::cout << tokens[0]->lexeme;
+        std::cout << tokens[0].lexeme;
 
         return 0;
     }
