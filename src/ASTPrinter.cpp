@@ -5,8 +5,7 @@ std::string ASTPrinter::print(std::shared_ptr<Expr> expr){
 }
 
 std::any ASTPrinter::visitLiteral(std::shared_ptr<Literal> curr){
-    if (curr->obj.type == Object::OBJECT_NIL) return "nil";
-    else return curr->obj.toString();
+    return curr->obj.toString();
 }
 
 std::any ASTPrinter::visitGrouping(std::shared_ptr<Grouping> curr){
