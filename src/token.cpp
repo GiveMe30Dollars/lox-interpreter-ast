@@ -95,9 +95,8 @@ std::string Object::toString(){
         case OBJECT_NIL: return "";
         case OBJECT_BOOL: return literalBool ? "1" : "0";
         case OBJECT_NUM:
-            double val = literalNumber;
-            if (floor(val) == val) return (std::to_string((int)floor(val)) + ".0");
-            else return std::to_string(val);
+            if (floor(literalNumber) == literalNumber) return (std::to_string((int)floor(literalNumber)) + ".0");
+            else return std::to_string(literalNumber);
         case OBJECT_STR: 
             return literalString;
 
