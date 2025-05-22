@@ -49,7 +49,7 @@ class Expr{
 class Visitor{
     // Abstract class implementing the Visitor design pattern for Expr. supports any return type
     public:
-        virtual ~Visitor() = default;
+        virtual ~Visitor(void) = default;
         virtual std::any visitLiteral(std::shared_ptr<Literal> expr) = 0;
         virtual std::any visitGrouping(std::shared_ptr<Grouping> expr) = 0;
         virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
