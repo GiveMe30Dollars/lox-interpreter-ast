@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
 
         Parser parser(tokens);
         std::shared_ptr<Expr> expr = parser.parse();
+        std::cerr << "Parser passed!\n";
         ASTPrinter printer;
         std::string ast = printer.print(expr);
         std::cout << ast << "\n";
