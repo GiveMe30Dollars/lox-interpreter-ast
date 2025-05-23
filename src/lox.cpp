@@ -24,6 +24,7 @@ void Lox::run(std::string source){
             double val = obj.literalNumber;
             if (floor(val) == val){
                 std::cout << std::to_string((int)val) << "\n";
+                return;
             }
         }
         std::cout << obj.toString(true) << "\n";
