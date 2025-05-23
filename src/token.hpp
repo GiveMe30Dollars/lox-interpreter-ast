@@ -82,7 +82,8 @@ class Token {
         std::string lexeme;
         Object literal;
         int line;
-        Token(TokenType type, std::string lexeme, Object literal, int line);
+        Token(TokenType type, std::string lexeme, Object literal, int line) :
+            type(type), lexeme(lexeme), literal(literal), line(line) {}
         std::string toString(void);
         static std::unordered_map<TokenType,std::string> tokenTypeName;
 };

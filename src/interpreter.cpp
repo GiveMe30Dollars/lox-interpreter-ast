@@ -23,7 +23,8 @@ std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
         return Object::boolean(!isTruthy(obj));
     }
     else if (op.type == Token::MINUS){
-        return Object::number(-isNumber(obj, op));
+        if (obj.isType(Object::NUMBER))return Object::number(-obj.literalNumber);
+        else throw error(op, "Operand must be a number.");
     }
     else throw error(op, "UNIMPLEMENTED unary operator!");
 }
@@ -42,13 +43,21 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 
         // boolean operators on two numbers
         case Token::GREATER:
-            return Object::boolean(isNumber(left, op) > isNumber(right, op));
+            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+                return Object::boolean(left.literalNumber > right.literalNumber);
+            else throw error(op, "Operands must be numbers");
         case Token::GREATER_EQUAL:
-            return Object::boolean(isNumber(left, op) >= isNumber(right, op));
+            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+                return Object::boolean(left.literalNumber >= right.literalNumber);
+            else throw error(op, "Operands must be numbers");
         case Token::LESS:
-            return Object::boolean(isNumber(left, op) < isNumber(right, op));
+            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+                return Object::boolean(left.literalNumber < right.literalNumber);
+            else throw error(op, "Operands must be numbers");
         case Token::LESS_EQUAL:
-            return Object::boolean(isNumber(left, op) <= isNumber(right, op));
+            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+                return Object::boolean(left.literalNumber <= right.literalNumber);
+            else throw error(op, "Operands must be numbers");
 
         // numeric operators on two numbers
         // additionally, string concatenation for '+'
@@ -57,15 +66,21 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
                 return Object::number(left.literalNumber + right.literalNumber);
             else if (left.type== Object::STRING && left.type == right.type)
                 return Object::string(left.literalString + right.literalString);
-            else throw error(op, "Expect both number or both string operands.");
+            else throw error(op, "Operands must be numbers or strings.");
         }
         case Token::MINUS:
-            return Object::number(isNumber(left, op) - isNumber(right, op));
+            if (left.type == Object::NUMBER && left.type == right.type)
+                return Object::number(left.literalNumber - right.literalNumber);
+            else throw error(op, "Operands must be numbers");
         case Token::STAR:
-            return Object::number(isNumber(left, op) * isNumber(right, op));
+            if (left.type == Object::NUMBER && left.type == right.type)
+                return Object::number(left.literalNumber * right.literalNumber);
+            else throw error(op, "Operands must be numbers");
         case Token::SLASH:
-            return Object::number(isNumber(left, op) / isNumber(right, op));
-            
+            if (left.type == Object::NUMBER && left.type == right.type)
+                return Object::number(left.literalNumber / right.literalNumber);
+            else throw error(op, "Operands must be numbers");
+
         default:
             throw error(curr->op, "UNIMPLEMENTED binary operator!");
     }
@@ -88,14 +103,6 @@ bool Interpreter::isEqual(Object a, Object b){
         default:
             throw "UNIMPLEMENTED object type for isEqual!";
     }
-}
-double Interpreter::isNumber(Object obj, Token token){
-    // helper function:
-    // returns the value if object is a number
-    // throws an exception otherwise
-    if (obj.type == Object::NUMBER) return obj.literalNumber;
-    else throw error(token, "Expect number operand.");
-    return 0;
 }
 
 LoxError::RuntimeError Interpreter::error(Token token, std::string message){

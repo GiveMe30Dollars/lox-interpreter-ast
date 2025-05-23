@@ -1,10 +1,12 @@
 #include "lox.hpp"
 
-bool Lox::hasError = false;
+bool Lox::hasCompileError = false;
+bool Lox::hasRuntimeError = false;
 Interpreter Lox::interpreter;
 
 void Lox::run(std::string source){
-    Lox::hasError = false;
+    Lox::hasCompileError = false;
+    Lox::hasRuntimeError = false;
 
     Scanner scanner(source);
     std::vector<Token> tokens = scanner.scan();
@@ -12,7 +14,7 @@ void Lox::run(std::string source){
     Parser parser(tokens);
     std::shared_ptr<Expr> expr = parser.parse();
     if (scanner.hasError || parser.hasError){
-        hasError = true;
+        hasCompileError = true;
         return;
     }
     ASTPrinter printer;
@@ -33,7 +35,7 @@ void Lox::run(std::string source){
     }
     catch (LoxError::RuntimeError err){
         err.print();
-        Lox::hasError = true;
+        Lox::hasRuntimeError = true;
         return;
     }
 }
