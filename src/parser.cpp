@@ -45,6 +45,26 @@ Token Parser::consume(TokenType t, std::string err){
 Parser::ParseError Parser::error(Token token, std::string err){
     hasError = true;
     LoxError::print(token, err);
+    return ParseError();
+}
+
+void Parser::synchronize(){
+    advance();
+    while (!isAtEnd()){
+        if (previous().type == SEMICOLON) return;
+        switch (peek().type){
+            case CLASS:
+            case FUN:
+            case VAR:
+            case FOR:
+            case IF:
+            case WHILE:
+            case PRINT:
+            case RETURN:
+                return;
+        }
+        advance();
+    }
 }
 
 
@@ -53,6 +73,8 @@ std::shared_ptr<Expr> Parser::parse(){
         return expression();
     }
     catch(ParseError err){
+        synchronize();
+        parse();
         return nullptr;
     }
 }
