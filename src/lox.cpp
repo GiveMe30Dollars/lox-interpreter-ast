@@ -20,7 +20,6 @@ void Lox::run(std::string source){
 
     try{
         Object obj = interpreter.interpret(expr);
-        std::cerr << obj.type << "\n";
 
         // workaround for CodeCrafters testcase: remove when independent
         if (obj.type == Object::NUMBER){

@@ -51,13 +51,12 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
             return Object::boolean(isNumber(left, op) <= isNumber(right, op));
 
         // numeric operators on two numbers
-        // string concatenation for '+'
+        // additionally, string concatenation for '+'
         case Token::PLUS:{
-            if (left.type == right.type == Object::NUMBER)
+            if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::number(left.literalNumber + right.literalNumber);
-            else if (left.type == right.type == Object::STRING){
-                std::cerr << left.literalString << " + " << right.literalString << "\n";
-                return Object::string(left.literalString + right.literalString);}
+            else if (left.type== Object::STRING && left.type == right.type)
+                return Object::string(left.literalString + right.literalString);
             else throw error(op, "Expect both number or both string operands.");
         }
         case Token::MINUS:
@@ -66,6 +65,7 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
             return Object::number(isNumber(left, op) * isNumber(right, op));
         case Token::SLASH:
             return Object::number(isNumber(left, op) / isNumber(right, op));
+            
         default:
             throw error(curr->op, "UNIMPLEMENTED binary operator!");
     }
