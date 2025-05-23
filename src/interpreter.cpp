@@ -55,8 +55,9 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
         case Token::PLUS:{
             if (left.type == right.type == Object::NUMBER)
                 return Object::number(left.literalNumber + right.literalNumber);
-            else if (left.type == right.type == Object::STRING)
-                return Object::string(left.literalString + right.literalString);
+            else if (left.type == right.type == Object::STRING){
+                std::cerr << left.literalString << " + " << right.literalString << "\n";
+                return Object::string(left.literalString + right.literalString);}
             else throw error(op, "Expect both number or both string operands.");
         }
         case Token::MINUS:
