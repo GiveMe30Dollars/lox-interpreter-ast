@@ -2,6 +2,7 @@
 #include "scanner.hpp"
 #include "parser.hpp"
 #include "interpreter.hpp"
+#include "ASTPrinter.hpp"
 #include "loxerror.hpp"
 
 #pragma once

@@ -15,6 +15,8 @@ void Lox::run(std::string source){
         hasError = true;
         return;
     }
+    ASTPrinter printer;
+    std::cerr << printer.print(expr) << "\n";
 
     try{
         Object obj = interpreter.interpret(expr);
