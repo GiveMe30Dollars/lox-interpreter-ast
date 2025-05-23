@@ -24,13 +24,13 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
 class Parser{
     // converts a vector of tokens to an AST
     public:
+        bool hasError = false;
         Parser(std::vector<Token> tokens) : tokens(tokens) {}
         std::shared_ptr<Expr> parse();
 
     private:
         std::vector<Token> tokens;
         int curr = 0;
-        bool hasError = false;
 
         bool isAtEnd(void);
         Token advance(void);
