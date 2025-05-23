@@ -102,7 +102,9 @@ std::shared_ptr<Expr> Parser::equality(){
     while (match(Token::BANG_EQUAL, Token::EQUAL_EQUAL)){
         Token op = previous();
         std::shared_ptr<Expr> right = comparison();
+        std::cerr << "made other!\n";
         expr = std::make_shared<Binary>(expr, op, right);
+        std::cerr << "merged with other!\n";
     }
     return expr;
 }
