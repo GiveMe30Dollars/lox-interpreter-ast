@@ -82,8 +82,8 @@ void Scanner::addToken(TokenType type){
     else tokens.push_back(Token(type, lexeme, Object::objNil(), line));
 }
 void Scanner::error(int line, std::string message){
-    std::cerr << "[line " << line << "] Error: " << message << "\n";
     hasError = true;
+    LoxError::print(line, message);
 }
 
 Scanner::Scanner(std::string source){

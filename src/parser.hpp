@@ -32,6 +32,7 @@ class Parser{
         std::vector<Token> tokens;
         int curr = 0;
 
+        // Helper functions for parsing
         bool isAtEnd(void);
         Token advance(void);
         Token peek(void);
@@ -41,10 +42,12 @@ class Parser{
         bool match(args... t);
         Token consume(TokenType t, std::string err);
 
+        // Error handlinng and synchronization
         class ParseError{};
         ParseError error(Token token, std::string err);
+        void synchronize(void);
 
-        // Helper parsing functions
+        // Expression parsing
         std::shared_ptr<Expr> expression();
         std::shared_ptr<Expr> equality();
         std::shared_ptr<Expr> comparison();
