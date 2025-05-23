@@ -11,6 +11,7 @@
 #include "scanner.hpp"
 #include "parser.hpp"
 #include "ASTPrinter.hpp"
+#include "lox.hpp"
 
 std::string read_file_contents(const std::string& filename);
 

@@ -4,7 +4,7 @@
 #include <cstdarg>
 
 #include "expr.hpp"
-#include "lox.hpp"
+#include "loxerror.hpp"
 
 #pragma once
 
@@ -38,12 +38,12 @@ class Parser{
         Token peek(void);
         Token previous(void);
         bool check(Token::TokenType t);
-        template<typename... args>
-        bool match(args... t);
+        template<typename... Args>
+        bool match(Args... t);
         Token consume(Token::TokenType t, std::string err);
 
         // Error handlinng and synchronization
-        Lox::ParsingError error(Token token, std::string err);
+        LoxError::ParseError error(Token token, std::string err);
         void synchronize(void);
 
         // Expression parsing

@@ -83,7 +83,7 @@ void Scanner::addToken(Token::TokenType type){
 }
 void Scanner::error(int line, std::string message){
     hasError = true;
-    Lox::ScanningError(line, message).print();
+    LoxError::ScanningError(line, message).print();
 }
 
 Scanner::Scanner(std::string source){

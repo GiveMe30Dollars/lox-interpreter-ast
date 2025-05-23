@@ -42,9 +42,9 @@ Token Parser::consume(Token::TokenType t, std::string err){
     throw(error(peek(), err));
 }
 
-Lox::ParsingError Parser::error(Token token, std::string err){
+LoxError::ParseError Parser::error(Token token, std::string err){
     hasError = true;
-    return Lox::ParsingError(token, err);
+    return LoxError::ParseError(token, err);
 }
 
 void Parser::synchronize(){
@@ -71,7 +71,7 @@ std::shared_ptr<Expr> Parser::parse(){
     try{
         return expression();
     }
-    catch(Lox::ParsingError err){
+    catch(LoxError::ParseError err){
         err.print();
         synchronize();
         parse();

@@ -111,17 +111,13 @@ std::string Object::toString(bool useLox = false){
             return literalString;
 
         default:
-            std::cerr << "UNIMPLEMENTED toString type!";
+            throw "UNIMPLEMENTED toString type!";
             return "";
     }
     return "";
 }
 
-
-bool Object::isTruthy(){
-    return !(type == Object::NIL || (type == Object::BOOL && literalBool == false));
-}
-
+/*
 template<>
 Object Object::cast<Object::BOOL>(){
     return Object::boolean(isTruthy());
@@ -130,6 +126,8 @@ Object Object::cast<Object::BOOL>(){
 template<>
 Object Object::cast<Object::NUMBER>(){
     switch (type){
+        case Object::NIL:
+            return Object::number(0);
         case Object::BOOL:
             return Object::number(literalBool ? 1 : 0);
         case Object::NUMBER: 
@@ -152,6 +150,7 @@ Object Object::cast(){
     throw ("Unimplemeneted cast type!");
     return nil();
 }
+*/
 
 
 

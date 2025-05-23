@@ -1,7 +1,7 @@
 
 // requires tokens
 #include "token.hpp"
-#include "lox.hpp"
+#include "loxerror.hpp"
 
 #pragma once
 
