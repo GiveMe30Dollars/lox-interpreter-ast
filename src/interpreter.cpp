@@ -23,7 +23,8 @@ std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
         return Object::boolean(!isTruthy(obj));
     }
     else if (op.type == Token::MINUS){
-        if (obj.isType(Object::NUMBER))return Object::number(-obj.literalNumber);
+        if (obj.type == Object::NUMBER) 
+            return Object::number(-obj.literalNumber);
         else throw error(op, "Operand must be a number.");
     }
     else throw error(op, "UNIMPLEMENTED unary operator!");
@@ -43,21 +44,21 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 
         // boolean operators on two numbers
         case Token::GREATER:
-            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+            if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::boolean(left.literalNumber > right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
         case Token::GREATER_EQUAL:
-            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+            if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::boolean(left.literalNumber >= right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
         case Token::LESS:
-            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+            if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::boolean(left.literalNumber < right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
         case Token::LESS_EQUAL:
-            if (left.isType(Object::NUMBER) && right.isType(Object::NUMBER))
+            if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::boolean(left.literalNumber <= right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
 
         // numeric operators on two numbers
         // additionally, string concatenation for '+'
@@ -71,15 +72,16 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
         case Token::MINUS:
             if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::number(left.literalNumber - right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
         case Token::STAR:
             if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::number(left.literalNumber * right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
         case Token::SLASH:
+            // TODO: NAN implementation for division by 0
             if (left.type == Object::NUMBER && left.type == right.type)
                 return Object::number(left.literalNumber / right.literalNumber);
-            else throw error(op, "Operands must be numbers");
+            else throw error(op, "Operands must be numbers.");
 
         default:
             throw error(curr->op, "UNIMPLEMENTED binary operator!");
