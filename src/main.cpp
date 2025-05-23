@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
         std::shared_ptr<Expr> expr = parser.parse();
         if (parser.hasError) return 65;
 
+        std::cerr << "its in the ASTPrinter!";
+
         ASTPrinter printer;
         std::string ast = printer.print(expr);
         std::cout << ast << "\n";
