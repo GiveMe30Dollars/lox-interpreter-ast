@@ -2,7 +2,7 @@
 
 #pragma once
 
-static class LoxError{
+class LoxError{
     public:
     static void print(int line, std::string message){
         std::cerr << "[line " << line << "] Error: " << message << "\n";

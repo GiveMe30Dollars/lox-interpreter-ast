@@ -41,7 +41,7 @@ class Parser{
         bool match(args... t);
         Token consume(TokenType t, std::string err);
 
-        static class ParseError{};
+        class ParseError{};
         ParseError error(Token token, std::string err);
 
         // Helper parsing functions
