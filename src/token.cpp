@@ -1,6 +1,6 @@
 #include "token.hpp"
 
-std::unordered_map<TokenType,std::string> Token::tokenTypeName = {
+std::unordered_map<Token::TokenType,std::string> Token::tokenTypeName = {
     {LEFT_PAREN, "LEFT_PAREN"}, 
     {RIGHT_PAREN, "RIGHT_PAREN"},
     {LEFT_BRACE, "LEFT_BRACE"}, 
@@ -67,34 +67,35 @@ bool isAlphaNumeric (const char c){
     double literalNumber;
     ...
 */
-Object Object::objNil(){
+
+Object Object::nil(){
     Object obj;
-    obj.type = OBJECT_NIL;
+    obj.type = Object::NIL;
     return obj;
 }
-Object Object::objBool(bool b){
+Object Object::boolean(bool b){
     Object obj;
-    obj.type = OBJECT_BOOL;
+    obj.type = Object::BOOL;
     obj.literalBool = b;
     return obj;
 }
-Object Object::objNum(double val){
+Object Object::number(double val){
     Object obj;
-    obj.type = OBJECT_NUM;
+    obj.type = Object::NUMBER;
     obj.literalNumber = val;
     return obj;
 }
-Object Object::objStr(std::string s){
+Object Object::string(std::string s){
     Object obj;
-    obj.type = OBJECT_STR;
+    obj.type = Object::STRING;
     obj.literalString = s;
     return obj;
 }
 std::string Object::toString(bool useLox = false){
     switch(type){
-        case OBJECT_NIL: return useLox ? "nil" : "null";
-        case OBJECT_BOOL: return literalBool ? "true" : "false";
-        case OBJECT_NUM:
+        case Object::NIL: return useLox ? "nil" : "null";
+        case Object::BOOL: return literalBool ? "true" : "false";
+        case Object::NUMBER:
             // if number is integer, cast to int, then to string and add ".0"
             // otherwise cast to string directly and strip trailing 0s
             // this ensures all numbers are displayed in at least 1 d.p.
@@ -106,7 +107,7 @@ std::string Object::toString(bool useLox = false){
                 str.erase(str.find_last_not_of('0') + 1, std::string::npos);
                 return str;
             }
-        case OBJECT_STR: 
+        case Object::STRING: 
             return literalString;
 
         default:
@@ -115,6 +116,43 @@ std::string Object::toString(bool useLox = false){
     }
     return "";
 }
+
+
+bool Object::isTruthy(){
+    return !(type == Object::NIL || (type == Object::BOOL && literalBool == false));
+}
+
+template<>
+Object Object::cast<Object::BOOL>(){
+    return Object::boolean(isTruthy());
+}
+
+template<>
+Object Object::cast<Object::NUMBER>(){
+    switch (type){
+        case Object::BOOL:
+            return Object::number(literalBool ? 1 : 0);
+        case Object::NUMBER: 
+            return *this;
+        case Object::STRING:
+        {
+            try {
+                double val = std::stod(literalString);
+                return Object::number(val);
+            }
+            catch(std::invalid_argument& e) {
+                return Object::number(0);
+            }
+        }
+    }
+}
+
+template<Object::ObjectType T>
+Object Object::cast(){
+    throw ("Unimplemeneted cast type!");
+    return nil();
+}
+
 
 
 /*class Token {

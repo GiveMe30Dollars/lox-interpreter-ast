@@ -4,7 +4,7 @@
 #include <cstdarg>
 
 #include "expr.hpp"
-#include "error.hpp"
+#include "lox.hpp"
 
 #pragma once
 
@@ -22,7 +22,7 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
 */
 
 class Parser{
-    // converts a vector of tokens to an AST
+    // Converts a vector of Tokens to an AST
     public:
         bool hasError = false;
         Parser(std::vector<Token> tokens) : tokens(tokens) {}
@@ -37,14 +37,13 @@ class Parser{
         Token advance(void);
         Token peek(void);
         Token previous(void);
-        bool check(TokenType t);
+        bool check(Token::TokenType t);
         template<typename... args>
         bool match(args... t);
-        Token consume(TokenType t, std::string err);
+        Token consume(Token::TokenType t, std::string err);
 
         // Error handlinng and synchronization
-        class ParseError{};
-        ParseError error(Token token, std::string err);
+        Lox::ParsingError error(Token token, std::string err);
         void synchronize(void);
 
         // Expression parsing

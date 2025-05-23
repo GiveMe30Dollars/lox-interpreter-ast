@@ -1,7 +1,7 @@
 
 // requires tokens
 #include "token.hpp"
-#include "error.hpp"
+#include "lox.hpp"
 
 #pragma once
 
@@ -22,14 +22,14 @@ class Scanner{
         int start;
         int curr;
         int line;
-        static std::unordered_map<std::string, TokenType> reservedKeywords;
+        static std::unordered_map<std::string, Token::TokenType> reservedKeywords;
 
         bool isAtEnd(void);
         char advance(void);
         char peek(void);
         char peekNext(void);
         bool match(char c);
-        void addToken(TokenType type);
+        void addToken(Token::TokenType type);
         void error(int line, std::string message);
 
     public:

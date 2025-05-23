@@ -22,26 +22,6 @@
     Declarations include variable names, functions and their parameters.
 */
 
-enum TokenType {
-    // Single-character tokens.
-    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-    COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
-
-    // One or two character tokens.
-    BANG, BANG_EQUAL,
-    EQUAL, EQUAL_EQUAL,
-    GREATER, GREATER_EQUAL,
-    LESS, LESS_EQUAL,
-
-    // Literals.
-    IDENTIFIER, STRING, NUMBER,
-
-    // Keywords.
-    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
-
-    _EOF
-};
 
 bool isDigit(const char c);
 bool isAlpha(const char c);
@@ -52,29 +32,57 @@ class Object {
     // Pass by value for all subsequent use
     public:
         enum ObjectType {
-            OBJECT_NIL, OBJECT_NUM, OBJECT_STR, OBJECT_BOOL
+            NIL, NUMBER, STRING, BOOL
         };
         ObjectType type;
         bool literalBool;
         double literalNumber;
         std::string literalString;
-        static Object objNil(void);
-        static Object objBool(bool b);
-        static Object objNum(double val);
-        static Object objStr(std::string str);
         std::string toString(bool useLox);
+        
+        // Generator functions
+        static Object nil(void);
+        static Object boolean(bool b);
+        static Object number(double val);
+        static Object string(std::string str);
+
+        
+        bool isTruthy();
+        template<Object::ObjectType T>
+        Object cast();
+
 };
 
 class Token {
     // Class to represent a token
     // Pass by value for all subsequent use
-    private:
-        static std::unordered_map<TokenType,std::string> tokenTypeName;
     public:
+        static enum TokenType {
+            // Single-character tokens.
+            LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
+            COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+
+            // One or two character tokens.
+            BANG, BANG_EQUAL,
+            EQUAL, EQUAL_EQUAL,
+            GREATER, GREATER_EQUAL,
+            LESS, LESS_EQUAL,
+
+            // Literals.
+            IDENTIFIER, STRING, NUMBER,
+
+            // Keywords.
+            AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
+            PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
+
+            _EOF
+        };
+
         TokenType type;
         std::string lexeme;
         Object literal;
         int line;
         Token(TokenType type, std::string lexeme, Object literal, int line);
         std::string toString(void);
+        static std::unordered_map<TokenType,std::string> tokenTypeName;
 };

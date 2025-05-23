@@ -11,23 +11,23 @@
         std::vector<Token*> tokens;
 };*/
 
-std::unordered_map<std::string, TokenType> Scanner::reservedKeywords = {
-    {"and", AND},
-    {"class", CLASS},
-    {"else", ELSE},
-    {"false", FALSE},
-    {"fun", FUN},
-    {"for", FOR},
-    {"if", IF},
-    {"nil", NIL},
-    {"or", OR},
-    {"print", PRINT},
-    {"return", RETURN},
-    {"super", SUPER},
-    {"this", THIS},
-    {"true", TRUE},
-    {"var", VAR},
-    {"while", WHILE},
+std::unordered_map<std::string, Token::TokenType> Scanner::reservedKeywords = {
+    {"and", Token::AND},
+    {"class", Token::CLASS},
+    {"else", Token::ELSE},
+    {"false", Token::FALSE},
+    {"fun", Token::FUN},
+    {"for", Token::FOR},
+    {"if", Token::IF},
+    {"nil", Token::NIL},
+    {"or", Token::OR},
+    {"print", Token::PRINT},
+    {"return", Token::RETURN},
+    {"super", Token::SUPER},
+    {"this", Token::THIS},
+    {"true", Token::TRUE},
+    {"var", Token::VAR},
+    {"while", Token::WHILE},
 };
 
 
@@ -55,35 +55,35 @@ bool Scanner::match(char c){
         return true;
     }
 }
-void Scanner::addToken(TokenType type){
+void Scanner::addToken(Token::TokenType type){
     // add token based on pointers
     // special handling for string literals, numbers and identifiers
 
     std::string lexeme = source.substr(start, curr - start);
 
-    if (type == STRING){
+    if (type == Token::STRING){
         std::string literal = lexeme.substr(1, lexeme.length() - 2);
-        tokens.push_back(Token(type, lexeme, Object::objStr(literal), line));
+        tokens.push_back(Token(type, lexeme, Object::string(literal), line));
     }
-    else if (type == NUMBER){
+    else if (type == Token::NUMBER){
         double val = stod(lexeme);
-        tokens.push_back(Token(type, lexeme, Object::objNum(val), line));
+        tokens.push_back(Token(type, lexeme, Object::number(val), line));
     }
-    else if (type == IDENTIFIER){
+    else if (type == Token::IDENTIFIER){
         // check if identifier is a reserved keyword
         // if so, add token as reserved TokenType
         if (reservedKeywords.count(lexeme)){
             type = reservedKeywords.at(lexeme);
-            tokens.push_back(Token(type, lexeme, Object::objNil(), line));
+            tokens.push_back(Token(type, lexeme, Object::nil(), line));
         } else {
-            tokens.push_back(Token(type, lexeme, Object::objNil(), line));
+            tokens.push_back(Token(type, lexeme, Object::nil(), line));
         }
     }
-    else tokens.push_back(Token(type, lexeme, Object::objNil(), line));
+    else tokens.push_back(Token(type, lexeme, Object::nil(), line));
 }
 void Scanner::error(int line, std::string message){
     hasError = true;
-    LoxError::print(line, message);
+    Lox::ScanningError(line, message).print();
 }
 
 Scanner::Scanner(std::string source){
@@ -107,26 +107,26 @@ std::vector<Token> Scanner::scan(){
         switch (c){
 
             // single-letter symbols (except slash)
-            case '(': addToken(LEFT_PAREN); break;
-            case ')': addToken(RIGHT_PAREN); break;
-            case '{': addToken(LEFT_BRACE); break;
-            case '}': addToken(RIGHT_BRACE); break;
-            case ',': addToken(COMMA); break;
-            case '.': addToken(DOT); break;
-            case '-': addToken(MINUS); break;
-            case '+': addToken(PLUS); break;
-            case ';': addToken(SEMICOLON); break;
-            case '*': addToken(STAR); break;
+            case '(': addToken(Token::LEFT_PAREN); break;
+            case ')': addToken(Token::RIGHT_PAREN); break;
+            case '{': addToken(Token::LEFT_BRACE); break;
+            case '}': addToken(Token::RIGHT_BRACE); break;
+            case ',': addToken(Token::COMMA); break;
+            case '.': addToken(Token::DOT); break;
+            case '-': addToken(Token::MINUS); break;
+            case '+': addToken(Token::PLUS); break;
+            case ';': addToken(Token::SEMICOLON); break;
+            case '*': addToken(Token::STAR); break;
 
             // single or double-letter symbols
             case '=':
-                addToken(match('=') ? EQUAL_EQUAL : EQUAL); break;
+                addToken(match('=') ? Token::EQUAL_EQUAL : Token::EQUAL); break;
             case '!':
-                addToken(match('=') ? BANG_EQUAL : BANG); break;
+                addToken(match('=') ? Token::BANG_EQUAL : Token::BANG); break;
             case '>':
-                addToken(match('=') ? GREATER_EQUAL : GREATER); break;
+                addToken(match('=') ? Token::GREATER_EQUAL : Token::GREATER); break;
             case '<':
-                addToken(match('=') ? LESS_EQUAL : LESS); break;
+                addToken(match('=') ? Token::LESS_EQUAL : Token::LESS); break;
 
             // slash or comment
             // if is comment, escape all characters up to \n
@@ -136,7 +136,7 @@ std::vector<Token> Scanner::scan(){
                     // (do not consume \n character)
                     while (!isAtEnd() && peek() != '\n') advance();
                 } else {
-                    addToken(SLASH);
+                    addToken(Token::SLASH);
                 }
                 break;
 
@@ -171,7 +171,7 @@ std::vector<Token> Scanner::scan(){
     }
     
     // add end-of-file token
-    addToken(_EOF);
+    addToken(Token::_EOF);
     return this->tokens;
 }
 
@@ -190,7 +190,7 @@ void Scanner::scanStringLiteral(){
     // consume the closing "
     advance();
     
-    addToken(STRING);
+    addToken(Token::STRING);
 }
 
 void Scanner::scanNumber(){
@@ -207,12 +207,12 @@ void Scanner::scanNumber(){
         while (isDigit(peek())) advance();
     }
 
-    addToken(NUMBER);
+    addToken(Token::NUMBER);
 }
 
 void Scanner::scanIdentifier(){
     // reads identifiers and reserved keywords
     // read until all alphanumeric characters consumed
     while (isAlphaNumeric(peek())) advance();
-    addToken(IDENTIFIER);
+    addToken(Token::IDENTIFIER);
 }
