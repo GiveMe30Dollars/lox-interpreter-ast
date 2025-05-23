@@ -1,6 +1,8 @@
 
 #include "expr.hpp"
 
+#pragma once
+
 class ASTPrinter : Visitor{
     // Prints a constructed expression as a string
     // via the Visitor design pattern.
