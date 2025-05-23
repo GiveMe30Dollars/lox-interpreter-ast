@@ -38,7 +38,7 @@ class Object {
         bool literalBool;
         double literalNumber;
         std::string literalString;
-        std::string toString(bool useLox);
+        std::string toString(bool useLox = false);
         
         // Generator functions
         static Object nil(void);
@@ -57,7 +57,7 @@ class Token {
     // Class to represent a token
     // Pass by value for all subsequent use
     public:
-        static enum TokenType {
+        enum TokenType {
             // Single-character tokens.
             LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
             COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,

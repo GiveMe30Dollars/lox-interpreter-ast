@@ -42,6 +42,7 @@ operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
 // To resolve circular compilation dependencies between Expr, 
 // its child classes, and Visitor
 // Not including this leads to compile-time errors
+class Expr;
 class Literal;
 class Grouping;
 class Unary;
