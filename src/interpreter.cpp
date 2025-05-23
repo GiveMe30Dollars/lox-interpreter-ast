@@ -18,13 +18,14 @@ std::any Interpreter::visitGrouping(std::shared_ptr<Grouping> curr){
 
 std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
     Object obj = interpret(curr->expr);
-    if (curr->op.type = Token::BANG){
+    Token op = curr->op;
+    if (op.type == Token::BANG){
         return Object::boolean(!isTruthy(obj));
     }
-    else if (curr->op.type = Token::MINUS){
-        return Object::number(-isNumber(obj, curr->op));
+    else if (op.type == Token::MINUS){
+        return Object::number(-isNumber(obj, op));
     }
-    else throw error(curr->op, "UNIMPLEMENTED unary operator!");
+    else throw error(op, "UNIMPLEMENTED unary operator!");
 }
 
 std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
