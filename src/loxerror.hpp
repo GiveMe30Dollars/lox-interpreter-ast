@@ -1,5 +1,6 @@
 #include "token.hpp"
 
+#pragma once
 
 class LoxError{
     // Error return classes
