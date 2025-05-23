@@ -100,7 +100,7 @@ std::string Object::toString(bool useLox){
             // otherwise cast to string directly and strip trailing 0s
             // this ensures all numbers are displayed in at least 1 d.p.
             if (floor(literalNumber) == literalNumber){
-                return (std::to_string((int)floor(literalNumber)) + ".0");
+                return (std::to_string((int)literalNumber) + ".0");
             }
             else {
                 std::string str = std::to_string(literalNumber);
