@@ -46,10 +46,10 @@ class Object {
         static Object number(double val);
         static Object string(std::string str);
 
-        
-        bool isTruthy();
+        /*
         template<Object::ObjectType T>
         Object cast();
+        */
 
 };
 
