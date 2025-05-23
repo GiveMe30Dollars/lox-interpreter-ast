@@ -22,7 +22,7 @@ class LoxError{
         void print(void){
             std::cerr << "[line " << token.line << "] Error at ";
             if (token.type == Token::_EOF) std::cerr << "end: ";
-            else std::cerr << "'" << Token::tokenTypeName.at(token.type) << "': ";
+            else std::cerr << "'" << token.lexeme << "': ";
             std::cerr << message << "\n";
         }
     };
@@ -32,7 +32,7 @@ class LoxError{
         std::string message;
         RuntimeError(Token token, std::string message) : token(token), message(message) {}
         void print(void){
-            std::cerr << "[line " << token.line << "] Error at '" << Token::tokenTypeName.at(token.type) << "': " << message << "\n";
+            std::cerr << "[line " << token.line << "] Error at '" << token.lexeme << "': " << message << "\n";
         }
     };
 };
