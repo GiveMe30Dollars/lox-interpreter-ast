@@ -1,5 +1,8 @@
 #include "lox.hpp"
 
+bool Lox::hasError = false;
+Interpreter Lox::interpreter;
+
 void Lox::run(std::string source){
     Lox::hasError = false;
 
