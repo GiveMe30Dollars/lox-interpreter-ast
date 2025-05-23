@@ -1,6 +1,7 @@
 
 // requires tokens
 #include "token.hpp"
+#include "error.hpp"
 
 #pragma once
 

@@ -36,15 +36,25 @@ bool Parser::match(Args... args){
 }
 
 Token Parser::consume(TokenType t, std::string err){
+    // consumes current token of TokenType t
+    // if current token is not t, throw an error
     if (check(t)) return advance();
-    std::cerr << err << "\n";
-    // temp: not error handling
-    return Token(NIL, "ERROR", Object::objNil(), 0);
+    throw(error(peek(), err));
+}
+
+Parser::ParseError Parser::error(Token token, std::string err){
+    hasError = true;
+    LoxError::print(token, err);
 }
 
 
 std::shared_ptr<Expr> Parser::parse(){
-    return expression();
+    try{
+        return expression();
+    }
+    catch(ParseError err){
+        return nullptr;
+    }
 }
 
 
@@ -127,5 +137,10 @@ std::shared_ptr<Expr> Parser::primary(){
         consume(RIGHT_PAREN, "Expect ) after expression.");
         return std::make_shared<Grouping>(expr);
     }
-    return nullptr;
+
+    // at end of file. return
+    if (isAtEnd()) return nullptr;
+
+    // invalid token.
+    throw(error(peek(), "Expect expression."));
 }

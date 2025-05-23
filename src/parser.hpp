@@ -4,6 +4,7 @@
 #include <cstdarg>
 
 #include "expr.hpp"
+#include "error.hpp"
 
 #pragma once
 
@@ -39,6 +40,9 @@ class Parser{
         template<typename... args>
         bool match(args... t);
         Token consume(TokenType t, std::string err);
+
+        static class ParseError{};
+        ParseError error(Token token, std::string err);
 
         // Helper parsing functions
         std::shared_ptr<Expr> expression();
