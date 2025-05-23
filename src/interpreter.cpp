@@ -22,33 +22,50 @@ std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
         return Object::boolean(!isTruthy(obj));
     }
     else if (curr->op.type = Token::MINUS){
-        if (obj.type == Object::NUMBER){
-            obj.literalNumber *= -1;
-            return obj;
-        }
-        else {
-            throw error(curr->op, "Operand must be number.");
-        }
+        return Object::number(-isNumber(obj, curr->op));
     }
     else throw error(curr->op, "UNIMPLEMENTED unary operator!");
 }
 
 std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
-    Object objLeft = interpret(curr->left);
-    Object objRight = interpret(curr->right);
-    switch (curr->op.type){
+    Object left = interpret(curr->left);
+    Object right = interpret(curr->right);
+    Token op = curr->op;
+
+    switch (op.type){
+        // boolean operators based on truthiness
         case Token::EQUAL_EQUAL:
+            return Object::boolean(isEqual(left, right));
         case Token::BANG_EQUAL:
+            return Object::boolean(!isEqual(left, right));
+
+        // boolean operators on two numbers
         case Token::GREATER:
+            return Object::boolean(isNumber(left, op) > isNumber(right, op));
         case Token::GREATER_EQUAL:
+            return Object::boolean(isNumber(left, op) >= isNumber(right, op));
         case Token::LESS:
+            return Object::boolean(isNumber(left, op) < isNumber(right, op));
         case Token::LESS_EQUAL:
-        case Token::PLUS:
+            return Object::boolean(isNumber(left, op) <= isNumber(right, op));
+
+        // numeric operators on two numbers
+        // string concatenation for '+'
+        case Token::PLUS:{
+            if (left.type == right.type == Object::NUMBER)
+                return Object::number(left.literalNumber + right.literalNumber);
+            else if (left.type == right.type == Object::STRING)
+                return Object::string(left.literalString + right.literalString);
+            else throw error(op, "Expect both number or both string operands.");
+        }
         case Token::MINUS:
+            return Object::number(isNumber(left, op) - isNumber(right, op));
         case Token::STAR:
+            return Object::number(isNumber(left, op) * isNumber(right, op));
         case Token::SLASH:
+            return Object::number(isNumber(left, op) / isNumber(right, op));
         default:
-            throw error(curr->op, "UNIMPLEMENTED unary operator!");
+            throw error(curr->op, "UNIMPLEMENTED binary operator!");
     }
 }
 
@@ -67,8 +84,18 @@ bool Interpreter::isEqual(Object a, Object b){
         case Object::STRING:
             return a.literalString == b.literalString;
         default:
-            throw("UNIMPLEMENTED object type!");
+            throw "UNIMPLEMENTED object type for isEqual!";
     }
 }
+double Interpreter::isNumber(Object obj, Token token){
+    // helper function:
+    // returns the value if object is a number
+    // throws an exception otherwise
+    if (obj.type == Object::NUMBER) return obj.literalNumber;
+    else throw error(token, "Expect number operand.");
+    return 0;
+}
 
-
+LoxError::RuntimeError Interpreter::error(Token token, std::string message){
+    return LoxError::RuntimeError(token, message);
+}

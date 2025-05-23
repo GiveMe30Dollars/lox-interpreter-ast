@@ -15,5 +15,6 @@ class Interpreter : Visitor{
     private:
     bool isTruthy(Object obj);
     bool isEqual(Object a, Object b);
+    double isNumber(Object obj, Token op);
     LoxError::RuntimeError error(Token op, std::string message);
 };
