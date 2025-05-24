@@ -3,7 +3,7 @@
 
 #pragma once
 
-class ASTPrinter : Visitor{
+class ASTPrinter : ExprVisitor{
     // Prints a constructed expression as a string
     // via the Visitor design pattern.
     public:

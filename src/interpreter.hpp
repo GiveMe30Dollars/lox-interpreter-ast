@@ -1,7 +1,7 @@
 #include "expr.hpp"
 #include "loxerror.hpp"
 
-class Interpreter : Visitor{
+class Interpreter : ExprVisitor{
     // Interprets an AST and retuns an object
     // via the Visitor design pattern.
     public:
