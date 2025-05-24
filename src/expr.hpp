@@ -47,16 +47,22 @@ class Literal;
 class Grouping;
 class Unary;
 class Binary;
+class Variable;
+class Assign;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr. supports any return type
     public:
         virtual ~ExprVisitor(void) = default;
         virtual std::any visit(std::shared_ptr<Expr> expr) = 0;
+
         virtual std::any visitLiteral(std::shared_ptr<Literal> expr) = 0;
         virtual std::any visitGrouping(std::shared_ptr<Grouping> expr) = 0;
         virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
         virtual std::any visitBinary(std::shared_ptr<Binary> expr) = 0;
+
+        virtual std::any visitVariable(std::shared_ptr<Variable> expr) = 0;
+        virtual std::any visitAssign(std::shared_ptr<Assign> expr) = 0;
 };
 
 class Expr{
@@ -76,7 +82,6 @@ class Literal : public Expr, public std::enable_shared_from_this<Literal>{
         Literal(Object obj) : obj(obj) {}
         std::any accept(ExprVisitor& v) override { return v.visitLiteral(shared_from_this()); }
 };
-
 class Grouping : public Expr, public std::enable_shared_from_this<Grouping>{
     // An expression of a grouping.
     public:
@@ -84,7 +89,6 @@ class Grouping : public Expr, public std::enable_shared_from_this<Grouping>{
         Grouping(std::shared_ptr<Expr> expr) : expr(expr) {}
         std::any accept(ExprVisitor& v) override { return v.visitGrouping(shared_from_this()); }
 };
-
 class Unary : public Expr, public std::enable_shared_from_this<Unary>{
     // An expression of a unary operation.
     public:
@@ -93,7 +97,6 @@ class Unary : public Expr, public std::enable_shared_from_this<Unary>{
         Unary(Token op, std::shared_ptr<Expr> expr) : op(op), expr(expr) {}
         std::any accept(ExprVisitor& v) override { return v.visitUnary(shared_from_this()); }
 };
-
 class Binary : public Expr, public std::enable_shared_from_this<Binary>{
     // An expression of a binary operation.
     public:
@@ -104,3 +107,19 @@ class Binary : public Expr, public std::enable_shared_from_this<Binary>{
         std::any accept(ExprVisitor& v) override { return v.visitBinary(shared_from_this()); }
 };
 
+
+class Variable : public Expr, public std::enable_shared_from_this<Variable>{
+    // An expression of a variable name.
+    public:
+        Token name;
+        Variable(Token name) :  name(name) {}
+        std::any accept(ExprVisitor& v) override { return v.visitVariable(shared_from_this()); }
+};
+class Assign : public Expr, public std::enable_shared_from_this<Assign>{
+    // An expression of an assignment.
+    public:
+        Token name;
+        std::shared_ptr<Expr> expr;
+        Assign(Token name, std::shared_ptr<Expr> expr) : name(name), expr(expr) {}
+        std::any accept(ExprVisitor& v) override { return v.visitAssign(shared_from_this()); }
+};

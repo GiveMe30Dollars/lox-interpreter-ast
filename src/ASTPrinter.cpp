@@ -11,16 +11,20 @@ std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
 std::any ASTPrinter::visitLiteral(std::shared_ptr<Literal> curr){
     return curr->obj.toString(true);
 }
-
 std::any ASTPrinter::visitGrouping(std::shared_ptr<Grouping> curr){
     return "(group " + print(curr->expr) + ")";
 }
-
 std::any ASTPrinter::visitUnary(std::shared_ptr<Unary> curr){
     return "(" + curr->op.lexeme + " " + print(curr->expr) + ")";
 }
-
 std::any ASTPrinter::visitBinary(std::shared_ptr<Binary> curr){
     return "(" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
+}
+
+std::any ASTPrinter::visitVariable(std::shared_ptr<Variable> curr){
+    return "var:" + curr->name.lexeme;
+}
+std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
+    return "(assign var:" + curr->name.lexeme + " " + print(curr->expr) + ")";
 }
 
