@@ -1,3 +1,8 @@
+#include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
 #include "token.hpp"
 
 #pragma once

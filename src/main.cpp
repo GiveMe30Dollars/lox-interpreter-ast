@@ -8,9 +8,6 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include "scanner.hpp"
-#include "parser.hpp"
-#include "ASTPrinter.hpp"
 #include "lox.hpp"
 
 std::string read_file_contents(const std::string& filename);
@@ -49,7 +46,7 @@ int main(int argc, char *argv[]) {
         if (scanner.hasError) return 65;
         for (Token t : tokens) std::cerr << t.toString() << "\n";
 
-        Parser parser(tokens);
+        ExprParser parser(tokens);
         std::shared_ptr<Expr> expr = parser.parse();
         if (parser.hasError) return 65;
 

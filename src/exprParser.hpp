@@ -21,14 +21,14 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" ;
 */
 
-class Parser{
+class ExprParser{
     // Converts a vector of Tokens to an AST
     public:
         bool hasError = false;
-        Parser(std::vector<Token> tokens) : tokens(tokens) {}
+        ExprParser(std::vector<Token> tokens) : tokens(tokens) {}
         std::shared_ptr<Expr> parse();
 
-    private:
+    protected:
         std::vector<Token> tokens;
         int curr = 0;
 

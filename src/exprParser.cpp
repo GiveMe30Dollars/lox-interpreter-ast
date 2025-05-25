@@ -1,29 +1,29 @@
-#include "parser.hpp"
+#include "exprParser.hpp"
 
-bool Parser::isAtEnd(){
+bool ExprParser::isAtEnd(){
     return tokens.at(curr).type == Token::_EOF;
 }
 
-Token Parser::advance(){
+Token ExprParser::advance(){
     if (!isAtEnd()) curr++;
     return previous();
 }
 
-Token Parser::peek(){
+Token ExprParser::peek(){
     return tokens.at(curr);
 }
 
-Token Parser::previous(){
+Token ExprParser::previous(){
     return tokens.at(curr - 1);
 }
 
-bool Parser::check(Token::TokenType t){
+bool ExprParser::check(Token::TokenType t){
     if (isAtEnd()) return false;
     return peek().type == t;
 }
 
 template<typename... Args>
-bool Parser::match(Args... args){
+bool ExprParser::match(Args... args){
     // check if any of the TokenTypes given matches the current token
     // if yes, advance and return true
     for (const Token::TokenType t : {args...}){
@@ -35,19 +35,19 @@ bool Parser::match(Args... args){
     return false;
 }
 
-Token Parser::consume(Token::TokenType t, std::string err){
+Token ExprParser::consume(Token::TokenType t, std::string err){
     // consumes current token of TokenType t
     // if current token is not t, throw an error
     if (check(t)) return advance();
     throw(error(peek(), err));
 }
 
-LoxError::ParseError Parser::error(Token token, std::string err){
+LoxError::ParseError ExprParser::error(Token token, std::string err){
     hasError = true;
     return LoxError::ParseError(token, err);
 }
 
-void Parser::synchronize(){
+void ExprParser::synchronize(){
     advance();
     while (!isAtEnd()){
         if (previous().type == Token::SEMICOLON) return;
@@ -67,7 +67,9 @@ void Parser::synchronize(){
 }
 
 
-std::shared_ptr<Expr> Parser::parse(){
+std::shared_ptr<Expr> ExprParser::parse(){
+    hasError = false;
+    curr = 0;
     try{
         return expression();
     }
@@ -93,11 +95,11 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" ;
 */
 
-std::shared_ptr<Expr> Parser::expression(){
+std::shared_ptr<Expr> ExprParser::expression(){
     return equality();
 }
 
-std::shared_ptr<Expr> Parser::equality(){
+std::shared_ptr<Expr> ExprParser::equality(){
     std::shared_ptr<Expr> expr = comparison();
     while (match(Token::BANG_EQUAL, Token::EQUAL_EQUAL)){
         Token op = previous();
@@ -107,7 +109,7 @@ std::shared_ptr<Expr> Parser::equality(){
     return expr;
 }
 
-std::shared_ptr<Expr> Parser::comparison(){
+std::shared_ptr<Expr> ExprParser::comparison(){
     std::shared_ptr<Expr> expr = term();
     while (match(Token::GREATER, Token::GREATER_EQUAL, Token::LESS, Token::LESS_EQUAL)){
         Token op = previous();
@@ -117,7 +119,7 @@ std::shared_ptr<Expr> Parser::comparison(){
     return expr;
 }
 
-std::shared_ptr<Expr> Parser::term(){
+std::shared_ptr<Expr> ExprParser::term(){
     std::shared_ptr<Expr> expr = factor();
     while (match(Token::MINUS, Token::PLUS)){
         Token op = previous();
@@ -127,7 +129,7 @@ std::shared_ptr<Expr> Parser::term(){
     return expr;
 }
 
-std::shared_ptr<Expr> Parser::factor(){
+std::shared_ptr<Expr> ExprParser::factor(){
     std::shared_ptr<Expr> expr = unary();
     while (match(Token::STAR, Token::SLASH)){
         Token op = previous();
@@ -137,7 +139,7 @@ std::shared_ptr<Expr> Parser::factor(){
     return expr;
 }
 
-std::shared_ptr<Expr> Parser::unary(){
+std::shared_ptr<Expr> ExprParser::unary(){
     if (match(Token::BANG, Token::MINUS)){
         Token op = previous();
         std::shared_ptr<Expr> expr = unary();
@@ -146,7 +148,7 @@ std::shared_ptr<Expr> Parser::unary(){
     return primary();
 }
 
-std::shared_ptr<Expr> Parser::primary(){
+std::shared_ptr<Expr> ExprParser::primary(){
     if (match(Token::TRUE)) return std::make_shared<Literal>(Object::boolean(1));
     if (match(Token::FALSE)) return std::make_shared<Literal>(Object::boolean(0));
     if (match(Token::NIL)) return std::make_shared<Literal>(Object::nil());

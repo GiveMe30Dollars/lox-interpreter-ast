@@ -11,14 +11,13 @@ void Lox::run(std::string source){
     Scanner scanner(source);
     std::vector<Token> tokens = scanner.scan();
 
-    Parser parser(tokens);
+    ExprParser parser(tokens);
     std::shared_ptr<Expr> expr = parser.parse();
     if (scanner.hasError || parser.hasError){
         hasCompileError = true;
         return;
     }
     ASTPrinter printer;
-    std::cerr << printer.print(expr) << "\n";
 
     try{
         Object obj = interpreter.interpret(expr);
