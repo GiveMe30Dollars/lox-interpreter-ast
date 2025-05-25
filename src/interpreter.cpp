@@ -3,17 +3,22 @@
 Object Interpreter::interpret(std::shared_ptr<Expr> expr){
     return std::any_cast<Object>(visit(expr));
 }
-
 std::any Interpreter::visit(std::shared_ptr<Expr> curr){
     return curr->accept(*this);
 }
-
 std::any Interpreter::visitLiteral(std::shared_ptr<Literal> curr){
     return curr->obj;
 }
-
 std::any Interpreter::visitGrouping(std::shared_ptr<Grouping> curr){
     return interpret(curr->expr);
+}
+
+std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
+    return curr->name;
+}
+
+std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
+    return Object::nil();
 }
 
 std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
