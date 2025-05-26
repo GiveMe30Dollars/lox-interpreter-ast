@@ -13,6 +13,7 @@ statement      → exprStmt
 
 class StmtParser : public ExprParser{
     public:
+        StmtParser(std::vector<Token> tokens) : ExprParser(tokens) {}
         std::vector<std::shared_ptr<Stmt>> parse();
     protected:
         std::shared_ptr<Stmt> declaration();

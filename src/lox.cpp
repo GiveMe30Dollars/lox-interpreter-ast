@@ -11,26 +11,17 @@ void Lox::run(std::string source){
     Scanner scanner(source);
     std::vector<Token> tokens = scanner.scan();
 
-    ExprParser parser(tokens);
-    std::shared_ptr<Expr> expr = parser.parse();
+    StmtParser parser(tokens);
+    std::vector<std::shared_ptr<Stmt>> expr = parser.parse();
     if (scanner.hasError || parser.hasError){
         hasCompileError = true;
         return;
     }
-    
-    ASTPrinter printer;
-    try{
-        Object obj = interpreter.interpret(expr);
 
-        // workaround for CodeCrafters testcase: remove when independent
-        if (obj.type == Object::NUMBER){
-            double val = obj.literalNumber;
-            if (floor(val) == val){
-                std::cout << std::to_string((int)val) << "\n";
-                return;
-            }
-        }
-        std::cout << obj.toString(true) << "\n";
+    //ASTPrinter printer;
+
+    try{
+        interpreter.interpret(expr);
     }
     catch (LoxError::RuntimeError err){
         err.print();
