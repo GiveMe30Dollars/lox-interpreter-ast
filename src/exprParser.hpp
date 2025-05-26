@@ -10,7 +10,9 @@
 
 //   ---BASIC PARSING RULES---
 /*
-expression     → equality ;
+expression     → assignment ;
+assignment     → IDENTIFIER "=" assignment
+               | equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
@@ -48,6 +50,7 @@ class ExprParser{
 
         // Expression parsing
         std::shared_ptr<Expr> expression();
+        std::shared_ptr<Expr> assignment();
         std::shared_ptr<Expr> equality();
         std::shared_ptr<Expr> comparison();
         std::shared_ptr<Expr> term();

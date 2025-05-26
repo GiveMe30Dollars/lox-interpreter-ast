@@ -82,7 +82,9 @@ std::shared_ptr<Expr> ExprParser::parse(){
 
 //   ---BASIC PARSING RULES---
 /*
-expression     → equality ;
+expression     → assignment ;
+assignment     → IDENTIFIER "=" assignment
+               | equality ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
@@ -94,6 +96,11 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
 */
 
 std::shared_ptr<Expr> ExprParser::expression(){
+    return equality();
+}
+
+std::shared_ptr<Expr> ExprParser::assignment(){
+    throw "UNIMPLEMENTED assignment in ExprParser!";
     return equality();
 }
 
@@ -147,18 +154,25 @@ std::shared_ptr<Expr> ExprParser::unary(){
 }
 
 std::shared_ptr<Expr> ExprParser::primary(){
+    // true, false, nil literals
     if (match(Token::TRUE)) return std::make_shared<Literal>(Object::boolean(1));
     if (match(Token::FALSE)) return std::make_shared<Literal>(Object::boolean(0));
     if (match(Token::NIL)) return std::make_shared<Literal>(Object::nil());
 
+    // number and string literals
     if (match(Token::NUMBER, Token::STRING)) 
         return std::make_shared<Literal>(previous().literal);
     
+    // grouping (parenthesis pair)
     if (match(Token::LEFT_PAREN)){
         std::shared_ptr<Expr> expr = expression();
         consume(Token::RIGHT_PAREN, "Expect ) after expression.");
         return std::make_shared<Grouping>(expr);
     }
+
+    // identifier
+    if (match(Token::IDENTIFIER))
+        return std::make_shared<Variable>(previous());
 
     // at end of file. return
     if (isAtEnd()) return nullptr;

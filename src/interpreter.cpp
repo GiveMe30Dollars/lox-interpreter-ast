@@ -27,22 +27,6 @@ std::any Interpreter::visitGrouping(std::shared_ptr<Grouping> curr){
     return evaluate(curr->expr);
 }
 
-std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
-    // returns stored value. if it doesn't exist, throw RuntimeError
-    return env->get(curr->name);
-}
-
-std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
-    // Implicit if: subsequent lines will only execute afterwards
-    // if variable does not exist in lexical scope, throw RuntimeError
-    env->get(curr->name);
-
-    Object obj = evaluate(curr->expr);
-    env->define(curr->name, obj);
-
-    return obj;
-}
-
 std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
     Object obj = evaluate(curr->expr);
     Token op = curr->op;
@@ -113,6 +97,22 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
         default:
             throw error(curr->op, "UNIMPLEMENTED binary operator!");
     }
+}
+
+std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
+    // returns stored value. if it doesn't exist, throw RuntimeError
+    return env->get(curr->name);
+}
+
+std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
+    // Implicit if: subsequent lines will only execute afterwards
+    // if variable does not exist in lexical scope, throw RuntimeError
+    env->get(curr->name);
+
+    Object obj = evaluate(curr->expr);
+    env->define(curr->name, obj);
+
+    return obj;
 }
 
 /// ---STMT CHILD CLASSES---
