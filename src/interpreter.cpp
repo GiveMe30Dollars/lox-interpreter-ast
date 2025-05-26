@@ -1,5 +1,9 @@
 #include "interpreter.hpp"
 
+Interpreter::Interpreter(){
+    env = std::make_shared<Environment>();
+}
+
 Object Interpreter::interpret(std::shared_ptr<Expr> expr){
     return std::any_cast<Object>(visit(expr));
 }
@@ -28,6 +32,7 @@ std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
 }
 
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
+    throw "UNIMPLEMENTED visitAssign in Interpreter!";
     return Object::nil();
 }
 
@@ -105,6 +110,7 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 
 /// ---STMT CHILD CLASSES---
 std::any Interpreter::visitExpression(std::shared_ptr<Expression> curr){
+    interpret(curr->expr);
     return nullptr;
 }
 std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
@@ -123,9 +129,13 @@ std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
     return nullptr;
 }
 std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
+    Token name = curr->name;
+    Object initializer = curr->initializer ? interpret(curr->initializer) : Object::nil();
+    env->define(name.lexeme, initializer);
     return nullptr;
 }
 std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
+    throw "UNIMPLEMENTED visitBlock in Interpreter!";
     return nullptr;
 }
 

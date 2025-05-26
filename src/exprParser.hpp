@@ -4,7 +4,7 @@
 #include <cstdarg>
 
 #include "expr.hpp"
-#include "loxerror.hpp"
+#include "loxError.hpp"
 
 #pragma once
 

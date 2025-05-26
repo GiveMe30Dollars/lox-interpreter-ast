@@ -1,14 +1,18 @@
+// requires expressions, statements, and ability to throw LoxErrors
 #include "expr.hpp"
 #include "stmt.hpp"
-#include "loxerror.hpp"
+#include "loxError.hpp"
+
+// requires Environments (support for variables and scope)
+#include "environment.hpp"
 
 #pragma once
 
 class Interpreter : public ExprVisitor, public StmtVisitor{
-    // Interprets an AST and retuns an object
-    // via the Visitor design pattern.
+    // Interprets an AST via the Visitor design pattern.
     // Expressions return objects; Statements return void.
     public:
+    Interpreter(void);
     Object interpret(std::shared_ptr<Expr> expr);
     std::any visit(std::shared_ptr<Expr> curr) override;
     void interpret(std::vector<std::shared_ptr<Stmt>> statements);
@@ -30,6 +34,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     std::any visitBlock(std::shared_ptr<Block> curr) override;
 
     private:
+    std::shared_ptr<Environment> env;
     bool isTruthy(Object obj);
     bool isEqual(Object a, Object b);
     LoxError::RuntimeError error(Token op, std::string message);
