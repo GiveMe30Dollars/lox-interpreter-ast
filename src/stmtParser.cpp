@@ -74,6 +74,6 @@ std::shared_ptr<Stmt> StmtParser::printStatement(){
     std::shared_ptr<Print> stmt = std::make_shared<Print>(expr);
     std::cerr << "creation successful\n";
     std::cerr << printer.print(expr) << "\n";
-    std::cerr << printer.print(stmt->expr) << "\n";
+    std::cerr << printer.print(stmt) << "\n";
     return std::make_shared<Print>(expr);
 }
