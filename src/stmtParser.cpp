@@ -25,9 +25,8 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!isAtEnd()){
         std::shared_ptr<Stmt> stmt = declaration();
-        // we do not need to scan for nullptrs, since a nullptr indicates a ParseError
-        // the program won't be executed anyways
-        statements.push_back(stmt);
+        // only push non-empty pointers
+        if (stmt) statements.push_back(stmt);
     }
 
     // expression mode: attempt to parse tokens as expression
@@ -80,7 +79,9 @@ std::shared_ptr<Stmt> StmtParser::printStatement(){
 std::shared_ptr<Stmt> StmtParser::block(){
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!check(Token::RIGHT_BRACE) && !isAtEnd()){
-        statements.push_back(declaration());
+        std::shared_ptr<Stmt> stmt = declaration();
+        // only push non-empty pointers
+        if (stmt) statements.push_back(stmt);
     }
     consume(Token::RIGHT_BRACE, "Expect '}' after block.");
     return std::make_shared<Block>(statements);
