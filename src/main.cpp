@@ -44,15 +44,13 @@ int main(int argc, char *argv[]) {
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
         if (scanner.hasError) return 65;
-        for (Token t : tokens) std::cerr << t.toString() << "\n";
+        //for (Token t : tokens) std::cerr << t.toString() << "\n";
 
         ExprParser parser(tokens);
         std::shared_ptr<Expr> expr = parser.parse();
         if (parser.hasError) return 65;
 
-        ASTPrinter printer;
-        std::string ast = printer.print(expr);
-        std::cout << ast << "\n";
+        std::cout << ASTPrinter::print(expr) << "\n";
 
         return 0;
     }

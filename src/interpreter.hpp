@@ -1,4 +1,4 @@
-// requires expressions, statements, and ability to throw LoxErrors
+// requires expressions, statements and ability to throw LoxErrors
 #include "expr.hpp"
 #include "stmt.hpp"
 #include "loxError.hpp"

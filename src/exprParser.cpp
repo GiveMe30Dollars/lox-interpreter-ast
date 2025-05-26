@@ -96,7 +96,7 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
 */
 
 std::shared_ptr<Expr> ExprParser::expression(){
-    return equality();
+    return assignment();
 }
 
 std::shared_ptr<Expr> ExprParser::assignment(){

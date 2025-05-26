@@ -1,7 +1,8 @@
 #include "ASTPrinter.hpp"
 
 std::string ASTPrinter::print(std::shared_ptr<Expr> expr){
-    return std::any_cast<std::string>(visit(expr));
+    ASTPrinter printer;
+    return std::any_cast<std::string>(printer.visit(expr));
 }
 
 std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
@@ -9,7 +10,8 @@ std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
 }
 
 std::string ASTPrinter::print(std::shared_ptr<Stmt> stmt){
-    return std::any_cast<std::string>(visit(stmt));
+    ASTPrinter printer;
+    return std::any_cast<std::string>(printer.visit(stmt));
 }
 std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
     return stmt->accept(*this);

@@ -9,9 +9,9 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
     // via the Visitor design pattern.
     // Supports expressions and statements
     public:
-        std::string print(std::shared_ptr<Expr> expr);
+        static std::string print(std::shared_ptr<Expr> expr);
         std::any visit(std::shared_ptr<Expr> expr) override;
-        std::string print(std::shared_ptr<Stmt> stmt);
+        static std::string print(std::shared_ptr<Stmt> stmt);
         std::any visit(std::shared_ptr<Stmt> stmt) override;
 
         // EXPRESSIONS
