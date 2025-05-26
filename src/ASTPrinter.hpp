@@ -2,11 +2,6 @@
 #include "expr.hpp"
 #include "stmt.hpp"
 
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 #pragma once
 
 class ASTPrinter : public ExprVisitor, public StmtVisitor{

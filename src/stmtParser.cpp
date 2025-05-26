@@ -1,6 +1,5 @@
 
 #include "stmtParser.hpp"
-#include "ASTPrinter.hpp"
 
 /*
 program        → declaration* EOF ;
@@ -70,7 +69,5 @@ std::shared_ptr<Stmt> StmtParser::exprStatement(){
 std::shared_ptr<Stmt> StmtParser::printStatement(){
     std::shared_ptr<Expr> expr = expression();
     consume(Token::SEMICOLON, "Expect ';' after value.");
-    ASTPrinter printer;
-    std::shared_ptr<Print> stmt = std::make_shared<Print>(expr);
     return std::make_shared<Print>(expr);
 }
