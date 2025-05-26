@@ -9,7 +9,6 @@ std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
 }
 
 std::string ASTPrinter::print(std::shared_ptr<Stmt> stmt){
-    std::cerr << "here?\n";
     return std::any_cast<std::string>(visit(stmt));
 }
 std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
