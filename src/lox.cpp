@@ -10,7 +10,6 @@ void Lox::run(std::string source, bool parseExpr){
 
     Scanner scanner(source);
     std::vector<Token> tokens = scanner.scan();
-    for (Token t : tokens) std::cerr << t.toString() << "\n";
 
     StmtParser parser(tokens);
     std::vector<std::shared_ptr<Stmt>> statements = parser.parse(parseExpr);
@@ -20,14 +19,7 @@ void Lox::run(std::string source, bool parseExpr){
     }
 
     ASTPrinter printer;
-    std::cerr << std::to_string(statements.size()) << "\n";
-    for (std::shared_ptr<Stmt> stmt : statements){
-        if (stmt == nullptr){
-            std::cerr << "HUHHH\n";
-            continue;
-        }
-        else std::cerr << printer.print(stmt) << "\n";
-    }
+    std::cerr << printer.print(statements[0]) << "\n";
 
     try{
         interpreter.interpret(statements);
