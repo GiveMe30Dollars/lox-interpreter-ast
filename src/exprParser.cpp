@@ -100,8 +100,20 @@ std::shared_ptr<Expr> ExprParser::expression(){
 }
 
 std::shared_ptr<Expr> ExprParser::assignment(){
-    throw "UNIMPLEMENTED assignment in ExprParser!";
-    return equality();
+    std::shared_ptr<Expr> expr = equality();
+    // if the next token is EQUAL, parse as assignment
+    // (expr must be a variable l-value)
+    // otherwise, parse (beforehand) and return as equality
+    if (match(Token::EQUAL)){
+        Token op = previous();
+        std::shared_ptr<Expr> value = assignment();
+        if (Variable* e = dynamic_cast<Variable*>(expr.get())){
+            Token name = e->name;
+            return std::make_shared<Assign>(name, value);
+        }
+        else throw error(op, "Invalid assignment target.");
+    }
+    else return expr;
 }
 
 std::shared_ptr<Expr> ExprParser::equality(){

@@ -3,7 +3,7 @@
 // allows variadic functions
 #include <cstdarg>
 
-// requires expressions, ability to throw errors, and ability to get type
+// requires expressions, ability to throw errors
 #include "expr.hpp"
 #include "loxError.hpp"
 
