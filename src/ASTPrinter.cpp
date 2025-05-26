@@ -42,7 +42,6 @@ std::any ASTPrinter::visitExpression(std::shared_ptr<Expression> curr){
     return "(expr " + print(curr->expr) +")";
 }
 std::any ASTPrinter::visitPrint(std::shared_ptr<Print> curr){
-    std::cerr << "in print!\n";
     return "(print " + print(curr->expr) +")";
 }
 std::any ASTPrinter::visitVar(std::shared_ptr<Var> curr){
