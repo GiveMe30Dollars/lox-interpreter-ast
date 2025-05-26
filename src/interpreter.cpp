@@ -107,7 +107,10 @@ std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     // sets the value of the variable in the closest enclosing scope
     // (including current scope)
-    env->set(curr->name, evaluate(curr->expr));
+    // returns the evaluated expression
+    Object obj = evaluate(curr->expr);
+    env->set(curr->name, obj);
+    return obj;
 }
 
 /// ---STMT CHILD CLASSES---
