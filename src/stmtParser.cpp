@@ -16,7 +16,7 @@ printStmt      → "print" expression ";" ;
 exprDecl       → expression ";" ;
 */
 
-std::vector<std::shared_ptr<Stmt>> StmtParser::parse(){
+std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     hasError = false;
     curr = 0;
     std::vector<std::shared_ptr<Stmt>> statements = {};
@@ -26,13 +26,13 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(){
     }
 
     // expression mode: attempt to parse tokens as expression
-    // if and only if hasError is true and no statements are parsed
+    // if and only if hasError, parseExpr and no statements are parsed
     // if successful, encapsulate as print statement
-    if (hasError && statements.empty()){
+    if (parseExpr && hasError && statements.empty()){
         std::shared_ptr<Expr> expr = ExprParser::parse();
         if (!hasError) statements.push_back(std::make_shared<Print>(expr));
     }
-    
+
     return statements;
 }
 

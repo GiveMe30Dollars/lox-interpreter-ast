@@ -4,7 +4,7 @@ bool Lox::hasCompileError = false;
 bool Lox::hasRuntimeError = false;
 Interpreter Lox::interpreter;
 
-void Lox::run(std::string source){
+void Lox::run(std::string source, bool parseExpr){
     Lox::hasCompileError = false;
     Lox::hasRuntimeError = false;
 
@@ -12,7 +12,7 @@ void Lox::run(std::string source){
     std::vector<Token> tokens = scanner.scan();
 
     StmtParser parser(tokens);
-    std::vector<std::shared_ptr<Stmt>> expr = parser.parse();
+    std::vector<std::shared_ptr<Stmt>> expr = parser.parse(parseExpr);
     if (scanner.hasError || parser.hasError){
         hasCompileError = true;
         return;

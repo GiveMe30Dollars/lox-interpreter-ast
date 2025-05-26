@@ -59,8 +59,14 @@ int main(int argc, char *argv[]) {
 
     if (command == "evaluate"){
         std::string file_contents = read_file_contents(argv[2]);
+        Lox::run(file_contents, true);
+        if (Lox::hasCompileError) return 65;
+        if (Lox::hasRuntimeError) return 70;
+        return 0;
+    }
+    if (command == "run"){
+        std::string file_contents = read_file_contents(argv[2]);
         Lox::run(file_contents);
-        
         if (Lox::hasCompileError) return 65;
         if (Lox::hasRuntimeError) return 70;
         return 0;
