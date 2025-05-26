@@ -1,12 +1,6 @@
 // requires expressions and its dependencies (tokens)
 #include "expr.hpp"
 
-#include <cstring>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
-
 #pragma once
 
 
@@ -44,6 +38,7 @@ class Stmt{
 };
 
 // CHILD CLASSES
+// enable_shared_from_this MUST BE inherited as PUBLIC
 
 class Expression : public Stmt, public std::enable_shared_from_this<Expression>{
     // A statment wrapping an expression
@@ -67,7 +62,7 @@ class Var : public Stmt, public std::enable_shared_from_this<Var>{
         Token name;
         std::shared_ptr<Expr> initializer;
         Var(Token name, std::shared_ptr<Expr> initializer) : name(name), initializer(initializer) {}
-        std::any accept(StmtVisitor& v) override { std::cerr << "hey there\n"; return v.visitVar(shared_from_this()); }
+        std::any accept(StmtVisitor& v) override { return v.visitVar(shared_from_this()); }
 };
 class Block : public Stmt, public std::enable_shared_from_this<Block>{
     // A statement of a block in lexical scope

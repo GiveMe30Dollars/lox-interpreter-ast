@@ -115,9 +115,9 @@ std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
     if (obj.type == Object::NUMBER){
         double val = obj.literalNumber;
         if (floor(val) == val) s = std::to_string((int)val);
-        else s = obj.toString();
+        else s = obj.toString(true);
     }
-    else s = obj.toString();
+    else s = obj.toString(true);
 
     std::cout << s << "\n";
     return nullptr;

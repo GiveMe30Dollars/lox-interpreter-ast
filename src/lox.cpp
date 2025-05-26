@@ -19,7 +19,6 @@ void Lox::run(std::string source, bool parseExpr){
     }
 
     ASTPrinter printer;
-    std::cerr << printer.print(statements[0]) << "\n";
 
     try{
         interpreter.interpret(statements);
