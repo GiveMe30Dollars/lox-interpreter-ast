@@ -15,8 +15,7 @@ class Environment{
     Environment() {}
     Environment(std::shared_ptr<Environment> enclosing) : enclosing(enclosing) {}
     void define(Token& name, Object value){
-        std::cerr << "setting var:" << name.lexeme << "to value " << value.toString() << "\n";
-        values.insert({name.lexeme, value});
+        values[name.lexeme] = value;
     }
     Object get(Token& name){
         if (values.count(name.lexeme)) return values.at(name.lexeme);
