@@ -106,7 +106,7 @@ std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
 
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     // sets the value of the variable in the closest enclosing scope
-    // (including current scope)
+    // (including current scope) to the evaluated expression.
     // returns the evaluated expression
     Object obj = evaluate(curr->expr);
     env->set(curr->name, obj);
@@ -142,20 +142,21 @@ std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
     return nullptr;
 }
 std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
-    // define new lexical scope, with the current scope as the enclosing scope
-    const std::shared_ptr<Environment> prev = env;
-    env = std::make_shared<Environment>(prev);
-    
-    // execute all statements in the block
-    execute(curr->statements);
-
-    // restore scope. Smart pointer collection destroys the now-used scope
-    env = prev;
-
+    // create new scope for execution of block
+    executeBlock(curr->statements, std::make_shared<Environment>(env));
     return nullptr;
 }
 
+
 // ---HELPER FUNCTIONS---
+
+void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> newScope){
+    const std::shared_ptr<Environment> prev = env;
+    env = newScope;
+    execute(statements);
+    env = prev; 
+}
+
 bool Interpreter::isTruthy(Object obj){
     return !(obj.type == Object::NIL || (obj.type == Object::BOOL && obj.literalBool == false));
 }
