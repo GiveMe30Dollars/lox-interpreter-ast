@@ -71,6 +71,6 @@ std::shared_ptr<Stmt> StmtParser::printStatement(){
     std::shared_ptr<Expr> expr = expression();
     consume(Token::SEMICOLON, "Expect ';' after value.");
     ASTPrinter printer;
-    std::cerr << printer.print(expr) << "\n";
+    std::cerr << printer.print(std::make_shared<Print>(expr)) << "\n";
     return std::make_shared<Print>(expr);
 }
