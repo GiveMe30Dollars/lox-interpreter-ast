@@ -23,7 +23,7 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!isAtEnd()){
         std::shared_ptr<Stmt> stmt = declaration();
-        if (stmt != nullptr) statements.push_back(std::move(stmt));
+        if (stmt != nullptr) statements.push_back(stmt);
     }
 
     // expression mode: attempt to parse tokens as expression
