@@ -31,7 +31,7 @@ class Stmt{
     // Abstract class implementing statements.
     // Supports the Visitor design pattern via StmtVisitor, which is passed by reference.
     public:
-        virtual ~Stmt(void) = 0;
+        virtual ~Stmt(void) = default;
         virtual std::any accept(StmtVisitor& v) = 0;
 };
 

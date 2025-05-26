@@ -17,6 +17,8 @@ exprDecl       → expression ";" ;
 */
 
 std::vector<std::shared_ptr<Stmt>> StmtParser::parse(){
+    hasError = false;
+    curr = 0;
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!isAtEnd()){
         statements.push_back(declaration());
