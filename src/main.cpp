@@ -65,6 +65,9 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (command == "run"){
+        std::string test = "1 + (5 + 3) * 2 - 1";
+        Lox::run(test, true);
+
         std::string file_contents = read_file_contents(argv[2]);
         Lox::run(file_contents);
         if (Lox::hasCompileError) return 65;
