@@ -1,12 +1,18 @@
 #include "expr.hpp"
+#include "stmt.hpp"
 #include "loxerror.hpp"
 
-class Interpreter : ExprVisitor{
+class Interpreter : public ExprVisitor, public StmtVisitor{
     // Interprets an AST and retuns an object
     // via the Visitor design pattern.
+    // Expressions return objects; Statements return void.
     public:
-    Object interpret(std::shared_ptr<Expr> curr);
+    Object interpret(std::shared_ptr<Expr> expr);
     std::any visit(std::shared_ptr<Expr> curr) override;
+    void interpret(std::vector<std::shared_ptr<Stmt>> statements);
+    std::any visit(std::shared_ptr<Stmt> curr) override;
+
+    // EXPR CHILD CLASSES
     std::any visitLiteral(std::shared_ptr<Literal> curr) override;
     std::any visitGrouping(std::shared_ptr<Grouping> curr) override;
     std::any visitUnary(std::shared_ptr<Unary> curr) override;
@@ -14,6 +20,12 @@ class Interpreter : ExprVisitor{
     
     std::any visitVariable(std::shared_ptr<Variable> curr) override;
     std::any visitAssign(std::shared_ptr<Assign> curr) override;
+
+    // STMT CHILD CLASSES
+    std::any visitExpression(std::shared_ptr<Expression> curr) override;
+    std::any visitPrint(std::shared_ptr<Print> curr) override;
+    std::any visitVar(std::shared_ptr<Var> curr) override;
+    std::any visitBlock(std::shared_ptr<Block> curr) override;
 
     private:
     bool isTruthy(Object obj);

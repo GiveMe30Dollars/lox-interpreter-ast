@@ -6,6 +6,16 @@ Object Interpreter::interpret(std::shared_ptr<Expr> expr){
 std::any Interpreter::visit(std::shared_ptr<Expr> curr){
     return curr->accept(*this);
 }
+
+void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> statements){
+    for (std::shared_ptr<Stmt> stmt : statements) visit(stmt);
+    return;
+}
+std::any Interpreter::visit(std::shared_ptr<Expr> curr){
+    return curr->accept(*this);
+}
+
+// ---EXPR CHILD CLASSES---
 std::any Interpreter::visitLiteral(std::shared_ptr<Literal> curr){
     return curr->obj;
 }
@@ -93,6 +103,33 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
     }
 }
 
+/// ---STMT CHILD CLASSES---
+std::any Interpreter::visitExpression(std::shared_ptr<Expression> curr){
+    return nullptr;
+}
+std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
+    Object obj = interpret(curr->expr);
+
+    // The .0 workaround. You know the deal.
+    std::string s;
+    if (obj.type == Object::NUMBER){
+        double val = obj.literalNumber;
+        if (floor(val) == val) s = std::to_string((int)val);
+        else s = obj.toString();
+    }
+    else s = obj.toString();
+
+    std::cout << s << "\n";
+    return nullptr;
+}
+std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
+    return nullptr;
+}
+std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
+    return nullptr;
+}
+
+// ---HELPER FUNCTIONS---
 bool Interpreter::isTruthy(Object obj){
     return !(obj.type == Object::NIL || (obj.type == Object::BOOL && obj.literalBool == false));
 }

@@ -21,8 +21,18 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(){
     curr = 0;
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!isAtEnd()){
-        statements.push_back(declaration());
+        std::shared_ptr<Stmt> stmt = declaration();
+        if (stmt != nullptr) statements.push_back(stmt);
     }
+
+    // expression mode: attempt to parse tokens as expression
+    // if and only if hasError is true and no statements are parsed
+    // if successful, encapsulate as print statement
+    if (hasError && statements.empty()){
+        std::shared_ptr<Expr> expr = ExprParser::parse();
+        if (!hasError) statements.push_back(std::make_shared<Print>(expr));
+    }
+    
     return statements;
 }
 
