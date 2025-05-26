@@ -51,7 +51,7 @@ class Print : public Stmt, std::enable_shared_from_this<Print> {
     // A print statment
     public:
         std::shared_ptr<Expr> expr;
-        Print(std::shared_ptr<Expr> expr) : expr(expr) {}
+        Print(std::shared_ptr<Expr> expr) : expr{std::move(expr)} {}
         std::any accept(StmtVisitor& v) override { return v.visitPrint(shared_from_this()); }
 };
 class Var : public Stmt, std::enable_shared_from_this<Var> {
