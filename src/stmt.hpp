@@ -45,7 +45,7 @@ class Stmt{
 
 // CHILD CLASSES
 
-class Expression : public Stmt, std::enable_shared_from_this<Expression> {
+class Expression : public Stmt, public std::enable_shared_from_this<Expression>{
     // A statment wrapping an expression
     // Not to be confused with the abstract class Expr
     public:
@@ -53,14 +53,14 @@ class Expression : public Stmt, std::enable_shared_from_this<Expression> {
         Expression(std::shared_ptr<Expr> expr) : expr(expr) {}
         std::any accept(StmtVisitor& v) override { return v.visitExpression(shared_from_this()); }
 };
-class Print : public Stmt, std::enable_shared_from_this<Print> {
+class Print : public Stmt, public std::enable_shared_from_this<Print>{
     // A print statment
     public:
         std::shared_ptr<Expr> expr;
         Print(std::shared_ptr<Expr> expr) : expr(expr) {}
         std::any accept(StmtVisitor& v) override { return v.visitPrint(shared_from_this()); }
 };
-class Var : public Stmt, std::enable_shared_from_this<Var> {
+class Var : public Stmt, public std::enable_shared_from_this<Var>{
     // A statement of a variable DECLARATION
     // Not to be confused with Variable : Expr
     public:
@@ -69,7 +69,7 @@ class Var : public Stmt, std::enable_shared_from_this<Var> {
         Var(Token name, std::shared_ptr<Expr> initializer) : name(name), initializer(initializer) {}
         std::any accept(StmtVisitor& v) override { std::cerr << "hey there\n"; return v.visitVar(shared_from_this()); }
 };
-class Block : public Stmt, std::enable_shared_from_this<Block> {
+class Block : public Stmt, public std::enable_shared_from_this<Block>{
     // A statement of a block in lexical scope
     public:
         std::vector<std::shared_ptr<Stmt>> statements;
