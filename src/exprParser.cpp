@@ -75,8 +75,6 @@ std::shared_ptr<Expr> ExprParser::parse(){
     }
     catch(LoxError::ParseError err){
         err.print();
-        synchronize();
-        parse();
         return nullptr;
     }
 }

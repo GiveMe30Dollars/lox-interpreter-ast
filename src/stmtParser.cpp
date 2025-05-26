@@ -1,0 +1,61 @@
+
+#include "stmtParser.hpp"
+
+/*
+program        → declaration* EOF ;
+
+declaration    → varDecl
+               | statement ;
+
+statement      → exprStmt
+               | printStmt ;
+*/
+/*
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+printStmt      → "print" expression ";" ;
+exprDecl       → expression ";" ;
+*/
+
+std::vector<std::shared_ptr<Stmt>> StmtParser::parse(){
+    std::vector<std::shared_ptr<Stmt>> statements = {};
+    while (!isAtEnd()){
+        statements.push_back(declaration());
+    }
+    return statements;
+}
+
+std::shared_ptr<Stmt> StmtParser::declaration(){
+    try {
+        if (match(Token::VAR)) return varDeclaration();
+        else return statement();
+    }
+    catch(LoxError::ParseError err){
+        // synchronize and return.
+        err.print();
+        synchronize();
+        return nullptr;
+    }
+}
+std::shared_ptr<Stmt> StmtParser::varDeclaration(){
+    Token name = consume(Token::IDENTIFIER, "Expect variable name.");
+    std::shared_ptr<Expr> initializer = nullptr;
+    if (match(Token::EQUAL)){
+        initializer = expression();
+    }
+    consume(Token::SEMICOLON, "Expect ';' after variable declaration.");
+    return std::make_shared<Var>(name, initializer);
+}
+std::shared_ptr<Stmt> StmtParser::statement(){
+    if (match(Token::PRINT)) return printStatement();
+    else return exprStatement();
+}
+std::shared_ptr<Stmt> StmtParser::exprStatement(){
+    std::shared_ptr<Expr> expr = expression();
+    consume(Token::SEMICOLON, "Expect ';' after expression.");
+    return std::make_shared<Expression>(expr);
+}
+std::shared_ptr<Stmt> StmtParser::printStatement(){
+    std::shared_ptr<Expr> expr = expression();
+    consume(Token::SEMICOLON, "Expect ';' after value.");
+    return std::make_shared<Print>(expr);
+}

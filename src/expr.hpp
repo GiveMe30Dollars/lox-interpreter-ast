@@ -51,30 +51,30 @@ class Variable;
 class Assign;
 
 class ExprVisitor{
-    // Abstract class implementing the Visitor design pattern for Expr. supports any return type
+    // Abstract class implementing the Visitor design pattern for Expr
     public:
         virtual ~ExprVisitor(void) = default;
-        virtual std::any visit(std::shared_ptr<Expr> expr) = 0;
+        virtual std::any visit(std::shared_ptr<Expr> curr) = 0;
 
-        virtual std::any visitLiteral(std::shared_ptr<Literal> expr) = 0;
-        virtual std::any visitGrouping(std::shared_ptr<Grouping> expr) = 0;
-        virtual std::any visitUnary(std::shared_ptr<Unary> expr) = 0;
-        virtual std::any visitBinary(std::shared_ptr<Binary> expr) = 0;
+        virtual std::any visitLiteral(std::shared_ptr<Literal> curr) = 0;
+        virtual std::any visitGrouping(std::shared_ptr<Grouping> curr) = 0;
+        virtual std::any visitUnary(std::shared_ptr<Unary> curr) = 0;
+        virtual std::any visitBinary(std::shared_ptr<Binary> curr) = 0;
 
-        virtual std::any visitVariable(std::shared_ptr<Variable> expr) = 0;
-        virtual std::any visitAssign(std::shared_ptr<Assign> expr) = 0;
+        virtual std::any visitVariable(std::shared_ptr<Variable> curr) = 0;
+        virtual std::any visitAssign(std::shared_ptr<Assign> curr) = 0;
 };
 
 class Expr{
-    // Abstract class implementing expressions. Supports the Visitor pattern with variable return type.
-    // Visitor is passed by reference.
+    // Abstract class implementing expressions.
+    // Supports the Visitor design pattern via ExprVisitor, which is passed by reference.
     public:
         virtual ~Expr(void) = default;
         virtual std::any accept(ExprVisitor& v) = 0;
 };
 
 
-
+// ---CHILD CLASSES (PURE EXPRESSIONS)---
 class Literal : public Expr, public std::enable_shared_from_this<Literal>{
     // An expression of a literal.
     public:
@@ -107,7 +107,7 @@ class Binary : public Expr, public std::enable_shared_from_this<Binary>{
         std::any accept(ExprVisitor& v) override { return v.visitBinary(shared_from_this()); }
 };
 
-
+// ---CHILD CLASSES (VARIABLES)---
 class Variable : public Expr, public std::enable_shared_from_this<Variable>{
     // An expression of a variable name.
     public:

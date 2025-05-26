@@ -17,8 +17,8 @@ void Lox::run(std::string source){
         hasCompileError = true;
         return;
     }
+    
     ASTPrinter printer;
-
     try{
         Object obj = interpreter.interpret(expr);
 
