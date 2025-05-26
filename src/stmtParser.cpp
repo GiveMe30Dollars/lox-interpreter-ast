@@ -69,6 +69,8 @@ std::shared_ptr<Stmt> StmtParser::exprStatement(){
 std::shared_ptr<Stmt> StmtParser::printStatement(){
     std::cerr << "GOT HERE!\n";
     std::shared_ptr<Expr> expr = expression();
+    std::cerr << "GOT HERE 2!\n";
     consume(Token::SEMICOLON, "Expect ';' after value.");
+    std::cerr << "GOT HERE 3!\n";
     return std::make_shared<Print>(expr);
 }
