@@ -1,6 +1,7 @@
 #include "ASTPrinter.hpp"
 
 std::string ASTPrinter::print(std::shared_ptr<Expr> expr){
+    if (expr == nullptr) return "expr:null";
     ASTPrinter printer;
     return std::any_cast<std::string>(printer.visit(expr));
 }
@@ -10,6 +11,7 @@ std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
 }
 
 std::string ASTPrinter::print(std::shared_ptr<Stmt> stmt){
+    if (stmt == nullptr) return "stmt:null";
     ASTPrinter printer;
     return std::any_cast<std::string>(printer.visit(stmt));
 }

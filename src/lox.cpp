@@ -18,8 +18,6 @@ void Lox::run(std::string source, bool parseExpr){
         return;
     }
 
-    //for (std::shared_ptr<Stmt> stmt : statements) std::cerr << ASTPrinter::print(stmt) << "\n";
-
     try{
         interpreter.execute(statements);
     }

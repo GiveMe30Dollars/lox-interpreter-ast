@@ -8,7 +8,10 @@ declaration    → varDecl
                | statement ;
 
 statement      → exprStmt
-               | printStmt ;
+               | printStmt
+               | block ;
+
+block          → "{" declaration* "}" ;
 */
 /*
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
@@ -22,7 +25,9 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!isAtEnd()){
         std::shared_ptr<Stmt> stmt = declaration();
-        if (stmt != nullptr) statements.push_back(stmt);
+        // we do not need to scan for nullptrs, since a nullptr indicates a ParseError
+        // the program won't be executed anyways
+        statements.push_back(stmt);
     }
 
     // expression mode: attempt to parse tokens as expression
@@ -59,7 +64,8 @@ std::shared_ptr<Stmt> StmtParser::varDeclaration(){
 }
 std::shared_ptr<Stmt> StmtParser::statement(){
     if (match(Token::PRINT)) return printStatement();
-    else return exprStatement();
+    if (match(Token::LEFT_BRACE)) return block();
+    return exprStatement();
 }
 std::shared_ptr<Stmt> StmtParser::exprStatement(){
     std::shared_ptr<Expr> expr = expression();
@@ -70,4 +76,12 @@ std::shared_ptr<Stmt> StmtParser::printStatement(){
     std::shared_ptr<Expr> expr = expression();
     consume(Token::SEMICOLON, "Expect ';' after value.");
     return std::make_shared<Print>(expr);
+}
+std::shared_ptr<Stmt> StmtParser::block(){
+    std::vector<std::shared_ptr<Stmt>> statements = {};
+    while (!check(Token::RIGHT_BRACE) && !isAtEnd()){
+        statements.push_back(declaration());
+    }
+    consume(Token::RIGHT_BRACE, "Expect '}' after block.");
+    return std::make_shared<Block>(statements);
 }
