@@ -1,4 +1,5 @@
-
+// base class, from which all others inherit
+// requires stings, vectors, sets, maps and cmath
 #include <string>
 #include <vector>
 #include <unordered_set>

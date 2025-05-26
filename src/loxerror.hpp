@@ -8,7 +8,7 @@
 #pragma once
 
 class LoxError{
-    // Error return classes
+    // Error return classes.
     public:
     class ScanError{
         public:

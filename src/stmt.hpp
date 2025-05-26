@@ -1,6 +1,8 @@
 // requires expressions and its dependencies (tokens)
 #include "expr.hpp"
 
+#pragma once
+
 
 // to resolve circular definitions in StmtVisitor
 class Stmt;

@@ -1,5 +1,8 @@
+// requires statments and the expression parser
 #include "exprParser.hpp"
 #include "stmt.hpp"
+
+#pragma once
 
 /*
 program        → declaration* EOF ;

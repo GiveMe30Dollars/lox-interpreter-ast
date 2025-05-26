@@ -2,6 +2,8 @@
 #include "stmt.hpp"
 #include "loxerror.hpp"
 
+#pragma once
+
 class Interpreter : public ExprVisitor, public StmtVisitor{
     // Interprets an AST and retuns an object
     // via the Visitor design pattern.

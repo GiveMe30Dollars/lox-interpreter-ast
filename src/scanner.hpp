@@ -1,4 +1,3 @@
-
 // requires tokens
 #include "token.hpp"
 #include "loxerror.hpp"

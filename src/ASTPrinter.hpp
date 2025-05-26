@@ -1,4 +1,4 @@
-
+// requires expressions and statements
 #include "expr.hpp"
 #include "stmt.hpp"
 
@@ -7,6 +7,7 @@
 class ASTPrinter : public ExprVisitor, public StmtVisitor{
     // Prints a constructed expression as a string
     // via the Visitor design pattern.
+    // Supports expressions and statements
     public:
         std::string print(std::shared_ptr<Expr> expr);
         std::any visit(std::shared_ptr<Expr> expr) override;
