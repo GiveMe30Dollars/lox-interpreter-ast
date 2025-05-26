@@ -4,14 +4,14 @@ Interpreter::Interpreter(){
     env = std::make_shared<Environment>();
 }
 
-Object Interpreter::interpret(std::shared_ptr<Expr> expr){
+Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
     return std::any_cast<Object>(visit(expr));
 }
 std::any Interpreter::visit(std::shared_ptr<Expr> curr){
     return curr->accept(*this);
 }
 
-void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> statements){
+void Interpreter::execute(std::vector<std::shared_ptr<Stmt>> statements){
     for (std::shared_ptr<Stmt> stmt : statements) visit(stmt);
     return;
 }
@@ -24,20 +24,27 @@ std::any Interpreter::visitLiteral(std::shared_ptr<Literal> curr){
     return curr->obj;
 }
 std::any Interpreter::visitGrouping(std::shared_ptr<Grouping> curr){
-    return interpret(curr->expr);
+    return evaluate(curr->expr);
 }
 
 std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
-    return curr->name;
+    // returns stored value. if it doesn't exist, throw RuntimeError
+    return env->get(curr->name);
 }
 
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
-    throw "UNIMPLEMENTED visitAssign in Interpreter!";
-    return Object::nil();
+    // Implicit if: subsequent lines will only execute afterwards
+    // if variable does not exist in lexical scope, throw RuntimeError
+    env->get(curr->name);
+
+    Object obj = evaluate(curr->expr);
+    env->define(curr->name, obj);
+
+    return obj;
 }
 
 std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
-    Object obj = interpret(curr->expr);
+    Object obj = evaluate(curr->expr);
     Token op = curr->op;
     if (op.type == Token::BANG){
         return Object::boolean(!isTruthy(obj));
@@ -51,8 +58,8 @@ std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
 }
 
 std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
-    Object left = interpret(curr->left);
-    Object right = interpret(curr->right);
+    Object left = evaluate(curr->left);
+    Object right = evaluate(curr->right);
     Token op = curr->op;
 
     switch (op.type){
@@ -110,13 +117,15 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 
 /// ---STMT CHILD CLASSES---
 std::any Interpreter::visitExpression(std::shared_ptr<Expression> curr){
-    interpret(curr->expr);
+    // evaluate the expression even if its value is unused
+    // this causes eg. 45 + "lorem"; to correctly throw a RuntimeError
+    evaluate(curr->expr);
     return nullptr;
 }
 std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
-    Object obj = interpret(curr->expr);
+    Object obj = evaluate(curr->expr);
 
-    // The .0 workaround. You know the deal.
+    // The .0 workaround for Codecrafters.io. You know the deal.
     std::string s;
     if (obj.type == Object::NUMBER){
         double val = obj.literalNumber;
@@ -130,12 +139,21 @@ std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
 }
 std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
     Token name = curr->name;
-    Object initializer = curr->initializer ? interpret(curr->initializer) : Object::nil();
-    env->define(name.lexeme, initializer);
+    Object initializer = curr->initializer ? evaluate(curr->initializer) : Object::nil();
+    env->define(name, initializer);
     return nullptr;
 }
 std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
-    throw "UNIMPLEMENTED visitBlock in Interpreter!";
+    // define new lexical scope, with the current scope as the enclosing scope
+    const std::shared_ptr<Environment> prev = env;
+    env = std::make_shared<Environment>(prev);
+    
+    // execute all statements in the block
+    execute(curr->statements);
+
+    // restore scope. Smart pointer collection destroys the now-used scope
+    env = prev;
+
     return nullptr;
 }
 

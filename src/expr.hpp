@@ -109,7 +109,7 @@ class Binary : public Expr, public std::enable_shared_from_this<Binary>{
 
 // ---CHILD CLASSES (VARIABLES)---
 class Variable : public Expr, public std::enable_shared_from_this<Variable>{
-    // An expression of a variable name.
+    // An expression of an l-value (locator value) of a variable.
     public:
         Token name;
         Variable(Token name) :  name(name) {}

@@ -21,7 +21,7 @@ void Lox::run(std::string source, bool parseExpr){
     ASTPrinter printer;
 
     try{
-        interpreter.interpret(statements);
+        interpreter.execute(statements);
     }
     catch (LoxError::RuntimeError err){
         err.print();

@@ -13,9 +13,9 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     // Expressions return objects; Statements return void.
     public:
     Interpreter(void);
-    Object interpret(std::shared_ptr<Expr> expr);
+    Object evaluate(std::shared_ptr<Expr> expr);
     std::any visit(std::shared_ptr<Expr> curr) override;
-    void interpret(std::vector<std::shared_ptr<Stmt>> statements);
+    void execute(std::vector<std::shared_ptr<Stmt>> statements);
     std::any visit(std::shared_ptr<Stmt> curr) override;
 
     // EXPR CHILD CLASSES
