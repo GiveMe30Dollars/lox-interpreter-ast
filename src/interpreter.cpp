@@ -11,7 +11,7 @@ void Interpreter::interpret(std::vector<std::shared_ptr<Stmt>> statements){
     for (std::shared_ptr<Stmt> stmt : statements) visit(stmt);
     return;
 }
-std::any Interpreter::visit(std::shared_ptr<Expr> curr){
+std::any Interpreter::visit(std::shared_ptr<Stmt> curr){
     return curr->accept(*this);
 }
 
