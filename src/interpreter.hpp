@@ -35,6 +35,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
 
     private:
     std::shared_ptr<Environment> env;
+    void executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> env);
     bool isTruthy(Object obj);
     bool isEqual(Object a, Object b);
     LoxError::RuntimeError error(Token op, std::string message);
