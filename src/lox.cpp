@@ -20,6 +20,7 @@ void Lox::run(std::string source, bool parseExpr){
     }
 
     ASTPrinter printer;
+    std::cerr << std::to_string(tokens.size()) << "\n";
     for (std::shared_ptr<Stmt> stmt : statements) std::cerr << printer.print(stmt) << "\n";
 
     try{
