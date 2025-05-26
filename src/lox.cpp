@@ -12,16 +12,17 @@ void Lox::run(std::string source, bool parseExpr){
     std::vector<Token> tokens = scanner.scan();
 
     StmtParser parser(tokens);
-    std::vector<std::shared_ptr<Stmt>> expr = parser.parse(parseExpr);
+    std::vector<std::shared_ptr<Stmt>> statements = parser.parse(parseExpr);
     if (scanner.hasError || parser.hasError){
         hasCompileError = true;
         return;
     }
 
-    //ASTPrinter printer;
+    ASTPrinter printer;
+    for (std::shared_ptr<Stmt> stmt : statements) printer.print(stmt);
 
     try{
-        interpreter.interpret(expr);
+        interpreter.interpret(statements);
     }
     catch (LoxError::RuntimeError err){
         err.print();
