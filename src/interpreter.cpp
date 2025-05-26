@@ -105,14 +105,9 @@ std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
 }
 
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
-    // Implicit if: subsequent lines will only execute afterwards
-    // if variable does not exist in lexical scope, throw RuntimeError
-    env->get(curr->name);
-
-    Object obj = evaluate(curr->expr);
-    env->define(curr->name, obj);
-
-    return obj;
+    // sets the value of the variable in the closest enclosing scope
+    // (including current scope)
+    env->set(curr->name, evaluate(curr->expr));
 }
 
 /// ---STMT CHILD CLASSES---
