@@ -152,7 +152,7 @@ std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
 
 std::any Interpreter::visitIf(std::shared_ptr<If> curr){
     if (isTruthy(evaluate(curr->condition))) execute(curr->thenBranch);
-    else execute(curr->elseBranch);
+    else if (curr->elseBranch) execute(curr->elseBranch);
     return nullptr;
 }
 std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
