@@ -75,6 +75,8 @@ std::shared_ptr<Stmt> StmtParser::statement(){
     if (match(Token::PRINT)) return printStatement();
     if (match(Token::IF)) return ifStatement();
     if (match(Token::LEFT_BRACE)) return block();
+    if (match(Token::WHILE)) return whileStatement();
+    if (match(Token::FOR)) return forStatement();
     return exprStatement();
 }
 std::shared_ptr<Stmt> StmtParser::exprStatement(){
