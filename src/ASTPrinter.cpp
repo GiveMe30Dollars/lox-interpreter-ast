@@ -39,6 +39,9 @@ std::any ASTPrinter::visitVariable(std::shared_ptr<Variable> curr){
 std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
     return "(assign var:" + curr->name.lexeme + " " + print(curr->expr) + ")";
 }
+std::any ASTPrinter::visitLogical(std::shared_ptr<Logical> curr){
+    return "(logical:" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
+}
 
 // ---STATEMENTS---
 std::any ASTPrinter::visitExpression(std::shared_ptr<Expression> curr){
