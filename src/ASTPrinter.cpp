@@ -57,3 +57,13 @@ std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     }
     return "(block" + s + ")";
 }
+
+std::any ASTPrinter::visitIf(std::shared_ptr<If> curr){
+    return "(if " + print(curr->condition) 
+        + " then " + print(curr->thenBranch) 
+        + (curr->elseBranch ? " else "  + print(curr->elseBranch): "") + ")";
+}
+std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
+    return "(while " + print(curr->condition)
+        + " " + print(curr->body) + ")";
+}

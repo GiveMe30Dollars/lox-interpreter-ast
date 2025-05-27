@@ -11,6 +11,7 @@ declaration    → varDecl
                | statement ;
 
 statement      → exprStmt
+               | ifStmt
                | printStmt
                | block ;
 
@@ -28,4 +29,5 @@ class StmtParser : public ExprParser{
         std::shared_ptr<Stmt> exprStatement();
         std::shared_ptr<Stmt> printStatement();
         std::shared_ptr<Stmt> block();
+        std::shared_ptr<Stmt> ifStatement();
 };

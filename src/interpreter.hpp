@@ -15,6 +15,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     Interpreter(void);
     Object evaluate(std::shared_ptr<Expr> expr);
     std::any visit(std::shared_ptr<Expr> curr) override;
+    void execute(std::shared_ptr<Stmt> stmt);
     void execute(std::vector<std::shared_ptr<Stmt>> statements);
     std::any visit(std::shared_ptr<Stmt> curr) override;
 
@@ -32,6 +33,9 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     std::any visitPrint(std::shared_ptr<Print> curr) override;
     std::any visitVar(std::shared_ptr<Var> curr) override;
     std::any visitBlock(std::shared_ptr<Block> curr) override;
+    
+    std::any visitIf(std::shared_ptr<If> curr) override;
+    std::any visitWhile(std::shared_ptr<While> curr) override;
 
     private:
     std::shared_ptr<Environment> env;

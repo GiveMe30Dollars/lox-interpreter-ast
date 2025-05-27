@@ -8,6 +8,7 @@ declaration    → varDecl
                | statement ;
 
 statement      → exprStmt
+               | ifStmt
                | printStmt
                | block ;
 
@@ -15,6 +16,8 @@ block          → "{" declaration* "}" ;
 */
 /*
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+ifStmt         → "if" "(" expression ")" statement
+               ( "else" statement )? ;
 printStmt      → "print" expression ";" ;
 exprDecl       → expression ";" ;
 */
@@ -63,6 +66,7 @@ std::shared_ptr<Stmt> StmtParser::varDeclaration(){
 }
 std::shared_ptr<Stmt> StmtParser::statement(){
     if (match(Token::PRINT)) return printStatement();
+    if (match(Token::IF)) return ifStatement();
     if (match(Token::LEFT_BRACE)) return block();
     return exprStatement();
 }
@@ -85,4 +89,16 @@ std::shared_ptr<Stmt> StmtParser::block(){
     }
     consume(Token::RIGHT_BRACE, "Expect '}' after block.");
     return std::make_shared<Block>(statements);
+}
+
+std::shared_ptr<Stmt> StmtParser::ifStatement(){
+    consume(Token::LEFT_PAREN, "Expect '(' after 'if'.");
+    std::shared_ptr<Expr> condition = expression();
+    consume(Token::RIGHT_PAREN, "Expect ')' after if condition.");
+
+    std::shared_ptr<Stmt> thenBranch = statement();
+    std::shared_ptr<Stmt> elseBranch = nullptr;
+    if (match(Token::ELSE)) elseBranch = statement();
+
+    return std::make_shared<If>(condition, thenBranch, elseBranch);
 }

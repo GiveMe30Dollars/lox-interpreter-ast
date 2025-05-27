@@ -10,6 +10,8 @@ class Expression;
 class Print;
 class Var;
 class Block;
+class If;
+class While;
 
 class StmtVisitor{
     // Abstract class implementing the Visitor design pattern for Stmt.
@@ -21,6 +23,9 @@ class StmtVisitor{
         virtual std::any visitPrint(std::shared_ptr<Print> curr) = 0;
         virtual std::any visitVar(std::shared_ptr<Var> curr) = 0;
         virtual std::any visitBlock(std::shared_ptr<Block> curr) = 0;
+
+        virtual std::any visitIf(std::shared_ptr<If> curr) = 0;
+        virtual std::any visitWhile(std::shared_ptr<While> curr) = 0;
 };
 
 /*
@@ -70,4 +75,22 @@ class Block : public Stmt, public std::enable_shared_from_this<Block>{
         std::vector<std::shared_ptr<Stmt>> statements;
         Block(std::vector<std::shared_ptr<Stmt>> statements) : statements(statements) {}
         std::any accept(StmtVisitor& v) override { return v.visitBlock(shared_from_this()); }
+};
+
+class If : public Stmt, public std::enable_shared_from_this<If>{
+    public:
+        std::shared_ptr<Expr> condition;
+        std::shared_ptr<Stmt> thenBranch;
+        std::shared_ptr<Stmt> elseBranch;
+        If(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> thenBranch, std::shared_ptr<Stmt> elseBranch) :
+            condition(condition), thenBranch(thenBranch), elseBranch(elseBranch) {}
+        std::any accept(StmtVisitor& v) override { return v.visitIf(shared_from_this()); }
+};
+class While : public Stmt, public std::enable_shared_from_this<While>{
+    public:
+        std::shared_ptr<Expr> condition;
+        std::shared_ptr<Stmt> body;
+        While(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> body) :
+            condition(condition), body(body) {}
+        std::any accept(StmtVisitor& v) override { return v.visitWhile(shared_from_this()); }
 };

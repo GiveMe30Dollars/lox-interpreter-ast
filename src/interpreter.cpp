@@ -11,6 +11,9 @@ std::any Interpreter::visit(std::shared_ptr<Expr> curr){
     return curr->accept(*this);
 }
 
+void Interpreter::execute(std::shared_ptr<Stmt> stmt){
+    visit(stmt);
+}
 void Interpreter::execute(std::vector<std::shared_ptr<Stmt>> statements){
     for (std::shared_ptr<Stmt> stmt : statements) visit(stmt);
     return;
@@ -147,6 +150,16 @@ std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
     return nullptr;
 }
 
+std::any Interpreter::visitIf(std::shared_ptr<If> curr){
+    if (isTruthy(evaluate(curr->condition))) execute(curr->thenBranch);
+    else execute(curr->elseBranch);
+    return nullptr;
+}
+std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
+    while (isTruthy(evaluate(curr->condition)))
+        execute(curr->body);
+    return nullptr;
+}
 
 // ---HELPER FUNCTIONS---
 

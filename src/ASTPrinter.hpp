@@ -28,4 +28,8 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
         std::any visitPrint(std::shared_ptr<Print> curr) override;
         std::any visitVar(std::shared_ptr<Var> curr) override;
         std::any visitBlock(std::shared_ptr<Block> curr) override;
+        
+        std::any visitIf(std::shared_ptr<If> curr) override;
+        std::any visitWhile(std::shared_ptr<While> curr) override;
+
 };
