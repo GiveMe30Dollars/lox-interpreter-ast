@@ -8,14 +8,19 @@ declaration    → varDecl
                | statement ;
 
 statement      → exprStmt
+               | forStmt
                | ifStmt
                | printStmt
+               | whileStmt
                | block ;
 
 block          → "{" declaration* "}" ;
 */
 /*
 varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+forStmt        → "for" "(" ( varDecl | exprStmt | ";" )
+                 expression? ";"
+                 expression? ")" statement ;
 ifStmt         → "if" "(" expression ")" statement
                ( "else" statement )? ;
 printStmt      → "print" expression ";" ;
@@ -35,6 +40,7 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     // expression mode: attempt to parse tokens as expression
     // if and only if hasError, parseExpr and no statements are parsed
     // if successful, encapsulate as print statement
+    // TODO: catch and suppress the semicolon error into a warning
     if (parseExpr && hasError && statements.empty()){
         std::shared_ptr<Expr> expr = ExprParser::parse();
         if (!hasError) statements.push_back(std::make_shared<Print>(expr));
@@ -43,6 +49,7 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     return statements;
 }
 
+// ---BASE STATEMENTS---
 std::shared_ptr<Stmt> StmtParser::declaration(){
     try {
         if (match(Token::VAR)) return varDeclaration();
@@ -91,14 +98,79 @@ std::shared_ptr<Stmt> StmtParser::block(){
     return std::make_shared<Block>(statements);
 }
 
+// ---CONTROL FLOW---
 std::shared_ptr<Stmt> StmtParser::ifStatement(){
     consume(Token::LEFT_PAREN, "Expect '(' after 'if'.");
     std::shared_ptr<Expr> condition = expression();
     consume(Token::RIGHT_PAREN, "Expect ')' after if condition.");
 
+    // parse then branch. if else branch exists, parse that too.
     std::shared_ptr<Stmt> thenBranch = statement();
     std::shared_ptr<Stmt> elseBranch = nullptr;
     if (match(Token::ELSE)) elseBranch = statement();
 
     return std::make_shared<If>(condition, thenBranch, elseBranch);
+}
+std::shared_ptr<Stmt> StmtParser::whileStatement(){
+    consume(Token::LEFT_PAREN, "Expect '(' after 'while'.");
+    std::shared_ptr<Expr> condition = expression();
+    consume(Token::RIGHT_PAREN, "Expect ')' after while condition.");
+    std::shared_ptr<Stmt> body = statement();
+
+    return std::make_shared<While>(condition, body);
+}
+std::shared_ptr<Stmt> StmtParser::forStatement(){
+    // desugaring. the for statement will be parsed as a while statement.
+    // format:  for(initializer; condition; increment) body
+
+    // parameters are delineated by SEMICOLON (initializer, condition)
+    // and RIGHT_PAREN (incrementer)
+    consume(Token::LEFT_PAREN, "Expect '(' after 'for'");
+
+    // valid initializer is either none (;), a variable declaration or an expression statement
+    std::shared_ptr<Stmt> initializer;
+    if (match(Token::SEMICOLON)) initializer = nullptr;
+    else if (match(Token::VAR)) initializer = varDeclaration();
+    else initializer = exprStatement();
+
+    // valid condition is either none (;) or an expression statement
+    // the semicolon is consumed.
+    std::shared_ptr<Expr> condition = nullptr;
+    if (!check(Token::SEMICOLON)) condition = expression();
+    consume(Token::SEMICOLON, "Expect ';' after loop condition.");
+
+    // valid incrementer is either none () or an expression
+    std::shared_ptr<Expr> increment = nullptr;
+    if (!check(Token::RIGHT_PAREN)) increment = expression();
+    consume(Token::RIGHT_PAREN, "Expect ')' after for clauses.");
+
+    // body of for loop
+    std::shared_ptr<Stmt> body = statement();
+
+    // compilation of for loop to while loop:
+    /*  {
+            initializer;
+            while (condition){
+                body;
+                increment;
+            }
+        } */
+
+    // if there is an increment, enclose body and increment in new Block
+    if (increment){
+        std::vector<std::shared_ptr<Stmt>> v = {body, std::make_shared<Expression>(increment)};
+        body = std::make_shared<Block>(v);
+    }
+
+    // if there is no condition, assume while(true). create While.
+    if (!condition) condition = std::make_shared<Literal>(Object::boolean(1));
+    std::shared_ptr<Stmt> whileBlock = std::make_shared<While>(condition, body);
+
+    // if there is an initializer, enclose whileBlock and initializer in new Block
+    if (initializer){
+        std::vector<std::shared_ptr<Stmt>> v = {initializer, whileBlock};
+        whileBlock = std::make_shared<Block>(v);
+    }
+
+    return whileBlock;
 }

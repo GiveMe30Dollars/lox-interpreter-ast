@@ -11,8 +11,10 @@ declaration    → varDecl
                | statement ;
 
 statement      → exprStmt
+               | forStmt
                | ifStmt
                | printStmt
+               | whileStmt
                | block ;
 
 block          → "{" declaration* "}" ;
@@ -30,4 +32,6 @@ class StmtParser : public ExprParser{
         std::shared_ptr<Stmt> printStatement();
         std::shared_ptr<Stmt> block();
         std::shared_ptr<Stmt> ifStatement();
+        std::shared_ptr<Stmt> whileStatement();
+        std::shared_ptr<Stmt> forStatement();
 };
