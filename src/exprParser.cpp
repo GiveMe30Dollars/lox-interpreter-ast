@@ -102,7 +102,7 @@ std::shared_ptr<Expr> ExprParser::expression(){
 }
 
 std::shared_ptr<Expr> ExprParser::assignment(){
-    std::shared_ptr<Expr> expr = equality();
+    std::shared_ptr<Expr> expr = logicOr();
     // if the next token is EQUAL, parse as assignment
     // (expr must be a variable l-value)
     // otherwise, parse (beforehand) and return as equality
