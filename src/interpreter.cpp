@@ -106,7 +106,6 @@ std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
     // returns stored value. if it doesn't exist, throw RuntimeError
     return env->get(curr->name);
 }
-
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     // sets the value of the variable in the closest enclosing scope
     // (including current scope) to the evaluated expression.
@@ -114,6 +113,23 @@ std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     Object obj = evaluate(curr->expr);
     env->set(curr->name, obj);
     return obj;
+}
+
+std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
+    Object left = evaluate(curr->left);
+
+    // There are only 2 operators: AND, OR
+    if (curr->op.type == Token::OR){
+        // OR control: short circuit and return "true" (left) if left is truthy
+        if (isTruthy(left)) return left;
+    }
+    else {
+        // AND control: short circuit and return "false" (left) if left is falsey
+        if (!isTruthy(left)) return left;
+    }
+
+    // no short circuit. evaluate and return whatever is inn curr->right
+    return evaluate(curr->right);
 }
 
 /// ---STMT CHILD CLASSES---

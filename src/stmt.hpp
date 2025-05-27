@@ -42,8 +42,8 @@ class Stmt{
         virtual std::any accept(StmtVisitor& v) = 0;
 };
 
-// CHILD CLASSES
-// enable_shared_from_this MUST BE inherited as PUBLIC
+// ---CHILD CLASSES---
+// note: enable_shared_from_this MUST BE inherited as PUBLIC
 
 class Expression : public Stmt, public std::enable_shared_from_this<Expression>{
     // A statment wrapping an expression
@@ -77,7 +77,9 @@ class Block : public Stmt, public std::enable_shared_from_this<Block>{
         std::any accept(StmtVisitor& v) override { return v.visitBlock(shared_from_this()); }
 };
 
+// ---CHILD CLASSES (CONTROL FLOW)---
 class If : public Stmt, public std::enable_shared_from_this<If>{
+    // A statement encapsulating an if-then-else control flow
     public:
         std::shared_ptr<Expr> condition;
         std::shared_ptr<Stmt> thenBranch;
@@ -87,6 +89,7 @@ class If : public Stmt, public std::enable_shared_from_this<If>{
         std::any accept(StmtVisitor& v) override { return v.visitIf(shared_from_this()); }
 };
 class While : public Stmt, public std::enable_shared_from_this<While>{
+    // A statement encapsulating a while loop
     public:
         std::shared_ptr<Expr> condition;
         std::shared_ptr<Stmt> body;

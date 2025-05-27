@@ -49,6 +49,7 @@ class Unary;
 class Binary;
 class Variable;
 class Assign;
+class Logical;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr
@@ -63,6 +64,7 @@ class ExprVisitor{
 
         virtual std::any visitVariable(std::shared_ptr<Variable> curr) = 0;
         virtual std::any visitAssign(std::shared_ptr<Assign> curr) = 0;
+        virtual std::any visitLogical(std::shared_ptr<Logical> curr) = 0;
 };
 
 class Expr{
@@ -122,4 +124,14 @@ class Assign : public Expr, public std::enable_shared_from_this<Assign>{
         std::shared_ptr<Expr> expr;
         Assign(Token name, std::shared_ptr<Expr> expr) : name(name), expr(expr) {}
         std::any accept(ExprVisitor& v) override { return v.visitAssign(shared_from_this()); }
+};
+class Logical : public Expr, public std::enable_shared_from_this<Logical>{
+    // An expression of a logical operator (AND, OR)
+    public:
+        std::shared_ptr<Expr> left;
+        Token op;
+        std::shared_ptr<Expr> right;
+        Logical(std::shared_ptr<Expr> left, Token op, std::shared_ptr<Expr> right):
+            left(left), op(op), right(right) {}
+        std::any accept(ExprVisitor& v) override { return v.visitLogical(shared_from_this()); }
 };

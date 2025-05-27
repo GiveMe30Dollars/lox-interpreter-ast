@@ -9,11 +9,13 @@
 
 #pragma once
 
-//   ---BASIC PARSING RULES---
+//   ---PARSING RULES---
 /*
 expression     → assignment ;
 assignment     → IDENTIFIER "=" assignment
-               | equality ;
+               | logic_or ;
+logic_or       → logic_and ( "or" logic_and )* ;
+logic_and      → equality ( "and" equality )* ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
@@ -52,6 +54,8 @@ class ExprParser{
         // Expression parsing
         std::shared_ptr<Expr> expression();
         std::shared_ptr<Expr> assignment();
+        std::shared_ptr<Expr> logicOr();
+        std::shared_ptr<Expr> logicAnd();
         std::shared_ptr<Expr> equality();
         std::shared_ptr<Expr> comparison();
         std::shared_ptr<Expr> term();

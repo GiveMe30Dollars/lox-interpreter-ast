@@ -80,11 +80,13 @@ std::shared_ptr<Expr> ExprParser::parse(){
 }
 
 
-//   ---BASIC PARSING RULES---
+//   ---PARSING RULES---
 /*
 expression     → assignment ;
 assignment     → IDENTIFIER "=" assignment
-               | equality ;
+               | logic_or ;
+logic_or       → logic_and ( "or" logic_and )* ;
+logic_and      → equality ( "and" equality )* ;
 equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
@@ -114,6 +116,25 @@ std::shared_ptr<Expr> ExprParser::assignment(){
         else throw error(op, "Invalid assignment target.");
     }
     else return expr;
+}
+
+std::shared_ptr<Expr> ExprParser::logicOr(){
+    std::shared_ptr<Expr> expr = logicAnd();
+    while (match(Token::OR)){
+        Token op = previous();
+        std::shared_ptr<Expr> right = logicAnd();
+        expr = std::make_shared<Logical>(expr, op, right);
+    }
+    return expr;
+}
+std::shared_ptr<Expr> ExprParser::logicAnd(){
+    std::shared_ptr<Expr> expr = equality();
+    while (match(Token::AND)){
+        Token op = previous();
+        std::shared_ptr<Expr> right = equality();
+        expr = std::make_shared<Logical>(expr, op, right);
+    }
+    return expr;
 }
 
 std::shared_ptr<Expr> ExprParser::equality(){
