@@ -206,7 +206,7 @@ std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
 
 std::any Interpreter::visitFunction(std::shared_ptr<Function> curr){
     // create and store LoxFunction in local scope
-    std::shared_ptr<LoxFunction> func = std::make_shared<LoxFunction>(curr);
+    std::shared_ptr<LoxFunction> func = std::make_shared<LoxFunction>(curr, env);
     env->define(curr->name.lexeme, Object::function(func));
     return nullptr;
 }
@@ -222,6 +222,7 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
 // ---HELPER FUNCTIONS---
 
 void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> newScope){
+    // change scope to new and execute statements in block. restore scope afterwards
     const std::shared_ptr<Environment> prev = env;
     env = newScope;
     execute(statements);
