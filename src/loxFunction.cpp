@@ -15,5 +15,5 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object> arguments
 }
 
 std::string LoxFunction::toString(){
-    return "<fn:" + declaration->name.lexeme + ">";
+    return "<fn " + declaration->name.lexeme + ">";
 }

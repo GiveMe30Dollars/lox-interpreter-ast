@@ -27,6 +27,6 @@ class Clock : public LoxCallable{
         );
     }
     std::string toString(void) override{
-        return "<native_fn:clock>";
+        return "<fn:native clock>";
     }
 };
