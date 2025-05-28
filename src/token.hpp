@@ -9,8 +9,8 @@
 // required for smart pointers
 #include <memory>
 
-#pragma once
 #include "loxCallable.hpp"
+#pragma once
 
 /*
     HEADER FILES SHOUD DECLARE:
