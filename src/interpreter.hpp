@@ -10,6 +10,9 @@
 #include "loxCallable.hpp"
 #include "loxFunction.hpp"
 
+// requires Resolver for resolving and binding
+#include "resolver.hpp"
+
 #pragma once
 
 class Interpreter : public ExprVisitor, public StmtVisitor{
@@ -51,6 +54,8 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     std::shared_ptr<Environment> env;
     void executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> env);
     LoxError::RuntimeError error(Token op, std::string message);
+
+    void resolve(std::shared_ptr<Expr> expr, int steps);
 
     private:
     bool isTruthy(Object obj);

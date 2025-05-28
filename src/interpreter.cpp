@@ -236,6 +236,10 @@ void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, s
     }
 }
 
+void resolve(std::shared_ptr<Expr> expr, int steps){
+    throw "UNIMPLEMENTED resolve in Interpreter!";
+}
+
 bool Interpreter::isTruthy(Object obj){
     return !(obj.type == Object::NIL || (obj.type == Object::BOOL && obj.literalBool == false));
 }

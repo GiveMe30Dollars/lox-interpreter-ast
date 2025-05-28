@@ -1,0 +1,157 @@
+#include "resolver.hpp"
+
+// requires implemetation details of Interpreter
+// (previously declared separately)
+#include "interpreter.hpp"
+
+
+Resolver::Resolver(Interpreter& interpreter) : interpreter(interpreter){
+    // interpreter has to be passed as member initializer
+    hasError = false;
+    scopes = {};
+}
+void Resolver::resolve(std::shared_ptr<Expr> expr){
+    visit(expr);
+}
+std::any Resolver::visit(std::shared_ptr<Expr> curr){
+    return curr->accept(*this);
+}
+void Resolver::resolve(std::shared_ptr<Stmt> stmt){
+    visit(stmt);
+}
+void Resolver::resolve(std::vector<std::shared_ptr<Stmt>> statements){
+    for (std::shared_ptr<Stmt> stmt : statements)
+        resolve(stmt);
+}
+std::any Resolver::visit(std::shared_ptr<Stmt> curr){
+    return curr->accept(*this);
+}
+
+// EXPR CHILD CLASSES
+std::any Resolver::visitLiteral(std::shared_ptr<Literal> curr){
+    // nothing to resolve
+    return;
+}
+std::any Resolver::visitGrouping(std::shared_ptr<Grouping> curr){
+    resolve(curr->expr);
+}
+std::any Resolver::visitUnary(std::shared_ptr<Unary> curr){
+    resolve(curr->expr);
+}
+std::any Resolver::visitBinary(std::shared_ptr<Binary> curr){
+    resolve(curr->left);
+    resolve(curr->right);
+}
+
+std::any Resolver::visitVariable(std::shared_ptr<Variable> curr){
+    // l-value of variable
+    // eg. var a = a;
+    // in this case, evaluating RHS leads to a being declared but not defined
+    // an error is printed (not thrown) and execution will not proceed
+    // otherwise, resolve local variable a
+    if (!scopes.empty() && scopes.back().count(curr->name.lexeme) && scopes.back().at(curr->name.lexeme) == false)
+        error(curr->name, "Can't read variable in its own initializer.");
+    
+    resolveLocal(curr, curr->name);
+}
+std::any Resolver::visitAssign(std::shared_ptr<Assign> curr){
+    resolve(curr->expr);
+    resolveLocal(curr->expr, curr->name);
+}
+std::any Resolver::visitLogical(std::shared_ptr<Logical> curr){
+    resolve(curr->left);
+    resolve(curr->right);
+}
+
+std::any Resolver::visitCall(std::shared_ptr<Call> curr){
+    throw "UNIMPLEMENTED visitCall in Resolver!";
+    return nullptr;
+}
+
+// STMT CHILD CLASSES
+std::any Resolver::visitExpression(std::shared_ptr<Expression> curr){
+    resolve(curr->expr);
+}
+std::any Resolver::visitPrint(std::shared_ptr<Print> curr){
+    resolve(curr->expr);
+}
+std::any Resolver::visitVar(std::shared_ptr<Var> curr){
+    // Variable declaration. Links with visitVariable(curr)
+    declare(curr->name);
+    if (curr->initializer)
+        resolve(curr->initializer);
+    define(curr->name);
+}
+std::any Resolver::visitBlock(std::shared_ptr<Block> curr){
+    beginScope();
+    resolve(curr->statements);
+    endScope();
+}
+
+std::any Resolver::visitIf(std::shared_ptr<If> curr){
+    resolve(curr->condition);
+    resolve(curr->thenBranch);
+    if (curr->elseBranch) 
+        resolve(curr->elseBranch);
+}
+std::any Resolver::visitWhile(std::shared_ptr<While> curr){
+    resolve(curr->condition);
+    resolve(curr->body);
+}
+
+std::any Resolver::visitFunction(std::shared_ptr<Function> curr){
+    declare(curr->name);
+    define(curr->name);
+    resolveFunction(curr);
+}
+std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
+    return nullptr;
+}
+
+LoxError::ParseError Resolver::error(Token token, std::string message){
+    hasError = true;
+    return LoxError::ParseError(token, message);
+}
+
+// ---HELPER FUNCTIONS---
+void Resolver::beginScope(void){
+    // create a new scope and push to stack
+    scopes.push_back(std::unordered_map<std::string, bool>());
+}
+void Resolver::endScope(void){
+    // pop the scope at top of stack
+    scopes.pop_back();
+}
+void Resolver::declare(Token name){
+    // declares a variable [name] in the topmost (current) scope by setting to false
+    // does nothing if variable already defined
+    if (scopes.empty()) return;
+    scopes.back().insert({name.lexeme, false});
+}
+void Resolver::define(Token name){
+    // defines a variable [name] in the topmost (current) scope by setting to true
+    // declaration and definition are coupled in Lox
+    if (scopes.empty()) return;
+    scopes.back().at(name.lexeme) = true;
+}
+void Resolver::resolveLocal(std::shared_ptr<Expr> expr, Token name){
+    // given a local variable [name], find the number of steps required
+    // to resolve the variable to its scope
+    // resolved variable are defined in its environment, evaluated line-by-line
+    for (int i = scopes.size() - 1; i >= 0; i--){
+        if (scopes[i].count(name.lexeme)){
+            interpreter.resolve(expr, scopes.size() - 1 - i);
+            return;
+        }
+    }
+    // variable exists in global scope. no resolution required.
+}
+void Resolver::resolveFunction(std::shared_ptr<Function> func){
+    beginScope();
+    for (Token token : func->params){
+        declare(token);
+        define(token);
+    }
+    resolve(func->body);
+    endScope();
+}
