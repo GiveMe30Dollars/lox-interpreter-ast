@@ -11,11 +11,9 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object> arguments
         env->define(declaration->params[i], arguments[i]);
     }
     try{
-        std::cerr << "running n = " << arguments[0].toString() << "\n";
         interpreter.executeBlock(declaration->body, env);
     }
     catch (LoxReturn val){
-        std::cerr << "fibonacci number: " << arguments[0].toString() << " -> " << val.obj.toString() << "\n";
         return val.obj;
     }
     // return nil by default if no value specified
