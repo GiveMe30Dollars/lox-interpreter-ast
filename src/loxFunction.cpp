@@ -6,7 +6,7 @@ int LoxFunction::arity(){
 }
 
 Object LoxFunction::call(Interpreter& interpreter, std::vector<Object> arguments){
-    std::shared_ptr<Environment> env = std::make_shared<Environment>(interpreter.globals);
+    std::shared_ptr<Environment> env = std::make_shared<Environment>(interpreter.env);
     for (int i = 0; i < declaration->params.size(); i++){
         env->define(declaration->params[i], arguments[i]);
     }
@@ -14,7 +14,6 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object> arguments
         interpreter.executeBlock(declaration->body, env);
     }
     catch (LoxReturn val){
-        std::cerr << "fibonacci number:" << arguments[0].toString() << ": " << val.obj.toString() << "\n";
         return val.obj;
     }
     // return nil by default if no value specified
