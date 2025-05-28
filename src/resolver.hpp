@@ -57,11 +57,16 @@ class Resolver : public ExprVisitor, public StmtVisitor{
     private:
         std::deque<std::unordered_map<std::string, bool>> scopes;
         Interpreter& interpreter;
+        enum class FunctionType{
+            NONE, FUNCTION
+        };
+        FunctionType currentFunction;
+
         LoxError::ParseError error(Token token, std::string message);
         void beginScope(void);
         void endScope(void);
         void declare(Token name);
         void define(Token name);
         void resolveLocal(std::shared_ptr<Expr> expr, Token name);
-        void resolveFunction(std::shared_ptr<Function> func);
+        void resolveFunction(std::shared_ptr<Function> func, FunctionType type);
 };

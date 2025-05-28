@@ -21,7 +21,13 @@ void Lox::run(std::string source, bool parseExpr){
         hasCompileError = true;
         return;
     }
-    //for (std::shared_ptr<Stmt> stmt : statements) std::cerr << ASTPrinter::print(stmt) << "\n";
+    
+    Resolver resolver(interpreter);
+    resolver.resolve(statements);
+    if (resolver.hasError){
+        hasCompileError = true;
+        return;
+    }
 
     try{
         interpreter.execute(statements);

@@ -9,6 +9,7 @@ Resolver::Resolver(Interpreter& interpreter) : interpreter(interpreter){
     // interpreter has to be passed as member initializer
     hasError = false;
     scopes = {};
+    currentFunction = FunctionType::NONE;
 }
 void Resolver::resolve(std::shared_ptr<Expr> expr){
     visit(expr);
@@ -55,18 +56,20 @@ std::any Resolver::visitVariable(std::shared_ptr<Variable> curr){
     resolveLocal(curr, curr->name);
 }
 std::any Resolver::visitAssign(std::shared_ptr<Assign> curr){
-    // resolve nested expression. then, resolve the whole assignment
+    // resolve nested expression. then, resolve the whole assignment as a local variable
     resolve(curr->expr);
     resolveLocal(curr, curr->name);
 }
 std::any Resolver::visitLogical(std::shared_ptr<Logical> curr){
+    // resolve expressions. no short-circuiting is done.
     resolve(curr->left);
     resolve(curr->right);
 }
 
 std::any Resolver::visitCall(std::shared_ptr<Call> curr){
-    throw "UNIMPLEMENTED visitCall in Resolver!";
-    return nullptr;
+    resolve(curr->callee);
+    for (std::shared_ptr<Expr> arg : curr->arguments)
+        resolve(arg);
 }
 
 // STMT CHILD CLASSES
@@ -84,12 +87,14 @@ std::any Resolver::visitVar(std::shared_ptr<Var> curr){
     define(curr->name);
 }
 std::any Resolver::visitBlock(std::shared_ptr<Block> curr){
+    // create and resolve in new topmost scope. pop when done.
     beginScope();
     resolve(curr->statements);
     endScope();
 }
 
 std::any Resolver::visitIf(std::shared_ptr<If> curr){
+    // resolve all branches.
     resolve(curr->condition);
     resolve(curr->thenBranch);
     if (curr->elseBranch) 
@@ -101,12 +106,19 @@ std::any Resolver::visitWhile(std::shared_ptr<While> curr){
 }
 
 std::any Resolver::visitFunction(std::shared_ptr<Function> curr){
+    // resolve function name, then call helper method for arguments and body
+    // resolveFunction will be reused for classes and methods
     declare(curr->name);
     define(curr->name);
-    resolveFunction(curr);
+    resolveFunction(curr, FunctionType::FUNCTION);
 }
 std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
-    return nullptr;
+    // resolve return expression
+    // the return keyword CANNOT show up in top-level code.
+    // (DO NOT THROW)
+    if (currentFunction == FunctionType::NONE)
+        error(curr->keyword, "Cannot return from top-level code.").print();
+    if(curr->expr) resolve(curr->expr);
 }
 
 LoxError::ParseError Resolver::error(Token token, std::string message){
@@ -147,7 +159,12 @@ void Resolver::resolveLocal(std::shared_ptr<Expr> expr, Token name){
     }
     // variable exists in global scope. no resolution required.
 }
-void Resolver::resolveFunction(std::shared_ptr<Function> func){
+void Resolver::resolveFunction(std::shared_ptr<Function> func, FunctionType type){
+    // switches resolving type to given type, resolves arguments and body, then restores previous type
+
+    const FunctionType enclosingType = currentFunction;
+    currentFunction = type;
+
     beginScope();
     for (Token token : func->params){
         declare(token);
@@ -155,4 +172,6 @@ void Resolver::resolveFunction(std::shared_ptr<Function> func){
     }
     resolve(func->body);
     endScope();
+
+    currentFunction = enclosingType;
 }
