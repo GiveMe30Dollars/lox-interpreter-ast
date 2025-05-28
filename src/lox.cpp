@@ -10,10 +10,14 @@ void Lox::run(std::string source, bool parseExpr){
 
     Scanner scanner(source);
     std::vector<Token> tokens = scanner.scan();
+    if (scanner.hasError){
+        hasCompileError = true;
+        return;
+    }
 
     StmtParser parser(tokens);
     std::vector<std::shared_ptr<Stmt>> statements = parser.parse(parseExpr);
-    if (scanner.hasError || parser.hasError){
+    if (parser.hasError){
         hasCompileError = true;
         return;
     }

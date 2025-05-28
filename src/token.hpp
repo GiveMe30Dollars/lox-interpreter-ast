@@ -20,9 +20,9 @@
 */
 
 
-bool isDigit(const char c);
-bool isAlpha(const char c);
-bool isAlphaNumeric(const char c);
+static bool isDigit(const char c);
+static bool isAlpha(const char c);
+static bool isAlphaNumeric(const char c);
 
 class Object {
     // Class to represent an arbitrary literal
