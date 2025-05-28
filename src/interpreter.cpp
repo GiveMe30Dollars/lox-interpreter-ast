@@ -5,7 +5,7 @@ Interpreter::Interpreter(){
     globals = std::make_shared<Environment>();
     env = globals;
 
-    globals.define("clock", Native::getClock());
+    globals.define("clock", Clock());
 }
 
 Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
