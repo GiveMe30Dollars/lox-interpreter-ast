@@ -1,7 +1,11 @@
 #include "interpreter.hpp"
 
 Interpreter::Interpreter(){
-    env = std::make_shared<Environment>();
+    // initialize global environment, as well as define native functions
+    globals = std::make_shared<Environment>();
+    env = globals;
+
+    globals.define("clock", Native::getClock());
 }
 
 Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
@@ -116,8 +120,26 @@ std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
 }
 
 std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
-    throw "UNIMPLEMENTED visitCall in Interpreter!";
-    return nullptr;
+    // evaluate callee and arguments
+    Object callee = evaluate(curr->callee);
+    std::vector<Object> arguments = {};
+    for (std::shared_ptr<Expr> expr : curr->arguments){
+        arguments.push_back(evaluate(expr));
+    }
+
+    // if callee is not function or class, throw runtime error
+    if (callee.type != Object::LOX_CALLABLE || callee.type != Object::LOX_CLASS)
+        throw error(curr->paren, "Can only call functions and classes.");
+    
+    // get LoxCallable from object, check arity and return call value
+    std::shared_ptr<LoxCallable> callable;
+    if (callee.type == Object::LOX_CALLABLE) callable = callee.loxCallable;
+    else throw "UNIMPLEMENTED class Call for Interpreter!";
+
+    if (arguments.size() != callable->arity())
+        throw error(curr->paren, "Expected " + callable->arity() + " arguments but got " + arguments.size()) + ".";
+    
+    return callable->call(this, arguments);
 }
 
 std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){

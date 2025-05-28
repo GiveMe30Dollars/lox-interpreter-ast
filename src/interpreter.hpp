@@ -6,6 +6,10 @@
 // requires Environments (support for variables and scope)
 #include "environment.hpp"
 
+// requires LoxCallables (support for functions, classes and methods)
+#include "loxCallable.hpp"
+#include "nativeFunctions.hpp"
+
 #pragma once
 
 class Interpreter : public ExprVisitor, public StmtVisitor{
@@ -41,6 +45,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     std::any visitWhile(std::shared_ptr<While> curr) override;
 
     private:
+    std::shared_ptr<Environment> globals;
     std::shared_ptr<Environment> env;
     void executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> env);
     bool isTruthy(Object obj);

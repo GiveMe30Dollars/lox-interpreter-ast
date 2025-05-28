@@ -42,7 +42,8 @@ class Object {
     public:
         enum ObjectType {
             NIL, NUMBER, STRING, BOOL,
-            LOX_CALLABLE
+            LOX_CALLABLE, LOX_CLASS,
+            LOX_INSTANCE
         };
         ObjectType type;
         bool literalBool;

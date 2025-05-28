@@ -200,6 +200,8 @@ std::shared_ptr<Expr> ExprParser::finishCall(std::shared_ptr<Expr> callee){
     std::vector<std::shared_ptr<Expr>> arguments = {};
     if (!check(Token::RIGHT_PAREN)){
         do{
+            if (arguments.size() >= 255)
+                error(peek(), "can't have more than 255 arguments.");
             arguments.push_back(expression());
         } while (match(Token::COMMA));
     }
