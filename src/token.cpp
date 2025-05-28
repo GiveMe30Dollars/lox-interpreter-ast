@@ -109,6 +109,8 @@ std::string Object::toString(bool useLox){
             }
         case Object::STRING: 
             return literalString;
+        case Object::LOX_CALLABLE:
+            return loxCallable->toString();
 
         default:
             throw "UNIMPLEMENTED toString type!";
@@ -117,50 +119,13 @@ std::string Object::toString(bool useLox){
     return "";
 }
 
-/*
-template<>
-Object Object::cast<Object::BOOL>(){
-    return Object::boolean(isTruthy());
+Object Object::function(std::shared_ptr<LoxCallable> callable){
+    Object obj;
+    obj.type = Object::LOX_CALLABLE;
+    obj.loxCallable = callable;
+    return obj;
 }
 
-template<>
-Object Object::cast<Object::NUMBER>(){
-    switch (type){
-        case Object::NIL:
-            return Object::number(0);
-        case Object::BOOL:
-            return Object::number(literalBool ? 1 : 0);
-        case Object::NUMBER: 
-            return *this;
-        case Object::STRING:
-        {
-            try {
-                double val = std::stod(literalString);
-                return Object::number(val);
-            }
-            catch(std::invalid_argument& e) {
-                return Object::number(0);
-            }
-        }
-    }
-}
-
-template<Object::ObjectType T>
-Object Object::cast(){
-    throw ("Unimplemeneted cast type!");
-    return nil();
-}
-*/
-
-
-
-/*class Token {
-    private:
-        TokenType type;
-        std::string lexeme;
-        std::string literal;
-        int line;
-};*/
 
 std::string Token::toString() {
     return tokenTypeName.at(type) + " " + lexeme + " " + literal.toString();

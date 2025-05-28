@@ -6,6 +6,11 @@
 #include <unordered_map>
 #include <cmath>
 
+// required for smart pointers
+#include <memory>
+
+#include "loxCallable.hpp"
+
 #pragma once
 
 /*
@@ -29,12 +34,14 @@ class Object {
     // Pass by value for all subsequent use
     public:
         enum ObjectType {
-            NIL, NUMBER, STRING, BOOL
+            NIL, NUMBER, STRING, BOOL,
+            LOX_CALLABLE
         };
         ObjectType type;
         bool literalBool;
         double literalNumber;
         std::string literalString;
+        std::shared_ptr<LoxCallable> loxCallable;
         std::string toString(bool useLox = false);
         
         // Generator functions
@@ -42,6 +49,7 @@ class Object {
         static Object boolean(bool b);
         static Object number(double val);
         static Object string(std::string str);
+        static Object function(std::shared_ptr<LoxCallable> callable);
 
         /*
         template<Object::ObjectType T>
