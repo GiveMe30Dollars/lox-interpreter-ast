@@ -128,7 +128,7 @@ std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
     }
 
     // if callee is not function or class, throw runtime error
-    if (callee.type != Object::LOX_CALLABLE || callee.type != Object::LOX_CLASS)
+    if (!(callee.type == Object::LOX_CALLABLE || callee.type == Object::LOX_CLASS))
         throw error(curr->paren, "Can only call functions and classes.");
     
     // get LoxCallable from object, check arity and return call value
