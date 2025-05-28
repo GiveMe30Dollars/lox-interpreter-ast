@@ -50,6 +50,7 @@ class Binary;
 class Variable;
 class Assign;
 class Logical;
+class Call;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr
