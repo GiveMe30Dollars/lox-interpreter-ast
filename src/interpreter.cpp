@@ -210,6 +210,14 @@ std::any Interpreter::visitFunction(std::shared_ptr<Function> curr){
     env->define(curr->name.lexeme, Object::function(func));
     return nullptr;
 }
+std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
+    // return expression, if any. LoxReturn is caught at end of function call
+    Object obj;
+    if (curr->expr) obj = evaluate(curr->expr);
+    else obj = Object::nil();
+    throw LoxReturn(obj);
+    return nullptr;    // Unreachable.
+}
 
 // ---HELPER FUNCTIONS---
 

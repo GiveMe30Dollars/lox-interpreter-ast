@@ -36,4 +36,5 @@ class StmtParser : public ExprParser{
         std::shared_ptr<Stmt> ifStatement(void);
         std::shared_ptr<Stmt> whileStatement(void);
         std::shared_ptr<Stmt> forStatement(void);
+        std::shared_ptr<Stmt> returnStatement(void);
 };

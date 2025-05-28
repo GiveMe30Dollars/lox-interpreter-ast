@@ -79,3 +79,6 @@ std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
 std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
     return "(funDecl:" + curr->name.toString() + ")";
 }
+std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
+    return "(return " + print(curr->expr) + ")";
+}

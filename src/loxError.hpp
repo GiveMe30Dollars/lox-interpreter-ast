@@ -41,3 +41,10 @@ class LoxError{
         }
     };
 };
+
+class LoxReturn{
+    // Wrapper class for returning an object from a function.
+    public:
+    Object obj;
+    LoxReturn(Object obj) : obj(obj) {}
+};

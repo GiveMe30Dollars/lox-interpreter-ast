@@ -10,7 +10,13 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object> arguments
     for (int i = 0; i < declaration->params.size(); i++){
         env->define(declaration->params[i], arguments[i]);
     }
-    interpreter.executeBlock(declaration->body, env);
+    try{
+        interpreter.executeBlock(declaration->body, env);
+    }
+    catch (LoxReturn val){
+        return val.obj;
+    }
+    // return nil by default if no value specified
     return Object::nil();
 }
 

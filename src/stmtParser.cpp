@@ -75,10 +75,11 @@ std::shared_ptr<Stmt> StmtParser::varDeclaration(){
 }
 std::shared_ptr<Stmt> StmtParser::statement(){
     if (match(Token::PRINT)) return printStatement();
-    if (match(Token::IF)) return ifStatement();
     if (match(Token::LEFT_BRACE)) return std::make_shared<Block>(block());
+    if (match(Token::IF)) return ifStatement();
     if (match(Token::WHILE)) return whileStatement();
     if (match(Token::FOR)) return forStatement();
+    if (match(Token::RETURN)) return returnStatement();
     return exprStatement();
 }
 std::shared_ptr<Stmt> StmtParser::exprStatement(){
@@ -200,4 +201,12 @@ std::shared_ptr<Stmt> StmtParser::functionDeclaration(std::string kind){
     std::vector<std::shared_ptr<Stmt>> body = block();
 
     return std::make_shared<Function>(name, parameters, body);
+}
+std::shared_ptr<Stmt> StmtParser::returnStatement(){
+    Token keyword = previous();
+    std::shared_ptr<Expr> expr = nullptr;
+    if (!check(Token::SEMICOLON)) expr = expression();
+    consume(Token::SEMICOLON, "Expect ';' after return value.");
+
+    return std::make_shared<Return>(keyword, expr);
 }
