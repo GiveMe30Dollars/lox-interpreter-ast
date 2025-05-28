@@ -1,6 +1,6 @@
 // requires tokens
 #include "token.hpp"
-#include "loxError.hpp"
+#include "loxOutput.hpp"
 
 #pragma once
 

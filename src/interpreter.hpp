@@ -1,7 +1,7 @@
 // requires expressions, statements and ability to throw LoxErrors
 #include "expr.hpp"
 #include "stmt.hpp"
-#include "loxError.hpp"
+#include "loxOutput.hpp"
 
 // requires Environments (support for variables and scope)
 #include "environment.hpp"

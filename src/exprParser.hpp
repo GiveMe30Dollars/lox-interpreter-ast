@@ -5,7 +5,7 @@
 
 // requires expressions, ability to throw errors
 #include "expr.hpp"
-#include "loxError.hpp"
+#include "loxOutput.hpp"
 
 #pragma once
 
