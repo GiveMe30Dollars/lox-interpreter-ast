@@ -14,9 +14,12 @@ class Environment{
     public:
     Environment() {}
     Environment(std::shared_ptr<Environment> enclosing) : enclosing(enclosing) {}
-    void define(Token& name, Object value){
+    void define(std::string name, Object value){
         // defines a variable and its value.
-        values[name.lexeme] = value;
+        values[name] = value;
+    }
+    void define(Token& name, Object value){
+        define(name.lexeme, value);
     }
     Object get(Token& name){
         // gets a variable from this and enclosing scopes.

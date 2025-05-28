@@ -5,7 +5,7 @@ Interpreter::Interpreter(){
     globals = std::make_shared<Environment>();
     env = globals;
 
-    globals.define("clock", Clock());
+    globals->define("clock", Object::function(std::make_shared<LoxCallable>(Clock())));
 }
 
 Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
@@ -137,9 +137,9 @@ std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
     else throw "UNIMPLEMENTED class Call for Interpreter!";
 
     if (arguments.size() != callable->arity())
-        throw error(curr->paren, "Expected " + callable->arity() + " arguments but got " + arguments.size()) + ".";
+        throw error(curr->paren, "Expected " + std::to_string(callable->arity()) + " arguments but got " + std::to_string(arguments.size()) + ".");
     
-    return callable->call(this, arguments);
+    return callable->call(*this, arguments);
 }
 
 std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
