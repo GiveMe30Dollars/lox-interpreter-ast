@@ -1,5 +1,9 @@
 #include "token.hpp"
 
+// include LoxCallable, LoxClass and LoxInstance.
+// required for implementation details.
+#include "loxCallable.hpp"
+
 std::unordered_map<Token::TokenType,std::string> Token::tokenTypeName = {
     {LEFT_PAREN, "LEFT_PAREN"}, 
     {RIGHT_PAREN, "RIGHT_PAREN"},

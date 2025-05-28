@@ -91,8 +91,8 @@ equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
 factor         → unary ( ( "/" | "*" ) unary )* ;
-unary          → ( "!" | "-" ) unary
-               | primary ;
+unary          → ( "!" | "-" ) unary | call ;
+call           → primary ( "(" arguments? ")" )* ;
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" | IDENTIFIER ;
 */
@@ -183,7 +183,28 @@ std::shared_ptr<Expr> ExprParser::unary(){
         std::shared_ptr<Expr> expr = unary();
         return std::make_shared<Unary>(op, expr);
     }
-    return primary();
+    return call();
+}
+
+std::shared_ptr<Expr> ExprParser::call(){
+    std::shared_ptr<Expr> expr = primary();
+    while (true){
+        if (match(Token::LEFT_PAREN)){
+            expr = finishCall(expr);
+        }
+        else break;
+    }
+    return expr;
+}
+std::shared_ptr<Expr> ExprParser::finishCall(std::shared_ptr<Expr> callee){
+    std::vector<std::shared_ptr<Expr>> arguments = {};
+    if (!check(Token::RIGHT_PAREN)){
+        do{
+            arguments.push_back(expression());
+        } while (match(Token::COMMA));
+    }
+    Token paren = consume(Token::RIGHT_PAREN, "Expect ')' after arguments.");
+    return std::make_shared<Call>(callee, paren, arguments);
 }
 
 std::shared_ptr<Expr> ExprParser::primary(){

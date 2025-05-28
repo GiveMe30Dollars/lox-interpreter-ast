@@ -20,8 +20,8 @@ equality       → comparison ( ( "!=" | "==" ) comparison )* ;
 comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 term           → factor ( ( "-" | "+" ) factor )* ;
 factor         → unary ( ( "/" | "*" ) unary )* ;
-unary          → ( "!" | "-" ) unary
-               | primary ;
+unary          → ( "!" | "-" ) unary | call ;
+call           → primary ( "(" arguments? ")" )* ;
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" | IDENTIFIER ;
 */
@@ -61,5 +61,8 @@ class ExprParser{
         std::shared_ptr<Expr> term();
         std::shared_ptr<Expr> factor();
         std::shared_ptr<Expr> unary();
+        std::shared_ptr<Expr> call();
         std::shared_ptr<Expr> primary();
+
+        std::shared_ptr<Expr> finishCall(std::shared_ptr<Expr> callee);
 };

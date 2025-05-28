@@ -3,7 +3,7 @@
 #include "stmtParser.hpp"
 #include "interpreter.hpp"
 // not required, but useful for debugging
-#include "ASTPrinter.hpp"
+//#include "ASTPrinter.hpp"
 
 #pragma once
 

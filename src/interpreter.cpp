@@ -115,6 +115,11 @@ std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     return obj;
 }
 
+std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
+    throw "UNIMPLEMENTED visitCall in Interpreter!";
+    return nullptr;
+}
+
 std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
     Object left = evaluate(curr->left);
 

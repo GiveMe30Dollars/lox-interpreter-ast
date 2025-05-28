@@ -65,6 +65,8 @@ class ExprVisitor{
         virtual std::any visitVariable(std::shared_ptr<Variable> curr) = 0;
         virtual std::any visitAssign(std::shared_ptr<Assign> curr) = 0;
         virtual std::any visitLogical(std::shared_ptr<Logical> curr) = 0;
+
+        virtual std::any visitCall(std::shared_ptr<Call> curr) = 0;
 };
 
 class Expr{
@@ -134,4 +136,16 @@ class Logical : public Expr, public std::enable_shared_from_this<Logical>{
         Logical(std::shared_ptr<Expr> left, Token op, std::shared_ptr<Expr> right):
             left(left), op(op), right(right) {}
         std::any accept(ExprVisitor& v) override { return v.visitLogical(shared_from_this()); }
+};
+
+// ---CHILD CLASSES (FUNCTIONS, CLASSES AND METHODS)---
+class Call : public Expr, public std::enable_shared_from_this<Call>{
+    // An expression for a call by a callable.
+    public:
+        std::shared_ptr<Expr> callee;
+        Token paren;
+        std::vector<std::shared_ptr<Expr>> arguments;
+        Call(std::shared_ptr<Expr> callee, Token paren, std::vector<std::shared_ptr<Expr>> arguments) :
+            callee(callee), paren(paren), arguments(arguments) {}
+        std::any accept(ExprVisitor& v) override { return v.visitCall(shared_from_this()); }
 };

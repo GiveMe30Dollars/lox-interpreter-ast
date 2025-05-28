@@ -9,8 +9,16 @@
 // required for smart pointers
 #include <memory>
 
-#include "loxCallable.hpp"
 #pragma once
+
+// LoxCallable, LoxClass and LoxInstance are included in the .cpp file and
+// are SEPARATELY DECLARED defined in the .hpp file.
+// this is to avoid circular dependencies.
+// As Object methods are not defined in header files, and are only needed for smart pointers
+// no implementation details of the classes themselves is required.
+class LoxCallable;
+//class LoxClass;
+//class LoxInstance;
 
 /*
     HEADER FILES SHOUD DECLARE:
