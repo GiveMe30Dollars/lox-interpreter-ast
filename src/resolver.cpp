@@ -152,13 +152,19 @@ void Resolver::endScope(void){
 }
 void Resolver::declare(Token name){
     // declares a variable [name] in the topmost (current) scope by setting to false
-    // does nothing if variable already defined
+    // redeclaration of local variable is a compilation error (DO NOT THROW)
+    // redeclaration of global variable is not tracked by [scopes] and permitted
     if (scopes.empty()) return;
+    if (scopes.back().count(name.lexeme))
+        error(name, "Already a variable with this name in this scope.").print();
     scopes.back().insert({name.lexeme, false});
 }
 void Resolver::define(Token name){
     // defines a variable [name] in the topmost (current) scope by setting to true
-    // declaration and definition are coupled in Lox
+    // declaration and definition are coupled in Lox,
+    // so accessing a variable that is declared but not defined is a compilation error (DO NOT THROW)
+    // redefinition can only happen with redeclaration and is thus not permitted
+    // reassignment is treated separately from redefinition.
     if (scopes.empty()) return;
     scopes.back().at(name.lexeme) = true;
 }
@@ -166,6 +172,7 @@ void Resolver::resolveLocal(std::shared_ptr<Expr> expr, Token name){
     // given a local variable [name], find the number of steps required
     // to resolve the variable to its scope
     // resolved variable are defined in its environment, evaluated line-by-line
+    // store result as hash table
     for (int i = scopes.size() - 1; i >= 0; i--){
         if (scopes[i].count(name.lexeme)){
             interpreter.resolve(expr, scopes.size() - 1 - i);
