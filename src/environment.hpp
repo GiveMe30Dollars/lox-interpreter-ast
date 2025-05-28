@@ -3,7 +3,7 @@
 // required for smart pointers
 #include <memory>
 // requires LoxErrors
-#include "loxError.hpp"
+#include "loxOutput.hpp"
 
 #pragma once
 

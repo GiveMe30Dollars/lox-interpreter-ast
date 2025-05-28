@@ -223,10 +223,17 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
 
 void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> newScope){
     // change scope to new and execute statements in block. restore scope afterwards
+    // if an exception is caught, restore scope before rethrowing
     const std::shared_ptr<Environment> prev = env;
-    env = newScope;
-    execute(statements);
-    env = prev; 
+    try{
+        env = newScope;
+        execute(statements);
+        env = prev; 
+    }
+    catch(...){
+        env = prev;
+        throw;
+    }
 }
 
 bool Interpreter::isTruthy(Object obj){
