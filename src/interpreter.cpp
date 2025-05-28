@@ -206,7 +206,8 @@ std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
 
 std::any Interpreter::visitFunction(std::shared_ptr<Function> curr){
     // create and store LoxFunction in local scope
-    throw "UNIMPLEMENTED!";
+    std::shared_ptr<LoxFunction> func = std::make_shared<LoxFunction>(curr);
+    env->define(curr->name.lexeme, Object::function(func));
     return nullptr;
 }
 

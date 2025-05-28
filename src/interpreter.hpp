@@ -8,6 +8,7 @@
 
 // requires LoxCallables (support for functions, classes and methods)
 #include "loxCallable.hpp"
+#include "loxFunction.hpp"
 
 #pragma once
 

@@ -9,5 +9,7 @@ class LoxFunction : public LoxCallable{
     public:
         std::shared_ptr<Function> declaration;
         LoxFunction(std::shared_ptr<Function> declaration) : declaration(declaration) {}
+        int arity(void) override;
         Object call(Interpreter& interpreter, std::vector<Object> arguments) override;
+        std::string toString(void) override;
 };
