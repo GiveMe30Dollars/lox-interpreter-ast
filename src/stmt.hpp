@@ -45,6 +45,7 @@ class Stmt{
         virtual std::any accept(StmtVisitor& v) = 0;
 };
 
+
 // ---CHILD CLASSES---
 // note: enable_shared_from_this MUST BE inherited as PUBLIC
 
@@ -80,6 +81,7 @@ class Block : public Stmt, public std::enable_shared_from_this<Block>{
         std::any accept(StmtVisitor& v) override { return v.visitBlock(shared_from_this()); }
 };
 
+
 // ---CHILD CLASSES (CONTROL FLOW)---
 class If : public Stmt, public std::enable_shared_from_this<If>{
     // A statement encapsulating an if-then-else control flow
@@ -101,15 +103,6 @@ class While : public Stmt, public std::enable_shared_from_this<While>{
         std::any accept(StmtVisitor& v) override { return v.visitWhile(shared_from_this()); }
 };
 
-class While : public Stmt, public std::enable_shared_from_this<While>{
-    // A statement encapsulating a while loop
-    public:
-        std::shared_ptr<Expr> condition;
-        std::shared_ptr<Stmt> body;
-        While(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> body) :
-            condition(condition), body(body) {}
-        std::any accept(StmtVisitor& v) override { return v.visitWhile(shared_from_this()); }
-};
 
 // ---CHILD CLASSES (FUNCTIONS AND CLASSES)---
 class Function : public Stmt, public std::enable_shared_from_this<Function>{
