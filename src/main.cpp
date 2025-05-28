@@ -8,7 +8,13 @@
 #include <unordered_set>
 #include <unordered_map>
 
+// main Lox class for scanning, parsing and executing Lox files
 #include "lox.hpp"
+
+// components of Lox for testcases
+#include "scanner.hpp"
+#include "stmtParser.hpp"
+#include "ASTPrinter.hpp"
 
 std::string read_file_contents(const std::string& filename);
 
@@ -44,7 +50,6 @@ int main(int argc, char *argv[]) {
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
         if (scanner.hasError) return 65;
-        //for (Token t : tokens) std::cerr << t.toString() << "\n";
 
         ExprParser parser(tokens);
         std::shared_ptr<Expr> expr = parser.parse();
