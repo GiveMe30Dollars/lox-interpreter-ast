@@ -5,7 +5,7 @@ Interpreter::Interpreter(){
     globals = std::make_shared<Environment>();
     env = globals;
 
-    globals->define("clock", Object::function(std::make_shared<LoxCallable>(Clock())));
+    globals->define("clock", Object::function(std::make_shared<Clock>()));
 }
 
 Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
