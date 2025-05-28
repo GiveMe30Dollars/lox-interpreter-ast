@@ -56,8 +56,10 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     LoxError::RuntimeError error(Token op, std::string message);
 
     void resolve(std::shared_ptr<Expr> expr, int steps);
+    Object lookUpVariable(std::shared_ptr<Variable> expr);
 
     private:
+    std::unordered_map<std::shared_ptr<Expr>, int> locals;
     bool isTruthy(Object obj);
     bool isEqual(Object a, Object b);
 };

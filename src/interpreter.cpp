@@ -2,10 +2,12 @@
 
 Interpreter::Interpreter(){
     // initialize global environment, as well as define native functions
-    globals = std::make_shared<Environment>();
-    env = globals;
-
+    globals = std::make_shared<Environment>(nullptr);
     globals->define("clock", Object::function(std::make_shared<Clock>()));
+
+    env = globals;
+    // initialize locals as empty. this will be filled during resolving
+    locals = {};
 }
 
 Object Interpreter::evaluate(std::shared_ptr<Expr> expr){
@@ -107,15 +109,21 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 }
 
 std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
-    // returns stored value. if it doesn't exist, throw RuntimeError
-    return env->get(curr->name);
+    // returns stored value as statically resolved by Resolver
+    // relies on Resolver being fully implemented
+    return lookUpVariable(curr);
 }
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
-    // sets the value of the variable in the closest enclosing scope
-    // (including current scope) to the evaluated expression.
+    // sets the value of the variable to the evaluated expression,
+    // binded to static scope as resolved by Resolver
+    // relies on Resolver being fully implemented
     // returns the evaluated expression
     Object obj = evaluate(curr->expr);
-    env->set(curr->name, obj);
+
+    // local variable / global variable
+    if (locals.count(curr)) env->assignAt(locals.at(curr), curr->name, obj);
+    else globals->assign(curr->name, obj);
+
     return obj;
 }
 
@@ -184,7 +192,7 @@ std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
 std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
     Token name = curr->name;
     Object initializer = curr->initializer ? evaluate(curr->initializer) : Object::nil();
-    env->define(name, initializer);
+    env->define(name.lexeme, initializer);
     return nullptr;
 }
 std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
@@ -236,8 +244,17 @@ void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, s
     }
 }
 
-void resolve(std::shared_ptr<Expr> expr, int steps){
-    throw "UNIMPLEMENTED resolve in Interpreter!";
+void Interpreter::resolve(std::shared_ptr<Expr> expr, int steps){
+    locals.insert({expr, steps});
+}
+Object Interpreter::lookUpVariable(std::shared_ptr<Variable> expr){
+    // if locals contains the variable, it is static-scope
+    if (locals.count(expr)){
+        int distance = locals.at(expr);
+        return env->getAt(distance, expr->name);
+    }
+    // variable is in global scope. fetch and return.
+    else return globals->get(expr->name);
 }
 
 bool Interpreter::isTruthy(Object obj){

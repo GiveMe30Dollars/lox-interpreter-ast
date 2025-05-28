@@ -55,8 +55,9 @@ std::any Resolver::visitVariable(std::shared_ptr<Variable> curr){
     resolveLocal(curr, curr->name);
 }
 std::any Resolver::visitAssign(std::shared_ptr<Assign> curr){
+    // resolve nested expression. then, resolve the whole assignment
     resolve(curr->expr);
-    resolveLocal(curr->expr, curr->name);
+    resolveLocal(curr, curr->name);
 }
 std::any Resolver::visitLogical(std::shared_ptr<Logical> curr){
     resolve(curr->left);
