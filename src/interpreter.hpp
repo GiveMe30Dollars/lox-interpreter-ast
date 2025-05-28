@@ -43,11 +43,14 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
     std::any visitIf(std::shared_ptr<If> curr) override;
     std::any visitWhile(std::shared_ptr<While> curr) override;
 
-    private:
+    std::any visitFunction(std::shared_ptr<Function> curr) override;
+
     std::shared_ptr<Environment> globals;
     std::shared_ptr<Environment> env;
     void executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> env);
+    LoxError::RuntimeError error(Token op, std::string message);
+
+    private:
     bool isTruthy(Object obj);
     bool isEqual(Object a, Object b);
-    LoxError::RuntimeError error(Token op, std::string message);
 };

@@ -9,7 +9,7 @@
 class Interpreter;
 
 class LoxCallable{
-    // Abstract class implementing a callable Lox object type
+    // Abstract class implementing the l-value (locator value) of a callable Lox object type
     public:
         virtual ~LoxCallable(void) = default;
         virtual int arity(void) = 0;
@@ -27,6 +27,6 @@ class Clock : public LoxCallable{
         );
     }
     std::string toString(void) override{
-        return "<native:clock>";
+        return "<native_fn:clock>";
     }
 };

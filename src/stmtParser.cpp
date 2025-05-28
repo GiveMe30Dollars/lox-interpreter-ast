@@ -4,7 +4,8 @@
 /*
 program        → declaration* EOF ;
 
-declaration    → varDecl
+declaration    → funDecl
+               | varDecl
                | statement ;
 
 statement      → exprStmt
@@ -52,8 +53,9 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
 // ---BASE STATEMENTS---
 std::shared_ptr<Stmt> StmtParser::declaration(){
     try {
+        if (match(Token::FUN)) return functionDeclaration("function");
         if (match(Token::VAR)) return varDeclaration();
-        else return statement();
+        return statement();
     }
     catch(LoxError::ParseError err){
         // synchronize and return.
@@ -74,7 +76,7 @@ std::shared_ptr<Stmt> StmtParser::varDeclaration(){
 std::shared_ptr<Stmt> StmtParser::statement(){
     if (match(Token::PRINT)) return printStatement();
     if (match(Token::IF)) return ifStatement();
-    if (match(Token::LEFT_BRACE)) return block();
+    if (match(Token::LEFT_BRACE)) return std::make_shared<Block>(block());
     if (match(Token::WHILE)) return whileStatement();
     if (match(Token::FOR)) return forStatement();
     return exprStatement();
@@ -89,7 +91,7 @@ std::shared_ptr<Stmt> StmtParser::printStatement(){
     consume(Token::SEMICOLON, "Expect ';' after value.");
     return std::make_shared<Print>(expr);
 }
-std::shared_ptr<Stmt> StmtParser::block(){
+std::vector<std::shared_ptr<Stmt>> StmtParser::block(){
     std::vector<std::shared_ptr<Stmt>> statements = {};
     while (!check(Token::RIGHT_BRACE) && !isAtEnd()){
         std::shared_ptr<Stmt> stmt = declaration();
@@ -97,7 +99,7 @@ std::shared_ptr<Stmt> StmtParser::block(){
         if (stmt) statements.push_back(stmt);
     }
     consume(Token::RIGHT_BRACE, "Expect '}' after block.");
-    return std::make_shared<Block>(statements);
+    return statements;
 }
 
 // ---CONTROL FLOW---
@@ -175,4 +177,27 @@ std::shared_ptr<Stmt> StmtParser::forStatement(){
     }
 
     return whileBlock;
+}
+
+// ---FUNCTIONS AND CLASSES---
+std::shared_ptr<Stmt> StmtParser::functionDeclaration(std::string kind){
+    Token name = consume(Token::IDENTIFIER, "Expect " + kind + " name.");
+    consume(Token::LEFT_PAREN, "Expect '(' after " + kind + " name.");
+
+    // parse parameters
+    std::vector<Token> parameters = {};
+    if (!check(Token::RIGHT_PAREN)){
+        do{
+            if (parameters.size() >= 255)
+                error(peek(), "Can't have more than 255 arguments.");
+            parameters.push_back(consume(Token::IDENTIFIER, "Expect variable name."));
+        } while(match(Token::COMMA));
+    }
+    consume(Token::RIGHT_PAREN, "Expect ')' after parameters.");
+
+    // block() expects the opening brace to be consumed
+    consume(Token::LEFT_BRACE, "Expect '{' before " + kind + " body.");
+    std::vector<std::shared_ptr<Stmt>> body = block();
+
+    return std::make_shared<Function>(name, parameters, body);
 }

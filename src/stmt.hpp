@@ -12,6 +12,7 @@ class Var;
 class Block;
 class If;
 class While;
+class Function;
 
 class StmtVisitor{
     // Abstract class implementing the Visitor design pattern for Stmt.
@@ -26,6 +27,8 @@ class StmtVisitor{
 
         virtual std::any visitIf(std::shared_ptr<If> curr) = 0;
         virtual std::any visitWhile(std::shared_ptr<While> curr) = 0;
+
+        virtual std::any visitFunction(std::shared_ptr<Function> curr) = 0;
 };
 
 /*
@@ -96,4 +99,26 @@ class While : public Stmt, public std::enable_shared_from_this<While>{
         While(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> body) :
             condition(condition), body(body) {}
         std::any accept(StmtVisitor& v) override { return v.visitWhile(shared_from_this()); }
+};
+
+class While : public Stmt, public std::enable_shared_from_this<While>{
+    // A statement encapsulating a while loop
+    public:
+        std::shared_ptr<Expr> condition;
+        std::shared_ptr<Stmt> body;
+        While(std::shared_ptr<Expr> condition, std::shared_ptr<Stmt> body) :
+            condition(condition), body(body) {}
+        std::any accept(StmtVisitor& v) override { return v.visitWhile(shared_from_this()); }
+};
+
+// ---CHILD CLASSES (FUNCTIONS AND CLASSES)---
+class Function : public Stmt, public std::enable_shared_from_this<Function>{
+    // A statement encapsulating a function declaration
+    public:
+        Token name;
+        std::vector<Token> params;
+        std::vector<std::shared_ptr<Stmt>> body;
+        Function(Token name, std::vector<Token> params, std::vector<std::shared_ptr<Stmt>> body) :
+            name(name), params(params), body(body) {}
+        std::any accept(StmtVisitor& v) override { return v.visitFunction(shared_from_this()); }
 };

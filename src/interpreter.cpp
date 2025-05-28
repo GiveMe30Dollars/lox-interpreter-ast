@@ -204,6 +204,12 @@ std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
     return nullptr;
 }
 
+std::any Interpreter::visitFunction(std::shared_ptr<Function> curr){
+    // create and store LoxFunction in local scope
+    throw "UNIMPLEMENTED!";
+    return nullptr;
+}
+
 // ---HELPER FUNCTIONS---
 
 void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, std::shared_ptr<Environment> newScope){

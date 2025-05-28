@@ -35,4 +35,6 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
         std::any visitIf(std::shared_ptr<If> curr) override;
         std::any visitWhile(std::shared_ptr<While> curr) override;
 
+        std::any visitFunction(std::shared_ptr<Function> curr) override;
+
 };

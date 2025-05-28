@@ -64,6 +64,7 @@ std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     return "(block" + s + ")";
 }
 
+// ---STMT (CONTROL FLOW)---
 std::any ASTPrinter::visitIf(std::shared_ptr<If> curr){
     return "(if " + print(curr->condition) 
         + " then " + print(curr->thenBranch) 
@@ -72,4 +73,9 @@ std::any ASTPrinter::visitIf(std::shared_ptr<If> curr){
 std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
     return "(while " + print(curr->condition)
         + " " + print(curr->body) + ")";
+}
+
+// ---STMT (FUNCTIONS AND CLASSES)---
+std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
+    return "(funDecl:" + curr->name.toString() + ")";
 }

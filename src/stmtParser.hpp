@@ -7,7 +7,8 @@
 /*
 program        → declaration* EOF ;
 
-declaration    → varDecl
+declaration    → funDecl
+               | varDecl
                | statement ;
 
 statement      → exprStmt
@@ -25,13 +26,14 @@ class StmtParser : public ExprParser{
         StmtParser(std::vector<Token> tokens) : ExprParser(tokens) {}
         std::vector<std::shared_ptr<Stmt>> parse(bool parseExpr = false);
     protected:
-        std::shared_ptr<Stmt> declaration();
-        std::shared_ptr<Stmt> varDeclaration();
-        std::shared_ptr<Stmt> statement();
-        std::shared_ptr<Stmt> exprStatement();
-        std::shared_ptr<Stmt> printStatement();
-        std::shared_ptr<Stmt> block();
-        std::shared_ptr<Stmt> ifStatement();
-        std::shared_ptr<Stmt> whileStatement();
-        std::shared_ptr<Stmt> forStatement();
+        std::shared_ptr<Stmt> declaration(void);
+        std::shared_ptr<Stmt> functionDeclaration(std::string kind);
+        std::shared_ptr<Stmt> varDeclaration(void);
+        std::shared_ptr<Stmt> statement(void);
+        std::shared_ptr<Stmt> exprStatement(void);
+        std::shared_ptr<Stmt> printStatement(void);
+        std::vector<std::shared_ptr<Stmt>> block(void);
+        std::shared_ptr<Stmt> ifStatement(void);
+        std::shared_ptr<Stmt> whileStatement(void);
+        std::shared_ptr<Stmt> forStatement(void);
 };
