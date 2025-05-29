@@ -180,6 +180,7 @@ std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
         obj.loxInstance->set(curr->name, value);
         return value;
     }
+    std::cerr << obj.type << "\n";
     throw error(curr->name, "Only instances have properties.");
 }
 std::any Interpreter::visitThis(std::shared_ptr<This> curr){
