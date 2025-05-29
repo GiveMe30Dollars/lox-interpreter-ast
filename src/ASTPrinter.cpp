@@ -46,16 +46,14 @@ std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
     return "(call " + print(curr->callee) + ")";
 }
 std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
-    std::cerr << "at visitGet!\n";
     return "(get " + print(curr->expr) + "." + curr->name.lexeme + ")";
 }
 std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
-    std::cerr << "at visitSet!\n";
     return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
 std::any ASTPrinter::visitThis(std::shared_ptr<This> curr){
-    std::cerr << "at this!\n";
-    return "this";
+    // yes, this cast is necessary. string literals are read as const char[]
+    return std::string("this");
 }
 
 // ---STATEMENTS---
@@ -91,24 +89,20 @@ std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
 
 // ---STMT (FUNCTIONS AND CLASSES)---
 std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
-    std::cerr << "in visitFunction!\n";
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->body){
         s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
     }
     currIndent -= increment;
-    std::cerr << "passed stmt loop!\n";
 
     std::string args = "";
     for (Token token : curr->params)
         args = args + " " + token.lexeme;
     if (args == "") args = " none";
-    std::cerr << "passed arg loop!\n";
 
     std::string output = "(funDecl: " + curr->name.lexeme + " args" + args + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
-    std::cerr << output << "\n";
     return output;
 }
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
@@ -124,6 +118,5 @@ std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
 
     std::string output = "(classDecl: " + curr->name.lexeme + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
-    std::cerr << output << "\n";
     return output;
 }
