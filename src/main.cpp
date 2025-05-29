@@ -18,6 +18,14 @@
 
 std::string read_file_contents(const std::string& filename);
 
+int usageInfo(){
+    std::cerr << "Usage: ./your_program tokenize <filename>" << std::endl;
+    std::cerr << "Usage: ./your_program parse <filename>" << std::endl;
+    std::cerr << "Usage: ./your_program evaluate <filename>" << std::endl;
+    std::cerr << "Usage: ./your_program run <filename>" << std::endl;
+    std::cerr << "Usage: ./your_program run <filename>" << std::endl;
+    return 1;
+}
 
 int main(int argc, char *argv[]) {
     // Disable output buffering
@@ -27,12 +35,13 @@ int main(int argc, char *argv[]) {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     // std::cerr << "Logs from your program will appear here!" << std::endl;
 
-    if (argc < 3) {
-        std::cerr << "Usage: ./your_program tokenize <filename>" << std::endl;
-        return 1;
+    if (argc < 2 || argc > 3) {
+        return usageInfo();
     }
-
     const std::string command = argv[1];
+    if (argc < 3 && command != "repl"){
+        return usageInfo();
+    }
 
     if (command == "tokenize") {
         std::string file_contents = read_file_contents(argv[2]);
@@ -41,7 +50,6 @@ int main(int argc, char *argv[]) {
         std::vector<Token> tokens = scanner.scan();
         for (Token t : tokens) std::cout << t.toString() << "\n";
         return scanner.hasError ? 65 : 0;
-        
     } 
 
     if (command == "parse"){
@@ -75,11 +83,20 @@ int main(int argc, char *argv[]) {
         if (Lox::hasRuntimeError) return 70;
         return 0;
     }
-    
+    if (command == "repl"){
+        std::cout << " ---LOX REPL---\nTo exit, type exit().\n";
+        while(true){
+            std::string replInput = "";
+            std::cin >> replInput;
+            if (replInput == "exit()") break;
+            Lox::run(replInput, true);
+        }
+        return 0;
+    }
     
     else {
         std::cerr << "Unknown command: " << command << std::endl;
-        return 1;
+        return usageInfo();
     }
     return 0;
 }

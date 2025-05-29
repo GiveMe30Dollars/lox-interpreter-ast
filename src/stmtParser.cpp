@@ -221,7 +221,7 @@ std::shared_ptr<Stmt> StmtParser::classDeclaration(){
         consume(Token::IDENTIFIER, "Expect superclass name.");
         superclass = std::make_shared<VariableExpr>(previous());
     }
-    
+
     consume(Token::LEFT_BRACE, "Expect '{' before class body");
 
     // consume all methods.
