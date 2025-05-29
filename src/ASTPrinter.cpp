@@ -68,7 +68,7 @@ std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->statements){
-        s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
+        s = s + "   " + print(stmt) + "\n";
     }
     currIndent -= increment;
     return "(block:\n" + s + std::string(currIndent, ' ') + "end)";
