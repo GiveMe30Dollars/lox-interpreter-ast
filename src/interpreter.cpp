@@ -29,14 +29,14 @@ std::any Interpreter::visit(std::shared_ptr<Stmt> curr){
 }
 
 // ---EXPR CHILD CLASSES---
-std::any Interpreter::visitLiteral(std::shared_ptr<Literal> curr){
+std::any Interpreter::visitLiteralExpr(std::shared_ptr<LiteralExpr> curr){
     return curr->obj;
 }
-std::any Interpreter::visitGrouping(std::shared_ptr<Grouping> curr){
+std::any Interpreter::visitGroupingExpr(std::shared_ptr<GroupingExpr> curr){
     return evaluate(curr->expr);
 }
 
-std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
+std::any Interpreter::visitUnaryExpr(std::shared_ptr<UnaryExpr> curr){
     Object obj = evaluate(curr->expr);
     Token op = curr->op;
     if (op.type == Token::BANG){
@@ -50,7 +50,7 @@ std::any Interpreter::visitUnary(std::shared_ptr<Unary> curr){
     else throw error(op, "UNIMPLEMENTED unary operator!");
 }
 
-std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
+std::any Interpreter::visitBinaryExpr(std::shared_ptr<BinaryExpr> curr){
     Object left = evaluate(curr->left);
     Object right = evaluate(curr->right);
     Token op = curr->op;
@@ -108,12 +108,12 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
     }
 }
 
-std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
+std::any Interpreter::visitVariableExpr(std::shared_ptr<VariableExpr> curr){
     // returns stored value as statically resolved by Resolver
     // relies on Resolver being fully implemented
     return lookUpVariable(curr->name, curr);
 }
-std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
+std::any Interpreter::visitAssignExpr(std::shared_ptr<AssignExpr> curr){
     // sets the value of the variable to the evaluated expression,
     // binded to static scope as resolved by Resolver
     // relies on Resolver being fully implemented
@@ -126,7 +126,7 @@ std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
 
     return obj;
 }
-std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
+std::any Interpreter::visitLogicalExpr(std::shared_ptr<LogicalExpr> curr){
     Object left = evaluate(curr->left);
 
     // There are only 2 operators: AND, OR
@@ -143,7 +143,7 @@ std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
     return evaluate(curr->right);
 }
 
-std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
+std::any Interpreter::visitCallExpr(std::shared_ptr<CallExpr> curr){
     // evaluate callee and arguments
     Object callee = evaluate(curr->callee);
     std::vector<Object> arguments = {};
@@ -166,14 +166,14 @@ std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
     
     return callable->call(*this, arguments);
 }
-std::any Interpreter::visitGet(std::shared_ptr<Get> curr){
+std::any Interpreter::visitGetExpr(std::shared_ptr<GetExpr> curr){
     Object obj = evaluate(curr->expr);
     if (obj.type == Object::LOX_INSTANCE){
         return obj.loxInstance->get(curr->name);
     }
     throw error(curr->name, "Only instances have properties.");
 }
-std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
+std::any Interpreter::visitSetExpr(std::shared_ptr<SetExpr> curr){
     Object obj = evaluate(curr->expr);
     if (obj.type == Object::LOX_INSTANCE){
         Object value = evaluate(curr->value);
@@ -182,18 +182,18 @@ std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
     }
     throw error(curr->name, "Only instances have properties.");
 }
-std::any Interpreter::visitThis(std::shared_ptr<This> curr){
+std::any Interpreter::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     return lookUpVariable(curr->keyword, curr);
 }
 
 /// ---STMT CHILD CLASSES---
-std::any Interpreter::visitExpression(std::shared_ptr<Expression> curr){
+std::any Interpreter::visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr){
     // evaluate the expression even if its value is unused
     // this causes eg. 45 + "lorem"; to correctly throw a RuntimeError
     evaluate(curr->expr);
     return nullptr;
 }
-std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
+std::any Interpreter::visitPrintStmt(std::shared_ptr<PrintStmt> curr){
     Object obj = evaluate(curr->expr);
 
     // The .0 workaround for Codecrafters.io. You know the deal.
@@ -208,36 +208,36 @@ std::any Interpreter::visitPrint(std::shared_ptr<Print> curr){
     std::cout << s << "\n";
     return nullptr;
 }
-std::any Interpreter::visitVar(std::shared_ptr<Var> curr){
+std::any Interpreter::visitVarStmt(std::shared_ptr<VarStmt> curr){
     Token name = curr->name;
     Object initializer = curr->initializer ? evaluate(curr->initializer) : Object::nil();
     env->define(name.lexeme, initializer);
     return nullptr;
 }
-std::any Interpreter::visitBlock(std::shared_ptr<Block> curr){
+std::any Interpreter::visitBlockStmt(std::shared_ptr<BlockStmt> curr){
     // create new scope for execution of block
     executeBlock(curr->statements, std::make_shared<Environment>(env));
     return nullptr;
 }
 
-std::any Interpreter::visitIf(std::shared_ptr<If> curr){
+std::any Interpreter::visitIfStmt(std::shared_ptr<IfStmt> curr){
     if (isTruthy(evaluate(curr->condition))) execute(curr->thenBranch);
     else if (curr->elseBranch) execute(curr->elseBranch);
     return nullptr;
 }
-std::any Interpreter::visitWhile(std::shared_ptr<While> curr){
+std::any Interpreter::visitWhileStmt(std::shared_ptr<WhileStmt> curr){
     while (isTruthy(evaluate(curr->condition)))
         execute(curr->body);
     return nullptr;
 }
 
-std::any Interpreter::visitFunction(std::shared_ptr<Function> curr){
+std::any Interpreter::visitFunctionStmt(std::shared_ptr<FunctionStmt> curr){
     // create and store LoxFunction in local scope
     std::shared_ptr<LoxFunction> func = std::make_shared<LoxFunction>(curr, env);
     env->define(curr->name.lexeme, Object::function(func));
     return nullptr;
 }
-std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
+std::any Interpreter::visitReturnStmt(std::shared_ptr<ReturnStmt> curr){
     // return expression, if any. LoxReturn is caught at end of function call
     Object obj;
     if (curr->expr) obj = evaluate(curr->expr);
@@ -245,14 +245,14 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
     throw LoxReturn(obj);
     return nullptr;    // Unreachable.
 }
-std::any Interpreter::visitClass(std::shared_ptr<Class> curr){
+std::any Interpreter::visitClassStmt(std::shared_ptr<ClassStmt> curr){
     // create and store LoxClass in local scope
     // declares class name first to allow for recursive definitions of functions
     // all methods are also cast from Function:Stmt to LoxFunction
     env->define(curr->name.lexeme, Object::nil());
 
     std::unordered_map<std::string, std::shared_ptr<LoxFunction>> methods = {};
-    for (std::shared_ptr<Function> method : curr->methods){
+    for (std::shared_ptr<FunctionStmt> method : curr->methods){
         bool isInitializer = method->name.lexeme == "init";
         std::shared_ptr<LoxFunction> loxFunc = std::make_shared<LoxFunction>(method, env, isInitializer);
         methods.insert({method->name.lexeme, loxFunc});

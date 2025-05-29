@@ -31,32 +31,32 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         std::any visit(std::shared_ptr<Stmt> curr) override;
 
         // EXPR CHILD CLASSES
-        std::any visitLiteral(std::shared_ptr<Literal> curr) override;
-        std::any visitGrouping(std::shared_ptr<Grouping> curr) override;
-        std::any visitUnary(std::shared_ptr<Unary> curr) override;
-        std::any visitBinary(std::shared_ptr<Binary> curr) override;
+        std::any visitLiteralExpr(std::shared_ptr<LiteralExpr> curr) override;
+        std::any visitGroupingExpr(std::shared_ptr<GroupingExpr> curr) override;
+        std::any visitUnaryExpr(std::shared_ptr<UnaryExpr> curr) override;
+        std::any visitBinaryExpr(std::shared_ptr<BinaryExpr> curr) override;
         
-        std::any visitVariable(std::shared_ptr<Variable> curr) override;
-        std::any visitAssign(std::shared_ptr<Assign> curr) override;
-        std::any visitLogical(std::shared_ptr<Logical> curr) override;
+        std::any visitVariableExpr(std::shared_ptr<VariableExpr> curr) override;
+        std::any visitAssignExpr(std::shared_ptr<AssignExpr> curr) override;
+        std::any visitLogicalExpr(std::shared_ptr<LogicalExpr> curr) override;
 
-        std::any visitCall(std::shared_ptr<Call> curr) override;
-        std::any visitGet(std::shared_ptr<Get> curr) override;
-        std::any visitSet(std::shared_ptr<Set> curr) override;
-        std::any visitThis(std::shared_ptr<This> curr) override;
+        std::any visitCallExpr(std::shared_ptr<CallExpr> curr) override;
+        std::any visitGetExpr(std::shared_ptr<GetExpr> curr) override;
+        std::any visitSetExpr(std::shared_ptr<SetExpr> curr) override;
+        std::any visitThisExpr(std::shared_ptr<ThisExpr> curr) override;
 
         // STMT CHILD CLASSES
-        std::any visitExpression(std::shared_ptr<Expression> curr) override;
-        std::any visitPrint(std::shared_ptr<Print> curr) override;
-        std::any visitVar(std::shared_ptr<Var> curr) override;
-        std::any visitBlock(std::shared_ptr<Block> curr) override;
+        std::any visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr) override;
+        std::any visitPrintStmt(std::shared_ptr<PrintStmt> curr) override;
+        std::any visitVarStmt(std::shared_ptr<VarStmt> curr) override;
+        std::any visitBlockStmt(std::shared_ptr<BlockStmt> curr) override;
         
-        std::any visitIf(std::shared_ptr<If> curr) override;
-        std::any visitWhile(std::shared_ptr<While> curr) override;
+        std::any visitIfStmt(std::shared_ptr<IfStmt> curr) override;
+        std::any visitWhileStmt(std::shared_ptr<WhileStmt> curr) override;
 
-        std::any visitFunction(std::shared_ptr<Function> curr) override;
-        std::any visitReturn(std::shared_ptr<Return> curr) override;
-        std::any visitClass(std::shared_ptr<Class> curr) override;
+        std::any visitFunctionStmt(std::shared_ptr<FunctionStmt> curr) override;
+        std::any visitReturnStmt(std::shared_ptr<ReturnStmt> curr) override;
+        std::any visitClassStmt(std::shared_ptr<ClassStmt> curr) override;
 
     private:
         std::deque<std::unordered_map<std::string, bool>> scopes;
@@ -77,5 +77,5 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         void declare(Token name);
         void define(Token name);
         void resolveLocal(std::shared_ptr<Expr> expr, Token name);
-        void resolveFunction(std::shared_ptr<Function> func, FunctionType type);
+        void resolveFunction(std::shared_ptr<FunctionStmt> func, FunctionType type);
 };

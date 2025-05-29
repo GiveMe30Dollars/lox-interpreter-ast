@@ -109,12 +109,12 @@ std::shared_ptr<Expr> ExprParser::assignment(){
     if (match(Token::EQUAL)){
         Token op = previous();
         std::shared_ptr<Expr> value = assignment();
-        if (Variable* e = dynamic_cast<Variable*>(expr.get())){
+        if (VariableExpr* e = dynamic_cast<VariableExpr*>(expr.get())){
             Token name = e->name;
-            return std::make_shared<Assign>(name, value);
+            return std::make_shared<AssignExpr>(name, value);
         }
-        else if (Get* e = dynamic_cast<Get*>(expr.get())){
-            return std::make_shared<Set>(e->expr, e->name, value);
+        else if (GetExpr* e = dynamic_cast<GetExpr*>(expr.get())){
+            return std::make_shared<SetExpr>(e->expr, e->name, value);
         }
         else throw error(op, "Invalid assignment target.");
     }
@@ -126,7 +126,7 @@ std::shared_ptr<Expr> ExprParser::logicOr(){
     while (match(Token::OR)){
         Token op = previous();
         std::shared_ptr<Expr> right = logicAnd();
-        expr = std::make_shared<Logical>(expr, op, right);
+        expr = std::make_shared<LogicalExpr>(expr, op, right);
     }
     return expr;
 }
@@ -135,7 +135,7 @@ std::shared_ptr<Expr> ExprParser::logicAnd(){
     while (match(Token::AND)){
         Token op = previous();
         std::shared_ptr<Expr> right = equality();
-        expr = std::make_shared<Logical>(expr, op, right);
+        expr = std::make_shared<LogicalExpr>(expr, op, right);
     }
     return expr;
 }
@@ -145,7 +145,7 @@ std::shared_ptr<Expr> ExprParser::equality(){
     while (match(Token::BANG_EQUAL, Token::EQUAL_EQUAL)){
         Token op = previous();
         std::shared_ptr<Expr> right = comparison();
-        expr = std::make_shared<Binary>(expr, op, right);
+        expr = std::make_shared<BinaryExpr>(expr, op, right);
     }
     return expr;
 }
@@ -155,7 +155,7 @@ std::shared_ptr<Expr> ExprParser::comparison(){
     while (match(Token::GREATER, Token::GREATER_EQUAL, Token::LESS, Token::LESS_EQUAL)){
         Token op = previous();
         std::shared_ptr<Expr> right = term();
-        expr = std::make_shared<Binary>(expr, op, right);
+        expr = std::make_shared<BinaryExpr>(expr, op, right);
     }
     return expr;
 }
@@ -165,7 +165,7 @@ std::shared_ptr<Expr> ExprParser::term(){
     while (match(Token::MINUS, Token::PLUS)){
         Token op = previous();
         std::shared_ptr<Expr> right = factor();
-        expr = std::make_shared<Binary>(expr, op, right);
+        expr = std::make_shared<BinaryExpr>(expr, op, right);
     }
     return expr;
 }
@@ -175,7 +175,7 @@ std::shared_ptr<Expr> ExprParser::factor(){
     while (match(Token::STAR, Token::SLASH)){
         Token op = previous();
         std::shared_ptr<Expr> right = unary();
-        expr = std::make_shared<Binary>(expr, op, right);
+        expr = std::make_shared<BinaryExpr>(expr, op, right);
     }
     return expr;
 }
@@ -184,7 +184,7 @@ std::shared_ptr<Expr> ExprParser::unary(){
     if (match(Token::BANG, Token::MINUS)){
         Token op = previous();
         std::shared_ptr<Expr> expr = unary();
-        return std::make_shared<Unary>(op, expr);
+        return std::make_shared<UnaryExpr>(op, expr);
     }
     return call();
 }
@@ -197,7 +197,7 @@ std::shared_ptr<Expr> ExprParser::call(){
         }
         else if (match(Token::DOT)){
             Token name = consume(Token::IDENTIFIER, "Expect property name after '.'");
-            expr = std::make_shared<Get>(expr, name);
+            expr = std::make_shared<GetExpr>(expr, name);
         }
         else break;
     }
@@ -213,31 +213,31 @@ std::shared_ptr<Expr> ExprParser::finishCall(std::shared_ptr<Expr> callee){
         } while (match(Token::COMMA));
     }
     Token paren = consume(Token::RIGHT_PAREN, "Expect ')' after arguments.");
-    return std::make_shared<Call>(callee, paren, arguments);
+    return std::make_shared<CallExpr>(callee, paren, arguments);
 }
 
 std::shared_ptr<Expr> ExprParser::primary(){
     // true, false, nil literals
-    if (match(Token::TRUE)) return std::make_shared<Literal>(Object::boolean(1));
-    if (match(Token::FALSE)) return std::make_shared<Literal>(Object::boolean(0));
-    if (match(Token::NIL)) return std::make_shared<Literal>(Object::nil());
+    if (match(Token::TRUE)) return std::make_shared<LiteralExpr>(Object::boolean(1));
+    if (match(Token::FALSE)) return std::make_shared<LiteralExpr>(Object::boolean(0));
+    if (match(Token::NIL)) return std::make_shared<LiteralExpr>(Object::nil());
 
     // number and string literals
     if (match(Token::NUMBER, Token::STRING)) 
-        return std::make_shared<Literal>(previous().literal);
+        return std::make_shared<LiteralExpr>(previous().literal);
     
     // grouping (parenthesis pair)
     if (match(Token::LEFT_PAREN)){
         std::shared_ptr<Expr> expr = expression();
         consume(Token::RIGHT_PAREN, "Expect ) after expression.");
-        return std::make_shared<Grouping>(expr);
+        return std::make_shared<GroupingExpr>(expr);
     }
 
     // identifier (this, generic identifier)
     if (match(Token::THIS))
-        return std::make_shared<This>(previous());
+        return std::make_shared<ThisExpr>(previous());
     if (match(Token::IDENTIFIER))
-        return std::make_shared<Variable>(previous());
+        return std::make_shared<VariableExpr>(previous());
 
     // at end of file. return
     if (isAtEnd()) return nullptr;

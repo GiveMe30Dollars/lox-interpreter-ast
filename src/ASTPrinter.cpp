@@ -18,55 +18,55 @@ std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
 }
 
 // ---EXPRESSIONS---
-std::any ASTPrinter::visitLiteral(std::shared_ptr<Literal> curr){
+std::any ASTPrinter::visitLiteralExpr(std::shared_ptr<LiteralExpr> curr){
     std::cerr << "at literal!\n";
     return curr->obj.toString(true);
 }
-std::any ASTPrinter::visitGrouping(std::shared_ptr<Grouping> curr){
+std::any ASTPrinter::visitGroupingExpr(std::shared_ptr<GroupingExpr> curr){
     return "(group " + print(curr->expr) + ")";
 }
-std::any ASTPrinter::visitUnary(std::shared_ptr<Unary> curr){
+std::any ASTPrinter::visitUnaryExpr(std::shared_ptr<UnaryExpr> curr){
     return "(" + curr->op.lexeme + " " + print(curr->expr) + ")";
 }
-std::any ASTPrinter::visitBinary(std::shared_ptr<Binary> curr){
+std::any ASTPrinter::visitBinaryExpr(std::shared_ptr<BinaryExpr> curr){
     return "(" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
 }
 
-std::any ASTPrinter::visitVariable(std::shared_ptr<Variable> curr){
+std::any ASTPrinter::visitVariableExpr(std::shared_ptr<VariableExpr> curr){
     return curr->name.lexeme;
 }
-std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
+std::any ASTPrinter::visitAssignExpr(std::shared_ptr<AssignExpr> curr){
     return "(assign " + curr->name.lexeme + " " + print(curr->expr) + ")";
 }
-std::any ASTPrinter::visitLogical(std::shared_ptr<Logical> curr){
+std::any ASTPrinter::visitLogicalExpr(std::shared_ptr<LogicalExpr> curr){
     return "(" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
 }
 
-std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
+std::any ASTPrinter::visitCallExpr(std::shared_ptr<CallExpr> curr){
     return "(call " + print(curr->callee) + ")";
 }
-std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
+std::any ASTPrinter::visitGetExpr(std::shared_ptr<GetExpr> curr){
     return "(get " + print(curr->expr) + "." + curr->name.lexeme + ")";
 }
-std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
+std::any ASTPrinter::visitSetExpr(std::shared_ptr<SetExpr> curr){
     return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
-std::any ASTPrinter::visitThis(std::shared_ptr<This> curr){
+std::any ASTPrinter::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     // yes, this cast is necessary. string literals are read as const char[]
     return std::string("this");
 }
 
 // ---STATEMENTS---
-std::any ASTPrinter::visitExpression(std::shared_ptr<Expression> curr){
+std::any ASTPrinter::visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr){
     return "(expr " + print(curr->expr) +")";
 }
-std::any ASTPrinter::visitPrint(std::shared_ptr<Print> curr){
+std::any ASTPrinter::visitPrintStmt(std::shared_ptr<PrintStmt> curr){
     return "(print " + print(curr->expr) +")";
 }
-std::any ASTPrinter::visitVar(std::shared_ptr<Var> curr){
+std::any ASTPrinter::visitVarStmt(std::shared_ptr<VarStmt> curr){
     return "(varDecl: " + curr->name.lexeme + " " + (curr->initializer == nullptr ? "nil" : print(curr->initializer)) + ")";
 }
-std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
+std::any ASTPrinter::visitBlockStmt(std::shared_ptr<BlockStmt> curr){
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->statements){
@@ -77,18 +77,18 @@ std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
 }
 
 // ---STMT (CONTROL FLOW)---
-std::any ASTPrinter::visitIf(std::shared_ptr<If> curr){
+std::any ASTPrinter::visitIfStmt(std::shared_ptr<IfStmt> curr){
     return "(if " + print(curr->condition) 
         + " then " + print(curr->thenBranch) 
         + (curr->elseBranch ? " else "  + print(curr->elseBranch): "") + ")";
 }
-std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
+std::any ASTPrinter::visitWhileStmt(std::shared_ptr<WhileStmt> curr){
     return "(while " + print(curr->condition)
         + " " + print(curr->body) + ")";
 }
 
 // ---STMT (FUNCTIONS AND CLASSES)---
-std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
+std::any ASTPrinter::visitFunctionStmt(std::shared_ptr<FunctionStmt> curr){
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->body){
@@ -103,16 +103,16 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
 
     std::string output = "(funDecl: " + curr->name.lexeme + " args" + args + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
-        
+    
     return output;
 }
-std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
+std::any ASTPrinter::visitReturnStmt(std::shared_ptr<ReturnStmt> curr){
     return "(return " + print(curr->expr) + ")";
 }
-std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
+std::any ASTPrinter::visitClassStmt(std::shared_ptr<ClassStmt> curr){
     std::string s = "";
     currIndent += increment;
-    for (std::shared_ptr<Function> func : curr->methods){
+    for (std::shared_ptr<FunctionStmt> func : curr->methods){
         s = s + std::string(currIndent, ' ') + print(func) + "\n";
     }
     currIndent -= increment;

@@ -28,7 +28,7 @@ class StmtParser : public ExprParser{
         std::vector<std::shared_ptr<Stmt>> parse(bool parseExpr = false);
     protected:
         std::shared_ptr<Stmt> declaration(void);
-        std::shared_ptr<Function> functionDeclaration(std::string kind);
+        std::shared_ptr<FunctionStmt> functionDeclaration(std::string kind);
         std::shared_ptr<Stmt> classDeclaration(void);
         std::shared_ptr<Stmt> varDeclaration(void);
         std::shared_ptr<Stmt> statement(void);

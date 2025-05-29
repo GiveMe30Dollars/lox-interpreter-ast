@@ -30,25 +30,25 @@ std::any Resolver::visit(std::shared_ptr<Stmt> curr){
 }
 
 // EXPR CHILD CLASSES
-std::any Resolver::visitLiteral(std::shared_ptr<Literal> curr){
+std::any Resolver::visitLiteralExpr(std::shared_ptr<LiteralExpr> curr){
     // nothing to resolve
     return nullptr;
 }
-std::any Resolver::visitGrouping(std::shared_ptr<Grouping> curr){
+std::any Resolver::visitGroupingExpr(std::shared_ptr<GroupingExpr> curr){
     resolve(curr->expr);
     return nullptr;
 }
-std::any Resolver::visitUnary(std::shared_ptr<Unary> curr){
+std::any Resolver::visitUnaryExpr(std::shared_ptr<UnaryExpr> curr){
     resolve(curr->expr);
     return nullptr;
 }
-std::any Resolver::visitBinary(std::shared_ptr<Binary> curr){
+std::any Resolver::visitBinaryExpr(std::shared_ptr<BinaryExpr> curr){
     resolve(curr->left);
     resolve(curr->right);
     return nullptr;
 }
 
-std::any Resolver::visitVariable(std::shared_ptr<Variable> curr){
+std::any Resolver::visitVariableExpr(std::shared_ptr<VariableExpr> curr){
     // l-value of variable
     // eg. var a = a;
     // in this case, evaluating RHS leads to a being declared but not defined
@@ -60,35 +60,35 @@ std::any Resolver::visitVariable(std::shared_ptr<Variable> curr){
     resolveLocal(curr, curr->name);
     return nullptr;
 }
-std::any Resolver::visitAssign(std::shared_ptr<Assign> curr){
+std::any Resolver::visitAssignExpr(std::shared_ptr<AssignExpr> curr){
     // resolve nested expression. then, resolve the whole assignment as a local variable
     resolve(curr->expr);
     resolveLocal(curr, curr->name);
     return nullptr;
 }
-std::any Resolver::visitLogical(std::shared_ptr<Logical> curr){
+std::any Resolver::visitLogicalExpr(std::shared_ptr<LogicalExpr> curr){
     // resolve expressions. no short-circuiting is done.
     resolve(curr->left);
     resolve(curr->right);
     return nullptr;
 }
 
-std::any Resolver::visitCall(std::shared_ptr<Call> curr){
+std::any Resolver::visitCallExpr(std::shared_ptr<CallExpr> curr){
     resolve(curr->callee);
     for (std::shared_ptr<Expr> arg : curr->arguments)
         resolve(arg);
     return nullptr;
 }
-std::any Resolver::visitGet(std::shared_ptr<Get> curr){
+std::any Resolver::visitGetExpr(std::shared_ptr<GetExpr> curr){
     resolve(curr->expr);
     return nullptr;
 }
-std::any Resolver::visitSet(std::shared_ptr<Set> curr){
+std::any Resolver::visitSetExpr(std::shared_ptr<SetExpr> curr){
     resolve(curr->expr);
     resolve(curr->value);
     return nullptr;
 }
-std::any Resolver::visitThis(std::shared_ptr<This> curr){
+std::any Resolver::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     if (currentClass == ClassType::NONE){
         error(curr->keyword, "Can't use 'this' outside a class.");
         return nullptr;
@@ -99,15 +99,15 @@ std::any Resolver::visitThis(std::shared_ptr<This> curr){
 
 
 // STMT CHILD CLASSES
-std::any Resolver::visitExpression(std::shared_ptr<Expression> curr){
+std::any Resolver::visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr){
     resolve(curr->expr);
     return nullptr;
 }
-std::any Resolver::visitPrint(std::shared_ptr<Print> curr){
+std::any Resolver::visitPrintStmt(std::shared_ptr<PrintStmt> curr){
     resolve(curr->expr);
     return nullptr;
 }
-std::any Resolver::visitVar(std::shared_ptr<Var> curr){
+std::any Resolver::visitVarStmt(std::shared_ptr<VarStmt> curr){
     // Variable declaration. Links with visitVariable(curr)
     declare(curr->name);
     if (curr->initializer)
@@ -115,7 +115,7 @@ std::any Resolver::visitVar(std::shared_ptr<Var> curr){
     define(curr->name);
     return nullptr;
 }
-std::any Resolver::visitBlock(std::shared_ptr<Block> curr){
+std::any Resolver::visitBlockStmt(std::shared_ptr<BlockStmt> curr){
     // create and resolve in new topmost scope. pop when done.
     beginScope();
     resolve(curr->statements);
@@ -123,7 +123,7 @@ std::any Resolver::visitBlock(std::shared_ptr<Block> curr){
     return nullptr;
 }
 
-std::any Resolver::visitIf(std::shared_ptr<If> curr){
+std::any Resolver::visitIfStmt(std::shared_ptr<IfStmt> curr){
     // resolve all branches.
     resolve(curr->condition);
     resolve(curr->thenBranch);
@@ -131,13 +131,13 @@ std::any Resolver::visitIf(std::shared_ptr<If> curr){
         resolve(curr->elseBranch);
     return nullptr;
 }
-std::any Resolver::visitWhile(std::shared_ptr<While> curr){
+std::any Resolver::visitWhileStmt(std::shared_ptr<WhileStmt> curr){
     resolve(curr->condition);
     resolve(curr->body);
     return nullptr;
 }
 
-std::any Resolver::visitFunction(std::shared_ptr<Function> curr){
+std::any Resolver::visitFunctionStmt(std::shared_ptr<FunctionStmt> curr){
     // resolve function name, then call helper method for arguments and body
     // resolveFunction will be reused for classes and methods
     declare(curr->name);
@@ -145,7 +145,7 @@ std::any Resolver::visitFunction(std::shared_ptr<Function> curr){
     resolveFunction(curr, FunctionType::FUNCTION);
     return nullptr;
 }
-std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
+std::any Resolver::visitReturnStmt(std::shared_ptr<ReturnStmt> curr){
     // resolve return expression
     // 'return' CANNOT show up in top-level code.
     // return cannot be non-NIL if in initializer
@@ -159,7 +159,7 @@ std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
     }
     return nullptr;
 }
-std::any Resolver::visitClass(std::shared_ptr<Class> curr){
+std::any Resolver::visitClassStmt(std::shared_ptr<ClassStmt> curr){
     // declare and define class name
     // then, in new scope, define this keyword and all methods
     const ClassType enclosingType = currentClass;
@@ -170,7 +170,7 @@ std::any Resolver::visitClass(std::shared_ptr<Class> curr){
 
     beginScope();
     scopes.back().insert({"this", true});
-    for (std::shared_ptr<Function> func : curr->methods){
+    for (std::shared_ptr<FunctionStmt> func : curr->methods){
         FunctionType type = FunctionType::METHOD;
         if (func->name.lexeme == "init")
             type = FunctionType::INITIALIZER;
@@ -228,7 +228,7 @@ void Resolver::resolveLocal(std::shared_ptr<Expr> expr, Token name){
     }
     // variable exists in global scope. no resolution required.
 }
-void Resolver::resolveFunction(std::shared_ptr<Function> func, FunctionType type){
+void Resolver::resolveFunction(std::shared_ptr<FunctionStmt> func, FunctionType type){
     // switches resolving type to given type, resolves arguments and body, then restores previous type
 
     const FunctionType enclosingType = currentFunction;
