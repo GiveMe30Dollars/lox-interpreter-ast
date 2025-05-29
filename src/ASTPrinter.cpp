@@ -50,7 +50,7 @@ std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
     return "(get:" + print(curr->expr) + "." + curr->name.lexeme + ")";
 }
 std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
-    return "(get:" + print(curr->expr) + "." + curr->name.lexeme + " to " + print(curr->value) + ")";
+    return "(set:" + print(curr->expr) + "." + curr->name.lexeme + " to " + print(curr->value) + ")";
 }
 
 // ---STATEMENTS---
@@ -61,7 +61,7 @@ std::any ASTPrinter::visitPrint(std::shared_ptr<Print> curr){
     return "(print " + print(curr->expr) +")";
 }
 std::any ASTPrinter::visitVar(std::shared_ptr<Var> curr){
-    return "(declare var:" + curr->name.lexeme + " " + (curr->initializer == nullptr ? "nil" : print(curr->initializer)) + ")";
+    return "(varDecl " + curr->name.lexeme + " " + (curr->initializer == nullptr ? "nil" : print(curr->initializer)) + ")";
 }
 std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     std::string s = "";
