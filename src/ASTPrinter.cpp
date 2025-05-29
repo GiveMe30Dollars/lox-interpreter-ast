@@ -103,6 +103,7 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
 
     std::string output = "(funDecl: " + curr->name.lexeme + " args" + args + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
+        
     return output;
 }
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
@@ -118,5 +119,6 @@ std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
 
     std::string output = "(classDecl: " + curr->name.lexeme + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
+
     return output;
 }

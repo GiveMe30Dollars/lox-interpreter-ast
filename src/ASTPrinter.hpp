@@ -48,6 +48,6 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
         std::any visitClass(std::shared_ptr<Class> curr) override;
     private:
         int currIndent = 0;
-        int increment = 4;
+        int increment = 2;
 
 };

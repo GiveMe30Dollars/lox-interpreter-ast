@@ -26,7 +26,7 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object>& argument
     catch (LoxReturn val){
         obj = val.obj;
     }
-    return isInitializer ? closure->getAt(0, "this") : Object::nil();
+    return isInitializer ? closure->getAt(0, "this") : obj;
 }
 
 std::string LoxFunction::toString(){
