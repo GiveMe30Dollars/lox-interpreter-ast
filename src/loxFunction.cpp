@@ -1,6 +1,8 @@
 #include "loxFunction.hpp"
 // requires actual Interpreter
 #include "interpreter.hpp"
+// requires LoxInstance
+#include "loxClass.hpp"
 
 int LoxFunction::arity(){
     return declaration->params.size();
@@ -23,4 +25,11 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object>& argument
 
 std::string LoxFunction::toString(){
     return "<fn " + declaration->name.lexeme + ">";
+}
+
+std::shared_ptr<LoxFunction> LoxFunction::bind(std::shared_ptr<LoxInstance> instance){
+    // returns a new function with 'this' keyword binded to instance
+    std::shared_ptr<Environment> env = std::make_shared<Environment>(closure);
+    env->define("this", Object::instance(instance));
+    return std::make_shared<LoxFunction>(declaration, env);
 }

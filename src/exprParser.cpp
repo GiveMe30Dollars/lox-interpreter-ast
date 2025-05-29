@@ -233,7 +233,9 @@ std::shared_ptr<Expr> ExprParser::primary(){
         return std::make_shared<Grouping>(expr);
     }
 
-    // identifier
+    // identifier (this, generic identifier)
+    if (match(Token::THIS))
+        return std::make_shared<This>(previous());
     if (match(Token::IDENTIFIER))
         return std::make_shared<Variable>(previous());
 

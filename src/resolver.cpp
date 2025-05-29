@@ -10,6 +10,7 @@ Resolver::Resolver(Interpreter& interpreter) : interpreter(interpreter){
     hasError = false;
     scopes = {};
     currentFunction = FunctionType::NONE;
+    currentClass = ClassType::NONE;
 }
 void Resolver::resolve(std::shared_ptr<Expr> expr){
     visit(expr);
@@ -87,6 +88,15 @@ std::any Resolver::visitSet(std::shared_ptr<Set> curr){
     resolve(curr->value);
     return nullptr;
 }
+std::any Resolver::visitThis(std::shared_ptr<This> curr){
+    if (currentClass == ClassType::NONE){
+        error(curr->keyword, "Can't use 'this' outside a class.");
+        return nullptr;
+    }
+    resolveLocal(curr, curr->keyword);
+    return nullptr;
+}
+
 
 // STMT CHILD CLASSES
 std::any Resolver::visitExpression(std::shared_ptr<Expression> curr){
@@ -145,13 +155,23 @@ std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
     return nullptr;
 }
 std::any Resolver::visitClass(std::shared_ptr<Class> curr){
+    // declare and define class name
+    // then, in new scope, define this keyword and all methods
+    const ClassType enclosingType = currentClass;
+    currentClass = ClassType::CLASS;
+
     declare(curr->name);
     define(curr->name);
 
+    beginScope();
+    scopes.back().insert({"this", true});
     for (std::shared_ptr<Function> func : curr->methods){
         FunctionType type = FunctionType::METHOD;
         resolveFunction(func, type);
     }
+    endScope();
+
+    currentClass = enclosingType;
 
     return nullptr;
 }

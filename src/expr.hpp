@@ -53,6 +53,7 @@ class Logical;
 class Call;
 class Get;
 class Set;
+class This;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr
@@ -72,6 +73,7 @@ class ExprVisitor{
         virtual std::any visitCall(std::shared_ptr<Call> curr) = 0;
         virtual std::any visitGet(std::shared_ptr<Get> curr) = 0;
         virtual std::any visitSet(std::shared_ptr<Set> curr) = 0;
+        virtual std::any visitThis(std::shared_ptr<This> curr) = 0;
 };
 
 class Expr{
@@ -170,4 +172,11 @@ class Set : public Expr, public std::enable_shared_from_this<Set>{
         std::shared_ptr<Expr> value;
         Set(std::shared_ptr<Expr> expr, Token name, std::shared_ptr<Expr> value) : expr(expr), name(name), value(value) {}
         std::any accept(ExprVisitor& v) override { return v.visitSet(shared_from_this()); }
+};
+class This : public Expr, public std::enable_shared_from_this<This>{
+    // expression for this keyword
+    public:
+        Token keyword;
+        This(Token keyword) :keyword(keyword) {}
+        std::any accept(ExprVisitor& v) override { return v.visitThis(shared_from_this()); }
 };

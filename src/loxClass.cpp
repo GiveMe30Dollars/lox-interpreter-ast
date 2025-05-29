@@ -18,6 +18,7 @@ std::shared_ptr<LoxFunction> LoxClass::findMethod(std::string s){
     else return nullptr;
 }
 
+
 std::string LoxInstance::toString(){
     return loxClass->toString() + " instance";
 }
@@ -28,7 +29,7 @@ Object LoxInstance::get(Token& name){
     if (fields.count(name.lexeme)) return fields.at(name.lexeme);
 
     std::shared_ptr<LoxFunction> func = loxClass->findMethod(name.lexeme);
-    if (func) return Object::function(func);
+    if (func) return Object::function(func->bind(shared_from_this()));
 
     throw LoxError::RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
 }

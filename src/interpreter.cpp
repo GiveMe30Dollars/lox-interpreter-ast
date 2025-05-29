@@ -111,7 +111,7 @@ std::any Interpreter::visitBinary(std::shared_ptr<Binary> curr){
 std::any Interpreter::visitVariable(std::shared_ptr<Variable> curr){
     // returns stored value as statically resolved by Resolver
     // relies on Resolver being fully implemented
-    return lookUpVariable(curr);
+    return lookUpVariable(curr->name, curr);
 }
 std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
     // sets the value of the variable to the evaluated expression,
@@ -181,6 +181,9 @@ std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
         return value;
     }
     throw error(curr->name, "Only instances have properties.");
+}
+std::any Interpreter::visitThis(std::shared_ptr<This> curr){
+    return lookUpVariable(curr->keyword, curr);
 }
 
 /// ---STMT CHILD CLASSES---
@@ -279,14 +282,14 @@ void Interpreter::executeBlock(std::vector<std::shared_ptr<Stmt>>& statements, s
 void Interpreter::resolve(std::shared_ptr<Expr> expr, int steps){
     locals.insert({expr, steps});
 }
-Object Interpreter::lookUpVariable(std::shared_ptr<Variable> expr){
+Object Interpreter::lookUpVariable(Token name, std::shared_ptr<Expr> expr){
     // if locals contains the variable, it is static-scope
     if (locals.count(expr)){
         int distance = locals.at(expr);
-        return env->getAt(distance, expr->name);
+        return env->getAt(distance, name);
     }
     // variable is in global scope. fetch and return.
-    else return globals->get(expr->name);
+    else return globals->get(name);
 }
 
 bool Interpreter::isTruthy(Object obj){
