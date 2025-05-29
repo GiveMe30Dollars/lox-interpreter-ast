@@ -68,7 +68,7 @@ std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->statements){
-        s = s + "   " + print(stmt) + "\n";
+        s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
     }
     currIndent -= increment;
     return "(block:\n" + s + std::string(currIndent, ' ') + "end)";
@@ -91,7 +91,7 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->body){
-        s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
+        s = s + "    " + print(stmt) + "\n";
     }
     currIndent -= increment;
     std::string args = "";
@@ -99,7 +99,7 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
         args = args + token.lexeme + " ";
 
     std::string output = "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
-        + s + std::string(currIndent, ' ') + "end)";
+        + s + "    " + "end)";
     std::cerr << output << "\n";
     return output;
 }
