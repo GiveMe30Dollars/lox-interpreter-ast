@@ -17,8 +17,8 @@
 // As Object methods are not defined in header files, and are only needed for smart pointers
 // no implementation details of the classes themselves is required.
 class LoxCallable;
-//class LoxClass;
-//class LoxInstance;
+class LoxClass;
+class LoxInstance;
 
 /*
     HEADER FILES SHOUD DECLARE:
@@ -37,19 +37,22 @@ bool isAlpha(const char c);
 bool isAlphaNumeric(const char c);
 
 class Object {
-    // Class to represent an arbitrary literal
+    // Wrapper class to represent an arbitrary literal
     // Pass by value for all subsequent use
     public:
         enum ObjectType {
             NIL, NUMBER, STRING, BOOL,
-            LOX_CALLABLE, LOX_CLASS,
-            LOX_INSTANCE
+            LOX_CALLABLE,
+            LOX_CLASS, LOX_INSTANCE
         };
         ObjectType type;
         bool literalBool;
         double literalNumber;
         std::string literalString;
-        std::shared_ptr<LoxCallable> loxCallable;
+        std::shared_ptr<LoxCallable> loxFunction;
+        std::shared_ptr<LoxClass> loxClass;
+        std::shared_ptr<LoxInstance> loxInstance;
+
         std::string toString(bool useLox = false);
         
         // Generator functions
@@ -57,13 +60,9 @@ class Object {
         static Object boolean(bool b);
         static Object number(double val);
         static Object string(std::string str);
-        static Object function(std::shared_ptr<LoxCallable> callable);
-
-        /*
-        template<Object::ObjectType T>
-        Object cast();
-        */
-
+        static Object function(std::shared_ptr<LoxCallable> func);
+        static Object klass(std::shared_ptr<LoxClass> loxClass);
+        static Object instance(std::shared_ptr<LoxInstance> loxInstance);
 };
 
 class Token {

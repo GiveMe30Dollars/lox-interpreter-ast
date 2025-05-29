@@ -135,6 +135,12 @@ std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
     if(curr->expr) resolve(curr->expr);
     return nullptr;
 }
+std::any Resolver::visitClass(std::shared_ptr<Class> curr){
+    // TODO: resolve methods
+    declare(curr->name);
+    define(curr->name);
+    return nullptr;
+}
 
 LoxError::ParseError Resolver::error(Token token, std::string message){
     hasError = true;

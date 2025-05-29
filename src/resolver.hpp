@@ -53,6 +53,7 @@ class Resolver : public ExprVisitor, public StmtVisitor{
 
         std::any visitFunction(std::shared_ptr<Function> curr) override;
         std::any visitReturn(std::shared_ptr<Return> curr) override;
+        std::any visitClass(std::shared_ptr<Class> curr) override;
 
     private:
         std::deque<std::unordered_map<std::string, bool>> scopes;

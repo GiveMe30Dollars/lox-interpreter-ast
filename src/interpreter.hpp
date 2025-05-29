@@ -9,6 +9,7 @@
 // requires LoxCallables (support for functions, classes and methods)
 #include "loxCallable.hpp"
 #include "loxFunction.hpp"
+#include "loxClass.hpp"
 
 // requires Resolver for resolving and binding
 #include "resolver.hpp"
@@ -49,6 +50,7 @@ class Interpreter : public ExprVisitor, public StmtVisitor{
 
     std::any visitFunction(std::shared_ptr<Function> curr) override;
     std::any visitReturn(std::shared_ptr<Return> curr) override;
+    std::any visitClass(std::shared_ptr<Class> curr) override;
 
     std::shared_ptr<Environment> globals;
     std::shared_ptr<Environment> env;

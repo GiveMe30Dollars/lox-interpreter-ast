@@ -4,7 +4,8 @@
 /*
 program        → declaration* EOF ;
 
-declaration    → funDecl
+declaration    → classDecl
+               | funcDecl
                | varDecl
                | statement ;
 
@@ -53,6 +54,7 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
 // ---BASE STATEMENTS---
 std::shared_ptr<Stmt> StmtParser::declaration(){
     try {
+        if (match(Token::CLASS)) return classDeclaration();
         if (match(Token::FUN)) return functionDeclaration("function");
         if (match(Token::VAR)) return varDeclaration();
         return statement();
@@ -181,7 +183,7 @@ std::shared_ptr<Stmt> StmtParser::forStatement(){
 }
 
 // ---FUNCTIONS AND CLASSES---
-std::shared_ptr<Stmt> StmtParser::functionDeclaration(std::string kind){
+std::shared_ptr<Function> StmtParser::functionDeclaration(std::string kind){
     Token name = consume(Token::IDENTIFIER, "Expect " + kind + " name.");
     consume(Token::LEFT_PAREN, "Expect '(' after " + kind + " name.");
 
@@ -209,4 +211,17 @@ std::shared_ptr<Stmt> StmtParser::returnStatement(){
     consume(Token::SEMICOLON, "Expect ';' after return value.");
 
     return std::make_shared<Return>(keyword, expr);
+}
+std::shared_ptr<Stmt> StmtParser::classDeclaration(){
+    Token name = consume(Token::IDENTIFIER, "Expect class name.");
+    consume(Token::LEFT_BRACE, "Expect '{' before class body");
+
+    std::vector<std::shared_ptr<Function>> methods = {};
+    while (!isAtEnd() && !check(Token::RIGHT_BRACE)){
+        methods.push_back(functionDeclaration("method"));
+    }
+
+    consume(Token::RIGHT_BRACE, "Expect '}' after class body.");
+    
+    return std::make_shared<Class>(name, methods);
 }

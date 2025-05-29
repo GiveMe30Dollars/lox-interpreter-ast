@@ -140,9 +140,10 @@ std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
         throw error(curr->paren, "Can only call functions and classes.");
     
     // get LoxCallable from object, check arity and return call value
+    // (LoxClass is implicitly upcast to LoxCallable)
     std::shared_ptr<LoxCallable> callable;
-    if (callee.type == Object::LOX_CALLABLE) callable = callee.loxCallable;
-    else throw "UNIMPLEMENTED class Call for Interpreter!";
+    if (callee.type == Object::LOX_CALLABLE) callable = callee.loxFunction;
+    else callable = callee.loxClass;
 
     if (arguments.size() != callable->arity())
         throw error(curr->paren, "Expected " + std::to_string(callable->arity()) + " arguments but got " + std::to_string(arguments.size()) + ".");
@@ -225,6 +226,10 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
     else obj = Object::nil();
     throw LoxReturn(obj);
     return nullptr;    // Unreachable.
+}
+std::any visitClass(std::shared_ptr<Class> curr){
+    // create and store LoxClass in local scope
+    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name);
 }
 
 // ---HELPER FUNCTIONS---

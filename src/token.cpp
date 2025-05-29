@@ -3,6 +3,7 @@
 // include LoxCallable, LoxClass and LoxInstance.
 // required for implementation details.
 #include "loxCallable.hpp"
+#include "loxClass.hpp"
 
 std::unordered_map<Token::TokenType,std::string> Token::tokenTypeName = {
     {LEFT_PAREN, "LEFT_PAREN"}, 
@@ -114,7 +115,11 @@ std::string Object::toString(bool useLox){
         case Object::STRING: 
             return literalString;
         case Object::LOX_CALLABLE:
-            return loxCallable->toString();
+            return loxFunction->toString();
+        case Object::LOX_CLASS:
+            return loxClass->toString();
+        case Object::LOX_INSTANCE:
+            return loxInstance->toString();
 
         default:
             throw "UNIMPLEMENTED toString type!";
@@ -123,10 +128,22 @@ std::string Object::toString(bool useLox){
     return "";
 }
 
-Object Object::function(std::shared_ptr<LoxCallable> callable){
+Object Object::function(std::shared_ptr<LoxCallable> func){
     Object obj;
     obj.type = Object::LOX_CALLABLE;
-    obj.loxCallable = callable;
+    obj.loxFunction = func;
+    return obj;
+}
+Object klass(std::shared_ptr<LoxClass> loxClass){
+    Object obj;
+    obj.type = Object::LOX_CLASS;
+    obj.loxClass = loxClass;
+    return obj;
+}
+Object instance(std::shared_ptr<LoxInstance> loxInstance){
+    Object obj;
+    obj.type = Object::LOX_INSTANCE;
+    obj.loxInstance = loxInstance;
     return obj;
 }
 

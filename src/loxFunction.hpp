@@ -1,3 +1,4 @@
+// innherits forward declaration of Interpreter
 #include "loxCallable.hpp"
 #include "stmt.hpp"
 #include "environment.hpp"
@@ -12,6 +13,6 @@ class LoxFunction : public LoxCallable{
         std::shared_ptr<Environment> closure;
         LoxFunction(std::shared_ptr<Function> declaration, std::shared_ptr<Environment> closure) : declaration(declaration), closure(closure) {}
         int arity(void) override;
-        Object call(Interpreter& interpreter, std::vector<Object> arguments) override;
+        Object call(Interpreter& interpreter, std::vector<Object>& arguments) override;
         std::string toString(void) override;
 };

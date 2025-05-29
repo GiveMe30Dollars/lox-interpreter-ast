@@ -14,6 +14,7 @@ class If;
 class While;
 class Function;
 class Return;
+class Class;
 
 class StmtVisitor{
     // Abstract class implementing the Visitor design pattern for Stmt.
@@ -31,6 +32,7 @@ class StmtVisitor{
 
         virtual std::any visitFunction(std::shared_ptr<Function> curr) = 0;
         virtual std::any visitReturn(std::shared_ptr<Return> curr) = 0;
+        virtual std::any visitClass(std::shared_ptr<Class> curr) = 0;
 };
 
 /*
@@ -124,4 +126,12 @@ class Return : public Stmt, public std::enable_shared_from_this<Return>{
         std::shared_ptr<Expr> expr;
         Return(Token keyword, std::shared_ptr<Expr> expr) : keyword(keyword), expr(expr) {}
         std::any accept(StmtVisitor& v) override { return v.visitReturn(shared_from_this()); }
+};
+class Class : public Stmt, public std::enable_shared_from_this<Class>{
+    // A statement encapsulating a class declaration
+    public:
+        Token name;
+        std::vector<std::shared_ptr<Function>> methods;
+        Class(Token name, std::vector<std::shared_ptr<Function>> methods) : name(name), methods(methods) {}
+        std::any accept(StmtVisitor& v) override { return v.visitClass(shared_from_this()); }
 };

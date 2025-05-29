@@ -13,14 +13,14 @@ class LoxCallable{
     public:
         virtual ~LoxCallable(void) = default;
         virtual int arity(void) = 0;
-        virtual Object call(Interpreter& interpreter, std::vector<Object> arguments) = 0;
+        virtual Object call(Interpreter& interpreter, std::vector<Object>& arguments) = 0;
         virtual std::string toString(void) = 0;
 };
 
 class Clock : public LoxCallable{
     public:
     int arity(void) override { return 0; }
-    Object call(Interpreter& interpreter, std::vector<Object> arguments) override{
+    Object call(Interpreter& interpreter, std::vector<Object>& arguments) override{
         using namespace std::chrono;
         return Object::number(
             duration<double>(duration_cast<seconds>( system_clock::now().time_since_epoch() )).count()

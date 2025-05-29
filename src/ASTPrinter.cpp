@@ -82,3 +82,6 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
+std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
+    return "(classDecl: " + curr->name.toString() + ")";
+}
