@@ -2,8 +2,6 @@
 #include "scanner.hpp"
 #include "stmtParser.hpp"
 #include "interpreter.hpp"
-// not required, but useful for debugging
-#include "ASTPrinter.hpp"
 
 #pragma once
 

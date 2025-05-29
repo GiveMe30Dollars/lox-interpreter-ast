@@ -1,4 +1,6 @@
 #include "lox.hpp"
+// not required, but useful for debugging
+#include "ASTPrinter.hpp"
 
 bool Lox::hasCompileError = false;
 bool Lox::hasRuntimeError = false;
