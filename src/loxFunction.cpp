@@ -5,7 +5,7 @@
 #include "loxClass.hpp"
 
 int LoxFunction::arity(){
-    return declaration->params.size();
+    return (int)declaration->params.size();
 }
 
 Object LoxFunction::call(Interpreter& interpreter, std::vector<Object>& arguments){

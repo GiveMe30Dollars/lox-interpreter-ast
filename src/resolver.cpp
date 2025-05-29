@@ -244,9 +244,9 @@ void Resolver::resolveLocal(std::shared_ptr<Expr> expr, Token name){
     // to resolve the variable to its scope
     // resolved variable are defined in its environment, evaluated line-by-line
     // store result as hash table
-    for (int i = scopes.size() - 1; i >= 0; i--){
+    for (int i = (int)scopes.size() - 1; i >= 0; i--){
         if (scopes[i].count(name.lexeme)){
-            interpreter.resolve(expr, scopes.size() - 1 - i);
+            interpreter.resolve(expr, (int)scopes.size() - 1 - i);
             return;
         }
     }

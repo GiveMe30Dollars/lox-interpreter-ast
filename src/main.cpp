@@ -84,12 +84,14 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (command == "repl"){
-        std::cout << " ---LOX REPL---\nTo exit, type exit().\n";
+        std::cout << " \n-+---LOX REPL---+-\nTo exit, type exit().\n";
         while(true){
             std::string replInput = "";
-            std::cin >> replInput;
-            if (replInput == "exit()") break;
-            Lox::run(replInput, true);
+            std::getline(std::cin, replInput);
+            if (replInput == "exit") break;
+            Lox::run(replInput);
+            if (Lox::hasCompileError) std::cout << "returned code: 65\n";
+            if (Lox::hasRuntimeError) std::cout << "returned code: 70\n";
         }
         return 0;
     }
