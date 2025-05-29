@@ -45,9 +45,11 @@ std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
     return "(call " + print(curr->callee) + ")";
 }
 std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
+    std::cerr << "at visitGet!\n";
     return "(get " + print(curr->expr) + "." + curr->name.lexeme + ")";
 }
 std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
+    std::cerr << "at visitSet!\n";
     return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
 std::any ASTPrinter::visitThis(std::shared_ptr<This> curr){
@@ -94,11 +96,15 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
         s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
     }
     currIndent -= increment;
+    std::cerr << "passed stmt loop!\n";
+
     std::string args = "";
     for (Token token : curr->params)
-        args = args + token.lexeme + " ";
+        args = args + " " + token.lexeme;
+    if (args == "") args = " none";
+    std::cerr << "passed arg loop!\n";
 
-    std::string output = "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
+    std::string output = "(funDecl: " + curr->name.lexeme + " args" + args + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
     std::cerr << output << "\n";
     return output;
@@ -107,7 +113,6 @@ std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
-    std::cerr << "in visitClass!\n";
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Function> func : curr->methods){
@@ -115,7 +120,6 @@ std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
     }
     currIndent -= increment;
 
-    std::cerr << "PASSED func loop in visitClass!\n";
     std::string output = "(classDecl: " + curr->name.lexeme + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
     std::cerr << output << "\n";
