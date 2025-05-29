@@ -87,6 +87,7 @@ std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
 
 // ---STMT (FUNCTIONS AND CLASSES)---
 std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
+    std::cerr << "in visitFunction!\n";
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->body){
@@ -104,6 +105,7 @@ std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
+    std::cerr << "in visitClass!\n";
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Function> func : curr->methods){
