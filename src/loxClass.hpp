@@ -1,6 +1,8 @@
 // inherits forward declaration of Interpreter
 #include "loxCallable.hpp"
 
+#pragma once
+
 class LoxClass : public LoxCallable, public std::enable_shared_from_this<LoxClass>{
     public:
         std::string name;
