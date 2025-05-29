@@ -227,9 +227,11 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
     throw LoxReturn(obj);
     return nullptr;    // Unreachable.
 }
-std::any visitClass(std::shared_ptr<Class> curr){
+std::any Interpreter::visitClass(std::shared_ptr<Class> curr){
     // create and store LoxClass in local scope
-    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name);
+    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name.lexeme);
+    env->define(curr->name.lexeme, Object::klass(loxClass));
+    return nullptr;
 }
 
 // ---HELPER FUNCTIONS---
