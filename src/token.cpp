@@ -134,13 +134,13 @@ Object Object::function(std::shared_ptr<LoxCallable> func){
     obj.loxFunction = func;
     return obj;
 }
-Object klass(std::shared_ptr<LoxClass> loxClass){
+Object Object::klass(std::shared_ptr<LoxClass> loxClass){
     Object obj;
     obj.type = Object::LOX_CLASS;
     obj.loxClass = loxClass;
     return obj;
 }
-Object instance(std::shared_ptr<LoxInstance> loxInstance){
+Object Object::instance(std::shared_ptr<LoxInstance> loxInstance){
     Object obj;
     obj.type = Object::LOX_INSTANCE;
     obj.loxInstance = loxInstance;
