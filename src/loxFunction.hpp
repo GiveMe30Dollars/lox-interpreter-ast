@@ -12,10 +12,10 @@ class LoxFunction : public LoxCallable{
     // Runtime representation of user-defined Lox function
     // Wrapper for Function : Stmt
     public:
-        std::shared_ptr<Function> declaration;
+        std::shared_ptr<FunctionStmt> declaration;
         std::shared_ptr<Environment> closure;
         bool isInitializer;
-        LoxFunction(std::shared_ptr<Function> declaration, std::shared_ptr<Environment> closure, bool isInitializer = false) : 
+        LoxFunction(std::shared_ptr<FunctionStmt> declaration, std::shared_ptr<Environment> closure, bool isInitializer = false) : 
             declaration(declaration), closure(closure), isInitializer(isInitializer) {}
 
         int arity(void) override;
