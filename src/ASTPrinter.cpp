@@ -104,7 +104,6 @@ std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
-    return "(classDecl: " + curr->name.lexeme + ")";
     std::string s = "";
     currIndent += increment;
     for (std::shared_ptr<Function> func : curr->methods){
