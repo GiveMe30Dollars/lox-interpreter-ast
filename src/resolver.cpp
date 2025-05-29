@@ -78,6 +78,15 @@ std::any Resolver::visitCall(std::shared_ptr<Call> curr){
         resolve(arg);
     return nullptr;
 }
+std::any Resolver::visitGet(std::shared_ptr<Get> curr){
+    resolve(curr->expr);
+    return nullptr;
+}
+std::any Resolver::visitSet(std::shared_ptr<Set> curr){
+    resolve(curr->expr);
+    resolve(curr->value);
+    return nullptr;
+}
 
 // STMT CHILD CLASSES
 std::any Resolver::visitExpression(std::shared_ptr<Expression> curr){
@@ -136,9 +145,14 @@ std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
     return nullptr;
 }
 std::any Resolver::visitClass(std::shared_ptr<Class> curr){
-    // TODO: resolve methods
     declare(curr->name);
     define(curr->name);
+
+    for (std::shared_ptr<Function> func : curr->methods){
+        FunctionType type = FunctionType::METHOD;
+        resolveFunction(func, type);
+    }
+
     return nullptr;
 }
 

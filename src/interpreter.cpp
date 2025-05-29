@@ -126,6 +126,22 @@ std::any Interpreter::visitAssign(std::shared_ptr<Assign> curr){
 
     return obj;
 }
+std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
+    Object left = evaluate(curr->left);
+
+    // There are only 2 operators: AND, OR
+    if (curr->op.type == Token::OR){
+        // OR control: short circuit and return "true" (left) if left is truthy
+        if (isTruthy(left)) return left;
+    }
+    else {
+        // AND control: short circuit and return "false" (left) if left is falsey
+        if (!isTruthy(left)) return left;
+    }
+
+    // no short circuit. evaluate and return whatever is inn curr->right
+    return evaluate(curr->right);
+}
 
 std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
     // evaluate callee and arguments
@@ -150,22 +166,21 @@ std::any Interpreter::visitCall(std::shared_ptr<Call> curr){
     
     return callable->call(*this, arguments);
 }
-
-std::any Interpreter::visitLogical(std::shared_ptr<Logical> curr){
-    Object left = evaluate(curr->left);
-
-    // There are only 2 operators: AND, OR
-    if (curr->op.type == Token::OR){
-        // OR control: short circuit and return "true" (left) if left is truthy
-        if (isTruthy(left)) return left;
+std::any Interpreter::visitGet(std::shared_ptr<Get> curr){
+    Object obj = evaluate(curr->expr);
+    if (obj.type == Object::LOX_INSTANCE){
+        return obj.loxInstance->get(curr->name);
     }
-    else {
-        // AND control: short circuit and return "false" (left) if left is falsey
-        if (!isTruthy(left)) return left;
+    throw error(curr->name, "Only instances have properties.");
+}
+std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
+    Object obj = evaluate(curr->expr);
+    if (obj.type == Object::LOX_INSTANCE){
+        Object value = evaluate(curr->expr);
+        obj.loxInstance->set(curr->name, value);
+        return value;
     }
-
-    // no short circuit. evaluate and return whatever is inn curr->right
-    return evaluate(curr->right);
+    throw error(curr->name, "Only instances have properties.");
 }
 
 /// ---STMT CHILD CLASSES---
@@ -229,8 +244,18 @@ std::any Interpreter::visitReturn(std::shared_ptr<Return> curr){
 }
 std::any Interpreter::visitClass(std::shared_ptr<Class> curr){
     // create and store LoxClass in local scope
-    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name.lexeme);
-    env->define(curr->name.lexeme, Object::klass(loxClass));
+    // declares class name first to allow for recursive definitions of functions
+    // all methods are also cast from Function:Stmt to LoxFunction
+    env->define(curr->name.lexeme, Object::nil());
+
+    std::unordered_map<std::string, std::shared_ptr<LoxFunction>> methods = {};
+    for (std::shared_ptr<Function> method : curr->methods){
+        std::shared_ptr<LoxFunction> loxFunc = std::make_shared<LoxFunction>(method, env);
+        methods.insert({method->name.lexeme, loxFunc});
+    }
+
+    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name.lexeme, methods);
+    env->assign(curr->name, Object::klass(loxClass));
     return nullptr;
 }
 

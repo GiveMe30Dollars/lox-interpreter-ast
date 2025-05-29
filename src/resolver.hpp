@@ -41,6 +41,8 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         std::any visitLogical(std::shared_ptr<Logical> curr) override;
 
         std::any visitCall(std::shared_ptr<Call> curr) override;
+        std::any visitGet(std::shared_ptr<Get> curr) override;
+        std::any visitSet(std::shared_ptr<Set> curr) override;
 
         // STMT CHILD CLASSES
         std::any visitExpression(std::shared_ptr<Expression> curr) override;
@@ -59,7 +61,7 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         std::deque<std::unordered_map<std::string, bool>> scopes;
         Interpreter& interpreter;
         enum class FunctionType{
-            NONE, FUNCTION
+            NONE, FUNCTION, METHOD
         };
         FunctionType currentFunction;
 

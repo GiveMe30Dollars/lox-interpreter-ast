@@ -113,6 +113,9 @@ std::shared_ptr<Expr> ExprParser::assignment(){
             Token name = e->name;
             return std::make_shared<Assign>(name, value);
         }
+        else if (Get* e = dynamic_cast<Get*>(expr.get())){
+            return std::make_shared<Set>(e->expr, e->name, value);
+        }
         else throw error(op, "Invalid assignment target.");
     }
     else return expr;
@@ -191,6 +194,10 @@ std::shared_ptr<Expr> ExprParser::call(){
     while (true){
         if (match(Token::LEFT_PAREN)){
             expr = finishCall(expr);
+        }
+        else if (match(Token::DOT)){
+            Token name = consume(Token::IDENTIFIER, "Expect property name after '.'");
+            expr = std::make_shared<Get>(expr, name);
         }
         else break;
     }

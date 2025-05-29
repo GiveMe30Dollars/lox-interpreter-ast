@@ -51,6 +51,8 @@ class Variable;
 class Assign;
 class Logical;
 class Call;
+class Get;
+class Set;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr
@@ -68,6 +70,8 @@ class ExprVisitor{
         virtual std::any visitLogical(std::shared_ptr<Logical> curr) = 0;
 
         virtual std::any visitCall(std::shared_ptr<Call> curr) = 0;
+        virtual std::any visitGet(std::shared_ptr<Get> curr) = 0;
+        virtual std::any visitSet(std::shared_ptr<Set> curr) = 0;
 };
 
 class Expr{
@@ -149,4 +153,21 @@ class Call : public Expr, public std::enable_shared_from_this<Call>{
         Call(std::shared_ptr<Expr> callee, Token paren, std::vector<std::shared_ptr<Expr>> arguments) :
             callee(callee), paren(paren), arguments(arguments) {}
         std::any accept(ExprVisitor& v) override { return v.visitCall(shared_from_this()); }
+};
+class Get : public Expr, public std::enable_shared_from_this<Get>{
+    // A get expression: get property [name] from LoxInstance [expr]
+    public:
+        std::shared_ptr<Expr> expr;
+        Token name;
+        Get(std::shared_ptr<Expr> expr, Token name) : expr(expr), name(name) {}
+        std::any accept(ExprVisitor& v) override { return v.visitGet(shared_from_this()); }
+};
+class Set : public Expr, public std::enable_shared_from_this<Set>{
+    // A set expression: set property [name] from LoxInstance [expr] to [value]
+    public:
+        std::shared_ptr<Expr> expr;
+        Token name;
+        std::shared_ptr<Expr> value;
+        Set(std::shared_ptr<Expr> expr, Token name, std::shared_ptr<Expr> value) : expr(expr), name(name), value(value) {}
+        std::any accept(ExprVisitor& v) override { return v.visitSet(shared_from_this()); }
 };
