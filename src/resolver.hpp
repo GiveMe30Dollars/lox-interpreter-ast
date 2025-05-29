@@ -19,6 +19,7 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         KEY NOTES:
         1. There are no side effects. Input/output of print and native functions suppressed.
         2. There is no control flow.
+        3. Errors are not thrown. Once error() is called, the returned ParseError has to be .print()
     */
     public:
         bool hasError = false;
@@ -67,7 +68,7 @@ class Resolver : public ExprVisitor, public StmtVisitor{
             METHOD, INITIALIZER
         };
         enum class ClassType{
-            NONE, CLASS
+            NONE, CLASS, SUBCLASS
         };
         FunctionType currentFunction;
         ClassType currentClass;

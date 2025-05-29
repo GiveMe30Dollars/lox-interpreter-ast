@@ -55,7 +55,7 @@ std::any Resolver::visitVariableExpr(std::shared_ptr<VariableExpr> curr){
     // an error is printed (not thrown) and execution will not proceed
     // otherwise, resolve local variable a
     if (!scopes.empty() && scopes.back().count(curr->name.lexeme) && scopes.back().at(curr->name.lexeme) == false)
-        error(curr->name, "Cannot read variable in its own initializer.");
+        error(curr->name, "Cannot read variable in its own initializer.").print();
     
     resolveLocal(curr, curr->name);
     return nullptr;
@@ -90,13 +90,19 @@ std::any Resolver::visitSetExpr(std::shared_ptr<SetExpr> curr){
 }
 std::any Resolver::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     if (currentClass == ClassType::NONE){
-        error(curr->keyword, "Cannot use 'this' outside a class.");
+        error(curr->keyword, "Cannot use 'this' outside a class.").print();
         return nullptr;
     }
     resolveLocal(curr, curr->keyword);
     return nullptr;
 }
 std::any Resolver::visitSuperExpr(std::shared_ptr<SuperExpr> curr){
+    if (currentClass == ClassType::NONE){
+        error(curr->keyword, "Cannot use 'super' outside of a class.").print();
+    }
+    else if (currentClass == ClassType::CLASS){
+        error(curr->keyword, "Cannot use 'super' in a class with no superclass.").print();
+    }
     resolveLocal(curr, curr->keyword);
     return nullptr;
 }
@@ -173,7 +179,9 @@ std::any Resolver::visitClassStmt(std::shared_ptr<ClassStmt> curr){
     define(curr->name);
     if (curr->superclass){
         if (curr->superclass->name.lexeme == curr->name.lexeme)
-            error(curr->superclass->name, "A class cannot inherit from itself.");
+            error(curr->superclass->name, "A class cannot inherit from itself.").print();
+
+        currentClass = ClassType::SUBCLASS;
         resolve(curr->superclass);
 
         // add 'super' for this class in an enclosing scope
