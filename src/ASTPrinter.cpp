@@ -42,8 +42,15 @@ std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
 std::any ASTPrinter::visitLogical(std::shared_ptr<Logical> curr){
     return "(logical:" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
 }
+
 std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
     return "(call:" + print(curr->callee) + ")";
+}
+std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
+    return "(get:" + print(curr->expr) + "." + curr->name.lexeme + ")";
+}
+std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
+    return "(get:" + print(curr->expr) + "." + curr->name.lexeme + " to " + print(curr->value) + ")";
 }
 
 // ---STATEMENTS---
@@ -83,5 +90,5 @@ std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
-    return "(classDecl: " + curr->name.toString() + ")";
+    return "(classDecl: " + curr->name.lexeme + ")";
 }

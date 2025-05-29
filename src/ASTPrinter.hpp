@@ -25,6 +25,8 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
         std::any visitLogical(std::shared_ptr<Logical> curr) override;
 
         std::any visitCall(std::shared_ptr<Call> curr) override;
+        std::any visitGet(std::shared_ptr<Get> curr) override;
+        std::any visitSet(std::shared_ptr<Set> curr) override;
 
         // STATEMENTS
         std::any visitExpression(std::shared_ptr<Expression> curr) override;
