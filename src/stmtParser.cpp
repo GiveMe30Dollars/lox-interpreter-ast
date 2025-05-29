@@ -37,9 +37,11 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     // expression mode: attempt to parse tokens as expression
     // if successful, encapsulate as print statement
     if (parseExpr){
-        std::shared_ptr<Expr> expr = ExprParser::parse();
-        if (!hasError) statements.push_back(std::make_shared<PrintStmt>(expr));
-        return statements;
+        std::shared_ptr<Expr> expr = ExprParser::parse(true);
+        if (!hasError){
+            statements.push_back(std::make_shared<PrintStmt>(expr));
+            return statements;
+        }
     }
 
     // reset internal state in case expression mode fails

@@ -1,6 +1,6 @@
 [![progress-banner](https://backend.codecrafters.io/progress/interpreter/0877c070-7800-493c-8aa4-f0dbca4625bb)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
-# LOX IMPLEMENTATION IN C++
+## AST-Based Lox Interpreter In C++
 
 This is a completed C++ implemetation of the Lox interpreter as described in the first half of the book:  
 - **"Crafting Interpreters"**: https://craftinginterpreters.com/ by Robert Nystrom.  
@@ -11,7 +11,7 @@ This implemetation is initialized, initially hosted on and tested on Codecrafter
 This repository was first initialized on 21 May 2025, and has fully implemented Lox and cleared all Codecrafters.io testcases by 30 May 2025. 
 Subsequent additions to the code may be done to add new features to the implemetation.
 
-# USAGE
+## USAGE
 
 To fulfill the testing requirements as described in Codecrafters.io, the code may be run from the command line in the following ways:  
 
@@ -27,4 +27,7 @@ Additionally, the following mode has been added:
 To compile and run the project, the following dependencies are required:
 - **Any C++ Compiler**
 - **CMake**: https://cmake.org/
-- **vcpkg**: https://vcpkg.io/en/ and https://github.com/microsoft/vcpkg
+- **vcpkg**: https://vcpkg.io/en/
+- **Any command-line interface that executes `.sh` files.**
+  - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
+  - For Linux: *None. Natively supported.*
