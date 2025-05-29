@@ -14,14 +14,14 @@ Subsequent additions to the code may be done to add new features to the implemet
 
 To fulfill the testing requirements as described in Codecrafters.io, the code may be run from the command line in the following ways:  
 
-- `./your_program.sh tokenize test.lox`: Scans the string as stored in `test.lox`, then prints each resultant token on `std::cout`.  
-- `./your_program.sh parse test.lox`: Scans and parses the string as stored in 'test.lox', then prints the resultant Abstract Syntax Tree as nested expressions in `std::cout`.  
-- `./your_program.sh evaluate test.lox`: Scans, parses and evaluates an expression as stored in `test.lox`, then prints out the value of the evaluation in `std::cout`.
-- `./your_program.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.
+- `./lox.sh tokenize test.lox`: Scans the string as stored in `test.lox`, then prints each resultant token on `std::cout`.  
+- `./lox.sh parse test.lox`: Scans and parses the string as stored in 'test.lox', then prints the resultant Abstract Syntax Tree as nested expressions in `std::cout`.  
+- `./lox.sh evaluate test.lox`: Scans, parses and evaluates an expression as stored in `test.lox`, then prints out the value of the evaluation in `std::cout`.
+- `./lox.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.
 
 Additionally, the following mode has been added:
 
-- `./your_program.sh repl` / `./your_program.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.
+- `./lox.sh repl` / `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.
 
 The following return values signify:
 - `0`: Operation successfully carried out.
