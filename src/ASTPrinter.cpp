@@ -52,6 +52,9 @@ std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
 std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
     return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
+std::any ASTPrinter::visitThis(std::shared_ptr<This> curr){
+    return "this";
+}
 
 // ---STATEMENTS---
 std::any ASTPrinter::visitExpression(std::shared_ptr<Expression> curr){
