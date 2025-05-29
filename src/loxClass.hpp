@@ -24,5 +24,5 @@ class LoxInstance : public std::enable_shared_from_this<LoxInstance>{
         Object get(Token& name);
         void set(Token& name, Object value);
     private:
-        std::unordered_map<std::string, Object> fields;
+        std::unordered_map<std::string, Object> fields = {};
 };

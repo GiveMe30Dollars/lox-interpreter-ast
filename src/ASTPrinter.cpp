@@ -34,23 +34,23 @@ std::any ASTPrinter::visitBinary(std::shared_ptr<Binary> curr){
 }
 
 std::any ASTPrinter::visitVariable(std::shared_ptr<Variable> curr){
-    return "var:" + curr->name.lexeme;
+    return curr->name.lexeme;
 }
 std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
-    return "(assign var:" + curr->name.lexeme + " " + print(curr->expr) + ")";
+    return "(assign " + curr->name.lexeme + " " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitLogical(std::shared_ptr<Logical> curr){
-    return "(logical:" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
+    return "(logical " + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
 }
 
 std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
-    return "(call:" + print(curr->callee) + ")";
+    return "(call " + print(curr->callee) + ")";
 }
 std::any ASTPrinter::visitGet(std::shared_ptr<Get> curr){
-    return "(get:" + print(curr->expr) + "." + curr->name.lexeme + ")";
+    return "(get " + print(curr->expr) + "." + curr->name.lexeme + ")";
 }
 std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
-    return "(set:" + print(curr->expr) + "." + curr->name.lexeme + " to " + print(curr->value) + ")";
+    return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
 
 // ---STATEMENTS---
@@ -61,7 +61,7 @@ std::any ASTPrinter::visitPrint(std::shared_ptr<Print> curr){
     return "(print " + print(curr->expr) +")";
 }
 std::any ASTPrinter::visitVar(std::shared_ptr<Var> curr){
-    return "(varDecl " + curr->name.lexeme + " " + (curr->initializer == nullptr ? "nil" : print(curr->initializer)) + ")";
+    return "(varDecl: " + curr->name.lexeme + " " + (curr->initializer == nullptr ? "nil" : print(curr->initializer)) + ")";
 }
 std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     std::string s = "";

@@ -176,7 +176,7 @@ std::any Interpreter::visitGet(std::shared_ptr<Get> curr){
 std::any Interpreter::visitSet(std::shared_ptr<Set> curr){
     Object obj = evaluate(curr->expr);
     if (obj.type == Object::LOX_INSTANCE){
-        Object value = evaluate(curr->expr);
+        Object value = evaluate(curr->value);
         obj.loxInstance->set(curr->name, value);
         return value;
     }
