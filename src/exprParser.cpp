@@ -208,7 +208,7 @@ std::shared_ptr<Expr> ExprParser::finishCall(std::shared_ptr<Expr> callee){
     if (!check(Token::RIGHT_PAREN)){
         do{
             if (arguments.size() >= 255)
-                error(peek(), "can't have more than 255 arguments.");
+                error(peek(), "Cannot have more than 255 arguments.");
             arguments.push_back(expression());
         } while (match(Token::COMMA));
     }
@@ -233,7 +233,13 @@ std::shared_ptr<Expr> ExprParser::primary(){
         return std::make_shared<GroupingExpr>(expr);
     }
 
-    // identifier (this, generic identifier)
+    // identifiers (super, this, generic identifiers)
+    if (match(Token::SUPER)){
+        Token keyword = previous();
+        consume(Token::DOT, "Expect '.' after 'super'.");
+        Token method = consume(Token::IDENTIFIER, "Expect superclass method name.");
+        return std::make_shared<SuperExpr>(keyword, method);
+    }
     if (match(Token::THIS))
         return std::make_shared<ThisExpr>(previous());
     if (match(Token::IDENTIFIER))

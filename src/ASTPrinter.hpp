@@ -33,6 +33,7 @@ class ASTPrinter : public ExprVisitor, public StmtVisitor{
         std::any visitGetExpr(std::shared_ptr<GetExpr> curr) override;
         std::any visitSetExpr(std::shared_ptr<SetExpr> curr) override;
         std::any visitThisExpr(std::shared_ptr<ThisExpr> curr) override;
+        std::any visitSuperExpr(std::shared_ptr<SuperExpr> curr) override;
 
         // STATEMENTS
         std::any visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr) override;

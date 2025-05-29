@@ -55,7 +55,7 @@ std::any Resolver::visitVariableExpr(std::shared_ptr<VariableExpr> curr){
     // an error is printed (not thrown) and execution will not proceed
     // otherwise, resolve local variable a
     if (!scopes.empty() && scopes.back().count(curr->name.lexeme) && scopes.back().at(curr->name.lexeme) == false)
-        error(curr->name, "Can't read variable in its own initializer.");
+        error(curr->name, "Cannot read variable in its own initializer.");
     
     resolveLocal(curr, curr->name);
     return nullptr;
@@ -90,9 +90,13 @@ std::any Resolver::visitSetExpr(std::shared_ptr<SetExpr> curr){
 }
 std::any Resolver::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     if (currentClass == ClassType::NONE){
-        error(curr->keyword, "Can't use 'this' outside a class.");
+        error(curr->keyword, "Cannot use 'this' outside a class.");
         return nullptr;
     }
+    resolveLocal(curr, curr->keyword);
+    return nullptr;
+}
+std::any Resolver::visitSuperExpr(std::shared_ptr<SuperExpr> curr){
     resolveLocal(curr, curr->keyword);
     return nullptr;
 }
@@ -151,10 +155,10 @@ std::any Resolver::visitReturnStmt(std::shared_ptr<ReturnStmt> curr){
     // return cannot be non-NIL if in initializer
     // (DO NOT THROW)
     if (currentFunction == FunctionType::NONE)
-        error(curr->keyword, "Can't return from top-level code.").print();
+        error(curr->keyword, "Cannot return from top-level code.").print();
     if(curr->expr){
         if (currentFunction == FunctionType::INITIALIZER)
-            error(curr->keyword, "Can't return a value from initializer.").print();
+            error(curr->keyword, "Cannot return a value from initializer.").print();
         resolve(curr->expr);
     }
     return nullptr;
@@ -167,6 +171,15 @@ std::any Resolver::visitClassStmt(std::shared_ptr<ClassStmt> curr){
 
     declare(curr->name);
     define(curr->name);
+    if (curr->superclass){
+        if (curr->superclass->name.lexeme == curr->name.lexeme)
+            error(curr->superclass->name, "A class cannot inherit from itself.");
+        resolve(curr->superclass);
+
+        // add 'super' for this class in an enclosing scope
+        beginScope();
+        scopes.back().insert({"super", true});
+    }
 
     beginScope();
     scopes.back().insert({"this", true});
@@ -177,6 +190,9 @@ std::any Resolver::visitClassStmt(std::shared_ptr<ClassStmt> curr){
         resolveFunction(func, type);
     }
     endScope();
+
+    // end enclosing scope if inheriting from superclass
+    if (curr->superclass) endScope();
 
     currentClass = enclosingType;
 

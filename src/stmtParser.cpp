@@ -213,9 +213,16 @@ std::shared_ptr<Stmt> StmtParser::returnStatement(){
     return std::make_shared<ReturnStmt>(keyword, expr);
 }
 std::shared_ptr<Stmt> StmtParser::classDeclaration(){
+    // consume name, optionally consume superclass this inherits from
     Token name = consume(Token::IDENTIFIER, "Expect class name.");
     consume(Token::LEFT_BRACE, "Expect '{' before class body");
+    std::shared_ptr<VariableExpr> superclass = nullptr;
+    if (match(Token::LESS)){
+        consume(Token::IDENTIFIER, "Expect superclass name.");
+        superclass = std::make_shared<VariableExpr>(previous());
+    }
 
+    // consume all methods.
     std::vector<std::shared_ptr<FunctionStmt>> methods = {};
     while (!isAtEnd() && !check(Token::RIGHT_BRACE)){
         methods.push_back(functionDeclaration("method"));
@@ -223,5 +230,5 @@ std::shared_ptr<Stmt> StmtParser::classDeclaration(){
 
     consume(Token::RIGHT_BRACE, "Expect '}' after class body.");
 
-    return std::make_shared<ClassStmt>(name, methods);
+    return std::make_shared<ClassStmt>(name, superclass, methods);
 }

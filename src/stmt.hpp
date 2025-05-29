@@ -131,7 +131,9 @@ class ClassStmt : public Stmt, public std::enable_shared_from_this<ClassStmt>{
     // A statement encapsulating a class declaration
     public:
         Token name;
+        std::shared_ptr<VariableExpr> superclass;
         std::vector<std::shared_ptr<FunctionStmt>> methods;
-        ClassStmt(Token name, std::vector<std::shared_ptr<FunctionStmt>> methods) : name(name), methods(methods) {}
+        ClassStmt(Token name, std::shared_ptr<VariableExpr> superclass, std::vector<std::shared_ptr<FunctionStmt>> methods) : 
+            name(name), superclass(superclass), methods(methods) {}
         std::any accept(StmtVisitor& v) override { return v.visitClassStmt(shared_from_this()); }
 };

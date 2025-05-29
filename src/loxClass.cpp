@@ -21,6 +21,7 @@ Object LoxClass::call(Interpreter& interpreter, std::vector<Object>& arguments){
 std::shared_ptr<LoxFunction> LoxClass::findMethod(std::string s){
     // finds and returns method in class. return nullptr if it doesn't exist.
     if (methods.count(s)) return methods.at(s);
+    if (superclass) return superclass->findMethod(s);
     else return nullptr;
 }
 

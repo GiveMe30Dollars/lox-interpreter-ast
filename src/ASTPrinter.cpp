@@ -55,6 +55,9 @@ std::any ASTPrinter::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     // yes, this cast is necessary. string literals are read as const char[]
     return std::string("this");
 }
+std::any ASTPrinter::visitSuperExpr(std::shared_ptr<SuperExpr> curr){
+    return "super." + curr->method.lexeme;
+}
 
 // ---STATEMENTS---
 std::any ASTPrinter::visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr){

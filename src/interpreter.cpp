@@ -47,7 +47,7 @@ std::any Interpreter::visitUnaryExpr(std::shared_ptr<UnaryExpr> curr){
             return Object::number(-obj.literalNumber);
         else throw error(op, "Operand must be a number.");
     }
-    else throw error(op, "UNIMPLEMENTED unary operator!");
+    else throw error(op, "UNIMPLEMENTED unary operator!");    // Unreachable.
 }
 
 std::any Interpreter::visitBinaryExpr(std::shared_ptr<BinaryExpr> curr){
@@ -104,7 +104,7 @@ std::any Interpreter::visitBinaryExpr(std::shared_ptr<BinaryExpr> curr){
             else throw error(op, "Operands must be numbers.");
 
         default:
-            throw error(curr->op, "UNIMPLEMENTED binary operator!");
+            throw error(curr->op, "UNIMPLEMENTED binary operator!");    // Unreachable.
     }
 }
 
@@ -139,7 +139,7 @@ std::any Interpreter::visitLogicalExpr(std::shared_ptr<LogicalExpr> curr){
         if (!isTruthy(left)) return left;
     }
 
-    // no short circuit. evaluate and return whatever is inn curr->right
+    // no short circuit. evaluate and return whatever is in curr->right
     return evaluate(curr->right);
 }
 
@@ -166,6 +166,7 @@ std::any Interpreter::visitCallExpr(std::shared_ptr<CallExpr> curr){
     
     return callable->call(*this, arguments);
 }
+
 std::any Interpreter::visitGetExpr(std::shared_ptr<GetExpr> curr){
     Object obj = evaluate(curr->expr);
     if (obj.type == Object::LOX_INSTANCE){
@@ -173,6 +174,7 @@ std::any Interpreter::visitGetExpr(std::shared_ptr<GetExpr> curr){
     }
     throw error(curr->name, "Only instances have properties.");
 }
+
 std::any Interpreter::visitSetExpr(std::shared_ptr<SetExpr> curr){
     Object obj = evaluate(curr->expr);
     if (obj.type == Object::LOX_INSTANCE){
@@ -182,9 +184,20 @@ std::any Interpreter::visitSetExpr(std::shared_ptr<SetExpr> curr){
     }
     throw error(curr->name, "Only instances have properties.");
 }
+
 std::any Interpreter::visitThisExpr(std::shared_ptr<ThisExpr> curr){
     return lookUpVariable(curr->keyword, curr);
 }
+
+std::any Interpreter::visitSuperExpr(std::shared_ptr<SuperExpr> curr){
+    int distance = locals.at(curr);
+    std::shared_ptr<LoxClass> superclass = env->getAt(distance, "super").loxClass;
+    std::shared_ptr<LoxInstance> instance = env->getAt(distance - 1, "this").loxInstance;
+
+    std::shared_ptr<LoxFunction> method = superclass->findMethod(curr->method.lexeme);
+    return method->bind(instance);
+}
+
 
 /// ---STMT CHILD CLASSES---
 std::any Interpreter::visitExpressionStmt(std::shared_ptr<ExpressionStmt> curr){
@@ -249,7 +262,23 @@ std::any Interpreter::visitClassStmt(std::shared_ptr<ClassStmt> curr){
     // create and store LoxClass in local scope
     // declares class name first to allow for recursive definitions of functions
     // all methods are also cast from Function:Stmt to LoxFunction
+
+    // get superclass, if any
+    Object superclassObj = Object::klass(nullptr);
+    if (curr->superclass){
+        Object obj = evaluate(curr->superclass);
+        if (obj.type != Object::LOX_CLASS)
+            throw error(curr->superclass->name, "Superclass must be a class.");
+        else superclassObj = obj;
+    }
+
     env->define(curr->name.lexeme, Object::nil());
+
+    // if superclass present, create new nested environment ('super' support)
+    if (curr->superclass){
+        env = std::make_shared<Environment>(env);
+        env->define("super", superclassObj);
+    }
 
     std::unordered_map<std::string, std::shared_ptr<LoxFunction>> methods = {};
     for (std::shared_ptr<FunctionStmt> method : curr->methods){
@@ -258,7 +287,11 @@ std::any Interpreter::visitClassStmt(std::shared_ptr<ClassStmt> curr){
         methods.insert({method->name.lexeme, loxFunc});
     }
 
-    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name.lexeme, methods);
+    std::shared_ptr<LoxClass> loxClass = std::make_shared<LoxClass>(curr->name.lexeme, superclassObj.loxClass, methods);
+
+    // end scope for superclass (if any)
+    if (curr->superclass) env = env->enclosing;
+
     env->assign(curr->name, Object::klass(loxClass));
     return nullptr;
 }
@@ -308,7 +341,7 @@ bool Interpreter::isEqual(Object a, Object b){
         case Object::STRING:
             return a.literalString == b.literalString;
         default:
-            throw "UNIMPLEMENTED object type for isEqual!";
+            throw "UNIMPLEMENTED object type for isEqual!";    // Unreachable.
     }
 }
 

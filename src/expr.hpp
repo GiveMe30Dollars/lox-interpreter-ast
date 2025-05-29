@@ -53,6 +53,7 @@ class CallExpr;
 class GetExpr;
 class SetExpr;
 class ThisExpr;
+class SuperExpr;
 
 class ExprVisitor{
     // Abstract class implementing the Visitor design pattern for Expr
@@ -73,6 +74,7 @@ class ExprVisitor{
         virtual std::any visitGetExpr(std::shared_ptr<GetExpr> curr) = 0;
         virtual std::any visitSetExpr(std::shared_ptr<SetExpr> curr) = 0;
         virtual std::any visitThisExpr(std::shared_ptr<ThisExpr> curr) = 0;
+        virtual std::any visitSuperExpr(std::shared_ptr<SuperExpr> curr) = 0;
 };
 
 class Expr{
@@ -156,7 +158,7 @@ class CallExpr : public Expr, public std::enable_shared_from_this<CallExpr>{
         std::any accept(ExprVisitor& v) override { return v.visitCallExpr(shared_from_this()); }
 };
 class GetExpr : public Expr, public std::enable_shared_from_this<GetExpr>{
-    // A get expression: get property [name] from LoxInstance [expr]
+    // An expression to get property [name] from LoxInstance [expr]
     public:
         std::shared_ptr<Expr> expr;
         Token name;
@@ -164,7 +166,7 @@ class GetExpr : public Expr, public std::enable_shared_from_this<GetExpr>{
         std::any accept(ExprVisitor& v) override { return v.visitGetExpr(shared_from_this()); }
 };
 class SetExpr : public Expr, public std::enable_shared_from_this<SetExpr>{
-    // A set expression: set property [name] from LoxInstance [expr] to [value]
+    // An expression to set property [name] from LoxInstance [expr] to [value]
     public:
         std::shared_ptr<Expr> expr;
         Token name;
@@ -173,9 +175,17 @@ class SetExpr : public Expr, public std::enable_shared_from_this<SetExpr>{
         std::any accept(ExprVisitor& v) override { return v.visitSetExpr(shared_from_this()); }
 };
 class ThisExpr : public Expr, public std::enable_shared_from_this<ThisExpr>{
-    // expression for this keyword
+    // An expression for 'this' keyword
     public:
         Token keyword;
         ThisExpr(Token keyword) : keyword(keyword) {}
         std::any accept(ExprVisitor& v) override { return v.visitThisExpr(shared_from_this()); }
+};
+class SuperExpr : public Expr, public std::enable_shared_from_this<SuperExpr>{
+    // An expression for 'super' keyword followed by method access
+    public:
+        Token keyword;
+        Token method;
+        SuperExpr(Token keyword, Token method) : keyword(keyword), method(method) {}
+        std::any accept(ExprVisitor& v) override { return v.visitSuperExpr(shared_from_this()); }
 };

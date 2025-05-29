@@ -9,9 +9,9 @@
 
 class Environment : public std::enable_shared_from_this<Environment>{
     std::unordered_map<std::string, Object> values = {};
+    public:
     std::shared_ptr<Environment> enclosing = nullptr;
 
-    public:
     Environment() {}
     Environment(std::shared_ptr<Environment> enclosing) : enclosing(enclosing) {}
     void define(std::string name, Object value){
