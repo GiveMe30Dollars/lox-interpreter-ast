@@ -45,7 +45,7 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     // reset internal state in case expression mode fails
     hasError = false;
     curr = 0;
-    std::vector<std::shared_ptr<Stmt>> statements = {};
+    statements = {};
 
     // while not at end, parse statements
     while (!isAtEnd()){
