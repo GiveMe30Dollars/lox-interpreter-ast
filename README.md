@@ -37,7 +37,8 @@ To compile and run the project, the following dependencies are required:
 - **vcpkg**: https://vcpkg.io/en/
 - *Any command-line interface that executes `.sh` files.*
   - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
-  - For Linux: *None.* Natively supported.
+  - For Linux: *None.* Natively supported.  
+
 
   *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
   Rest assured that the latest version is completely functional and stable.
