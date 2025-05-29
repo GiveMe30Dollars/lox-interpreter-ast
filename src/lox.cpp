@@ -24,7 +24,8 @@ void Lox::run(std::string source, bool parseExpr){
         return;
     }
 
-    //for (auto stmt : statements) std::cerr << ASTPrinter::print(stmt) << "\n";
+    ASTPrinter printer;
+    for (auto stmt : statements) std::cerr << printer.print(stmt) << "\n";
     
     Resolver resolver(interpreter);
     resolver.resolve(statements);

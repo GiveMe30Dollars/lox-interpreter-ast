@@ -55,7 +55,8 @@ int main(int argc, char *argv[]) {
         std::shared_ptr<Expr> expr = parser.parse();
         if (parser.hasError) return 65;
 
-        std::cout << ASTPrinter::print(expr) << "\n";
+        ASTPrinter printer;
+        std::cout << printer.print(expr) << "\n";
 
         return 0;
     }

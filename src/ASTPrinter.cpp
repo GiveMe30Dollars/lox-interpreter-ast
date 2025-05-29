@@ -2,8 +2,7 @@
 
 std::string ASTPrinter::print(std::shared_ptr<Expr> expr){
     if (expr == nullptr) return "expr:null";
-    ASTPrinter printer;
-    return std::any_cast<std::string>(printer.visit(expr));
+    return std::any_cast<std::string>(visit(expr));
 }
 
 std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
@@ -12,8 +11,7 @@ std::any ASTPrinter::visit(std::shared_ptr<Expr> expr){
 
 std::string ASTPrinter::print(std::shared_ptr<Stmt> stmt){
     if (stmt == nullptr) return "stmt:null";
-    ASTPrinter printer;
-    return std::any_cast<std::string>(printer.visit(stmt));
+    return std::any_cast<std::string>(visit(stmt));
 }
 std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
     return stmt->accept(*this);
@@ -40,7 +38,7 @@ std::any ASTPrinter::visitAssign(std::shared_ptr<Assign> curr){
     return "(assign " + curr->name.lexeme + " " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitLogical(std::shared_ptr<Logical> curr){
-    return "(logical " + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
+    return "(" + curr->op.lexeme + " " + print(curr->left) + " " + print(curr->right) + ")";
 }
 
 std::any ASTPrinter::visitCall(std::shared_ptr<Call> curr){
@@ -68,10 +66,12 @@ std::any ASTPrinter::visitVar(std::shared_ptr<Var> curr){
 }
 std::any ASTPrinter::visitBlock(std::shared_ptr<Block> curr){
     std::string s = "";
+    currIndent += increment;
     for (std::shared_ptr<Stmt> stmt : curr->statements){
-        s = s + " " + print(stmt);
+        s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
     }
-    return "(block" + s + ")";
+    currIndent -= increment;
+    return "(block:\n" + s + std::string(currIndent, ' ') + "end)";
 }
 
 // ---STMT (CONTROL FLOW)---
@@ -87,11 +87,31 @@ std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
 
 // ---STMT (FUNCTIONS AND CLASSES)---
 std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
-    return "(funDecl:" + curr->name.toString() + ")";
+    std::string s = "";
+    currIndent += increment;
+    for (std::shared_ptr<Stmt> stmt : curr->body){
+        s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
+    }
+    currIndent -= increment;
+    std::string args = "";
+    for (Token token : curr->params)
+        args = args + token.lexeme + " ";
+
+    return "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
+        + s + std::string(currIndent, ' ') + "end)";
 }
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
 }
 std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
     return "(classDecl: " + curr->name.lexeme + ")";
+    std::string s = "";
+    currIndent += increment;
+    for (std::shared_ptr<Function> func : curr->methods){
+        s = s + std::string(currIndent, ' ') + print(func) + "\n";
+    }
+    currIndent -= increment;
+
+    return "(classDecl: " + curr->name.lexeme + "\n" 
+        + s + std::string(currIndent, ' ') + "end)";
 }
