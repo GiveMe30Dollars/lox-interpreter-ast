@@ -147,11 +147,16 @@ std::any Resolver::visitFunction(std::shared_ptr<Function> curr){
 }
 std::any Resolver::visitReturn(std::shared_ptr<Return> curr){
     // resolve return expression
-    // the return keyword CANNOT show up in top-level code.
+    // 'return' CANNOT show up in top-level code.
+    // return cannot be non-NIL if in initializer
     // (DO NOT THROW)
     if (currentFunction == FunctionType::NONE)
-        error(curr->keyword, "Cannot return from top-level code.").print();
-    if(curr->expr) resolve(curr->expr);
+        error(curr->keyword, "Can't return from top-level code.").print();
+    if(curr->expr){
+        if (currentFunction == FunctionType::INITIALIZER)
+            error(curr->keyword, "Can't return a value from initializer.").print();
+        resolve(curr->expr);
+    }
     return nullptr;
 }
 std::any Resolver::visitClass(std::shared_ptr<Class> curr){
@@ -167,6 +172,8 @@ std::any Resolver::visitClass(std::shared_ptr<Class> curr){
     scopes.back().insert({"this", true});
     for (std::shared_ptr<Function> func : curr->methods){
         FunctionType type = FunctionType::METHOD;
+        if (func->name.lexeme == "init")
+            type = FunctionType::INITIALIZER;
         resolveFunction(func, type);
     }
     endScope();

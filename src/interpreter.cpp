@@ -253,7 +253,8 @@ std::any Interpreter::visitClass(std::shared_ptr<Class> curr){
 
     std::unordered_map<std::string, std::shared_ptr<LoxFunction>> methods = {};
     for (std::shared_ptr<Function> method : curr->methods){
-        std::shared_ptr<LoxFunction> loxFunc = std::make_shared<LoxFunction>(method, env);
+        bool isInitializer = method->name.lexeme == "init";
+        std::shared_ptr<LoxFunction> loxFunc = std::make_shared<LoxFunction>(method, env, isInitializer);
         methods.insert({method->name.lexeme, loxFunc});
     }
 

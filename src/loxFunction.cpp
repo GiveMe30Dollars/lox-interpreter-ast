@@ -9,17 +9,25 @@ int LoxFunction::arity(){
 }
 
 Object LoxFunction::call(Interpreter& interpreter, std::vector<Object>& arguments){
+    // create new scope and define all arguments
     std::shared_ptr<Environment> env = std::make_shared<Environment>(closure);
     for (int i = 0; i < declaration->params.size(); i++){
         env->define(declaration->params[i].lexeme, arguments[i]);
     }
+
+    // try execute block. if return value caught:
+    // if isInitializer, return 'this' (LoxInstance)
+    // else return object thrown
+    // (the Resolver prevents values being returned from initializers)
     try{
         interpreter.executeBlock(declaration->body, env);
     }
     catch (LoxReturn val){
-        return val.obj;
+        if (isInitializer) return closure->getAt(0, "this");
+        else return val.obj;
     }
-    // return nil by default if no value specified
+
+    // return default value: nil
     return Object::nil();
 }
 
@@ -31,5 +39,5 @@ std::shared_ptr<LoxFunction> LoxFunction::bind(std::shared_ptr<LoxInstance> inst
     // returns a new function with 'this' keyword binded to instance
     std::shared_ptr<Environment> env = std::make_shared<Environment>(closure);
     env->define("this", Object::instance(instance));
-    return std::make_shared<LoxFunction>(declaration, env);
+    return std::make_shared<LoxFunction>(declaration, env, isInitializer);
 }

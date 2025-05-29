@@ -3,13 +3,19 @@
 #include "interpreter.hpp"
 
 int LoxClass::arity(){
-    return 0;
+    std::shared_ptr<LoxFunction> initializer = findMethod("init");
+    if (initializer) return initializer->arity();
+    else return 0;
 }
 std::string LoxClass::toString(){
     return name;
 }
 Object LoxClass::call(Interpreter& interpreter, std::vector<Object>& arguments){
     std::shared_ptr<LoxInstance> instance = std::make_shared<LoxInstance>(shared_from_this());
+    std::shared_ptr<LoxFunction> initializer = findMethod("init");
+    if (initializer)
+        initializer->bind(instance)->call(interpreter, arguments);
+
     return Object::instance(instance);
 }
 std::shared_ptr<LoxFunction> LoxClass::findMethod(std::string s){

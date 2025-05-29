@@ -27,10 +27,14 @@ class Environment : public std::enable_shared_from_this<Environment>{
         else if (enclosing) return enclosing->get(name);
         else throw LoxError::RuntimeError(name, "Undefined variable '" + name.lexeme + "'");
     }
-    Object getAt(int distance, Token& name){
+    Object getAt(int distance, std::string s){
         // gets a variable from the ancestor [distance] away from this
-        // WARNING: no error handling
-        return ancestor(distance)->values.at(name.lexeme);
+        // WARNING: no error handling after resolving
+        // note: string used due to also searching for 'this' keyword
+        return ancestor(distance)->values.at(s);
+    }
+    Object getAt(int distance, Token& name){
+        return getAt(distance, name.lexeme);
     }
 
     void assign(Token& name, Object value){
@@ -42,10 +46,11 @@ class Environment : public std::enable_shared_from_this<Environment>{
     }
     void assignAt(int distance, Token& name, Object value){
         // assigns a variable in the ancestor [distance] away from this
-        // WARNING: no error handling
+        // WARNING: no error handling after resolving
         ancestor(distance)->values.at(name.lexeme) = value;
     }
 
+    private:
     std::shared_ptr<Environment> ancestor(int distance){
         std::shared_ptr<Environment> env = shared_from_this();
         for (int i = 0; i < distance; i++){

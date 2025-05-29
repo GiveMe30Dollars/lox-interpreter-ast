@@ -62,7 +62,8 @@ class Resolver : public ExprVisitor, public StmtVisitor{
         std::deque<std::unordered_map<std::string, bool>> scopes;
         Interpreter& interpreter;
         enum class FunctionType{
-            NONE, FUNCTION, METHOD
+            NONE, FUNCTION, 
+            METHOD, INITIALIZER
         };
         enum class ClassType{
             NONE, CLASS

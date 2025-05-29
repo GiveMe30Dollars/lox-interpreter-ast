@@ -14,7 +14,10 @@ class LoxFunction : public LoxCallable{
     public:
         std::shared_ptr<Function> declaration;
         std::shared_ptr<Environment> closure;
-        LoxFunction(std::shared_ptr<Function> declaration, std::shared_ptr<Environment> closure) : declaration(declaration), closure(closure) {}
+        bool isInitializer;
+        LoxFunction(std::shared_ptr<Function> declaration, std::shared_ptr<Environment> closure, bool isInitializer = false) : 
+            declaration(declaration), closure(closure), isInitializer(isInitializer) {}
+
         int arity(void) override;
         Object call(Interpreter& interpreter, std::vector<Object>& arguments) override;
         std::string toString(void) override;
