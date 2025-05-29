@@ -88,20 +88,21 @@ std::any ASTPrinter::visitWhile(std::shared_ptr<While> curr){
 // ---STMT (FUNCTIONS AND CLASSES)---
 std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
     std::cerr << "in visitFunction!\n";
-    std::string s = "";
-    currIndent += increment;
-    for (std::shared_ptr<Stmt> stmt : curr->body){
-        s = s + "    " + print(stmt) + "\n";
-    }
-    currIndent -= increment;
-    std::string args = "";
-    for (Token token : curr->params)
-        args = args + token.lexeme + " ";
+    return "(funDecl: " + curr->name.lexeme + ")";
+    // std::string s = "";
+    // currIndent += increment;
+    // for (std::shared_ptr<Stmt> stmt : curr->body){
+    //     s = s + std::string(currIndent, ' ') + print(stmt) + "\n";
+    // }
+    // currIndent -= increment;
+    // std::string args = "";
+    // for (Token token : curr->params)
+    //     args = args + token.lexeme + " ";
 
-    std::string output = "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
-        + s + "    " + "end)";
-    std::cerr << output << "\n";
-    return output;
+    // std::string output = "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
+    //     + s + std::string(currIndent, ' ') + "end)";
+    // std::cerr << output << "\n";
+    // return output;
 }
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
@@ -115,6 +116,7 @@ std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
     }
     currIndent -= increment;
 
+    std::cerr << "PASSED func loop in visitClass!";
     std::string output = "(classDecl: " + curr->name.lexeme + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
     std::cerr << output << "\n";
