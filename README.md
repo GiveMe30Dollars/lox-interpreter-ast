@@ -1,50 +1,30 @@
 [![progress-banner](https://backend.codecrafters.io/progress/interpreter/0877c070-7800-493c-8aa4-f0dbca4625bb)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
 
-This is a starting point for C++ solutions to the
-["Build your own Interpreter" Challenge](https://app.codecrafters.io/courses/interpreter/overview).
+# LOX IMPLEMENTATION IN C++
 
-This challenge follows the book
-[Crafting Interpreters](https://craftinginterpreters.com/) by Robert Nystrom.
+This is a completed C++ implemetation of the Lox interpreter as described in the first half of the book:  
+- **"Crafting Interpreters"**: https://craftinginterpreters.com/ by Robert Nystrom.  
 
-In this challenge you'll build an interpreter for
-[Lox](https://craftinginterpreters.com/the-lox-language.html), a simple
-scripting language. Along the way, you'll learn about tokenization, ASTs,
-tree-walk interpreters and more.
+This implemetation is initialized, initially hosted on and tested on Codecrafters.io:  
+- **"Build your own Interpreter"** Challenge: https://app.codecrafters.io/courses/interpreter/overview.  
 
-Before starting this challenge, make sure you've read the "Welcome" part of the
-book that contains these chapters:
+This repository was first initialized on 21 May 2025, and has fully implemented Lox and cleared all Codecrafters.io testcases by 30 May 2025. 
+Subsequent additions to the code may be done to add new features to the implemetation.
 
-- [Introduction](https://craftinginterpreters.com/introduction.html) (chapter 1)
-- [A Map of the Territory](https://craftinginterpreters.com/a-map-of-the-territory.html)
-  (chapter 2)
-- [The Lox Language](https://craftinginterpreters.com/the-lox-language.html)
-  (chapter 3)
+# USAGE
 
-These chapters don't involve writing code, so they won't be covered in this
-challenge. This challenge will start from chapter 4,
-[Scanning](https://craftinginterpreters.com/scanning.html).
+To fulfill the testing requirements as described in Codecrafters.io, the code may be run from the command line in the following ways:  
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+- `./your_program.sh tokenize test.lox`: Scans the string as stored in `test.lox`, then prints each resultant token on `std::cout`  
+- `./your_program.sh parse test.lox`: Scans and parses the string as stored in 'test.lox', then prints the resultant Abstract Syntax Tree as nested expressions in `std::cout`
+- `./your_program.sh evaluate test.lox`: Scans, parses and evaluates an expression as stored in `test.lox`, then prints out the value of the evaluation.
+- `./your_program.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.
 
-# Passing the first stage
+Additionally, the following mode has been added:
 
-The entry point for your program is in `src/main.cpp`. Study and uncomment the
-relevant code, and push your changes to pass the first stage:
+- `./your_program.sh repl` / `./your_program.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.
 
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `cmake` installed locally
-2. Run `./your_program.sh` to run your program, which is implemented in
-   `src/main.cpp`.
-3. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
+To compile and run the project, the following dependencies are required:
+- **Any C++ Compiler**
+- **CMake**: https://cmake.org/
+- **vcpkg**: https://vcpkg.io/en/ and https://github.com/microsoft/vcpkg

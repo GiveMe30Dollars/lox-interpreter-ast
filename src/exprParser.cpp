@@ -67,14 +67,14 @@ void ExprParser::synchronize(){
 }
 
 
-std::shared_ptr<Expr> ExprParser::parse(){
+std::shared_ptr<Expr> ExprParser::parse(bool silenced){
     hasError = false;
     curr = 0;
     try{
         return expression();
     }
     catch(LoxError::ParseError err){
-        err.print();
+        if (!silenced) err.print();
         return nullptr;
     }
 }

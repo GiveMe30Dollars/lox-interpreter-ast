@@ -23,7 +23,8 @@ int usageInfo(){
     std::cerr << "Usage: ./your_program parse <filename>" << std::endl;
     std::cerr << "Usage: ./your_program evaluate <filename>" << std::endl;
     std::cerr << "Usage: ./your_program run <filename>" << std::endl;
-    std::cerr << "Usage: ./your_program run <filename>" << std::endl;
+    std::cerr << "Usage: ./your_program repl" << std::endl;
+    std::cerr << "Usage: ./your_program" << std::endl;
     return 1;
 }
 
@@ -35,12 +36,15 @@ int main(int argc, char *argv[]) {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     // std::cerr << "Logs from your program will appear here!" << std::endl;
 
-    if (argc < 2 || argc > 3) {
+    if (argc > 3) {
         return usageInfo();
     }
-    const std::string command = argv[1];
-    if (argc < 3 && command != "repl"){
-        return usageInfo();
+    std::string command;
+    if (argc == 1) command = "repl";
+    else {
+        command = argv[1];
+        if (argc < 3 && command != "repl")
+            return usageInfo();
     }
 
     if (command == "tokenize") {
@@ -84,7 +88,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (command == "repl"){
-        std::cout << " \n-+---LOX REPL---+-\nTo exit, type exit().\n";
+        std::cout << " \n-----LOX REPL-----\nTo exit, type exit().\n";
         while(true){
             std::string replInput = "";
             std::getline(std::cin, replInput);

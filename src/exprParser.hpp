@@ -31,7 +31,8 @@ class ExprParser{
     public:
         bool hasError = false;
         ExprParser(std::vector<Token> tokens) : tokens(tokens) {}
-        std::shared_ptr<Expr> parse();
+        // added silenced flag to suppress errors for StmtParser::parse
+        std::shared_ptr<Expr> parse(bool silenced = false);
 
     protected:
         std::vector<Token> tokens;

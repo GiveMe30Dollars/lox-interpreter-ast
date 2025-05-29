@@ -33,21 +33,26 @@ std::vector<std::shared_ptr<Stmt>> StmtParser::parse(bool parseExpr){
     hasError = false;
     curr = 0;
     std::vector<std::shared_ptr<Stmt>> statements = {};
+
+    // expression mode: attempt to parse tokens as expression
+    // if successful, encapsulate as print statement
+    if (parseExpr){
+        std::shared_ptr<Expr> expr = ExprParser::parse();
+        if (!hasError) statements.push_back(std::make_shared<PrintStmt>(expr));
+        return statements;
+    }
+
+    // reset internal state in case expression mode fails
+    hasError = false;
+    curr = 0;
+    std::vector<std::shared_ptr<Stmt>> statements = {};
+
+    // while not at end, parse statements
     while (!isAtEnd()){
         std::shared_ptr<Stmt> stmt = declaration();
         // only push non-empty pointers
         if (stmt) statements.push_back(stmt);
     }
-
-    // expression mode: attempt to parse tokens as expression
-    // if and only if hasError, parseExpr and no statements are parsed
-    // if successful, encapsulate as print statement
-    // TODO: catch and suppress the semicolon error into a warning
-    if (parseExpr && hasError && statements.empty()){
-        std::shared_ptr<Expr> expr = ExprParser::parse();
-        if (!hasError) statements.push_back(std::make_shared<PrintStmt>(expr));
-    }
-
     return statements;
 }
 
