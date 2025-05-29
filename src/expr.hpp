@@ -39,10 +39,9 @@ operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
 */
 
 
-// To resolve circular compilation dependencies between Expr, 
-// its child classes, and Visitor
+// To resolve circular compilation dependencies between Expr (and its child classes) and Visitor
 // Not including this leads to compile-time errors
-class ExprExpr;
+class Expr;
 class LiteralExpr;
 class GroupingExpr;
 class UnaryExpr;

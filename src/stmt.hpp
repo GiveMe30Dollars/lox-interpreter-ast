@@ -5,7 +5,7 @@
 
 
 // to resolve circular definitions in StmtVisitor
-class StmtStmt;
+class Stmt;
 class ExpressionStmt;
 class PrintStmt;
 class VarStmt;
