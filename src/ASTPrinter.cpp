@@ -19,7 +19,6 @@ std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
 
 // ---EXPRESSIONS---
 std::any ASTPrinter::visitLiteralExpr(std::shared_ptr<LiteralExpr> curr){
-    std::cerr << "at literal!\n";
     return curr->obj.toString(true);
 }
 std::any ASTPrinter::visitGroupingExpr(std::shared_ptr<GroupingExpr> curr){
