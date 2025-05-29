@@ -40,5 +40,5 @@ To compile and run the project, the following dependencies are required:
   - For Linux: *None.* Natively supported.  
 
 
-  *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
-  Rest assured that the latest version is completely functional and stable.
+*P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
+Rest assured that the latest version is completely functional and stable.
