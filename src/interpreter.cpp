@@ -195,7 +195,7 @@ std::any Interpreter::visitSuperExpr(std::shared_ptr<SuperExpr> curr){
     std::shared_ptr<LoxInstance> instance = env->getAt(distance - 1, "this").loxInstance;
 
     std::shared_ptr<LoxFunction> method = superclass->findMethod(curr->method.lexeme);
-    return method->bind(instance);
+    return Object::function(method->bind(instance));
 }
 
 
