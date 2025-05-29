@@ -21,6 +21,7 @@ void Lox::run(std::string source, bool parseExpr){
         hasCompileError = true;
         return;
     }
+    for (auto stmt : statements) std::cerr << ASTPrinter::print(stmt) << "\n";
     
     Resolver resolver(interpreter);
     resolver.resolve(statements);
