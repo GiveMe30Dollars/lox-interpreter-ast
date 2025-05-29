@@ -19,12 +19,12 @@
 std::string read_file_contents(const std::string& filename);
 
 int usageInfo(){
-    std::cerr << "Usage: ./your_program tokenize <filename>" << std::endl;
-    std::cerr << "Usage: ./your_program parse <filename>" << std::endl;
-    std::cerr << "Usage: ./your_program evaluate <filename>" << std::endl;
-    std::cerr << "Usage: ./your_program run <filename>" << std::endl;
-    std::cerr << "Usage: ./your_program repl" << std::endl;
-    std::cerr << "Usage: ./your_program" << std::endl;
+    std::cerr << "Usage: ./lox.sh tokenize <filename>" << std::endl;
+    std::cerr << "Usage: ./lox.sh parse <filename>" << std::endl;
+    std::cerr << "Usage: ./lox.sh evaluate <filename>" << std::endl;
+    std::cerr << "Usage: ./lox.sh run <filename>" << std::endl;
+    std::cerr << "Usage: ./lox.sh repl" << std::endl;
+    std::cerr << "Usage: ./lox.sh" << std::endl;
     return 1;
 }
 
@@ -32,9 +32,6 @@ int main(int argc, char *argv[]) {
     // Disable output buffering
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
-
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    // std::cerr << "Logs from your program will appear here!" << std::endl;
 
     if (argc > 3) {
         return usageInfo();
