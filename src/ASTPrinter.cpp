@@ -98,8 +98,10 @@ std::any ASTPrinter::visitFunction(std::shared_ptr<Function> curr){
     for (Token token : curr->params)
         args = args + token.lexeme + " ";
 
-    return "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
+    std::string output = "(funDecl: " + curr->name.lexeme + " args " + args + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
+    std::cerr << output << "\n";
+    return output;
 }
 std::any ASTPrinter::visitReturn(std::shared_ptr<Return> curr){
     return "(return " + print(curr->expr) + ")";
@@ -113,6 +115,8 @@ std::any ASTPrinter::visitClass(std::shared_ptr<Class> curr){
     }
     currIndent -= increment;
 
-    return "(classDecl: " + curr->name.lexeme + "\n" 
+    std::string output = "(classDecl: " + curr->name.lexeme + "\n" 
         + s + std::string(currIndent, ' ') + "end)";
+    std::cerr << output << "\n";
+    return output;
 }
