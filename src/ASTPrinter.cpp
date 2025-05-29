@@ -19,6 +19,7 @@ std::any ASTPrinter::visit(std::shared_ptr<Stmt> stmt){
 
 // ---EXPRESSIONS---
 std::any ASTPrinter::visitLiteral(std::shared_ptr<Literal> curr){
+    std::cerr << "at literal!\n";
     return curr->obj.toString(true);
 }
 std::any ASTPrinter::visitGrouping(std::shared_ptr<Grouping> curr){
@@ -53,6 +54,7 @@ std::any ASTPrinter::visitSet(std::shared_ptr<Set> curr){
     return "(set " + print(curr->expr) + "." + curr->name.lexeme + " -> " + print(curr->value) + ")";
 }
 std::any ASTPrinter::visitThis(std::shared_ptr<This> curr){
+    std::cerr << "at this!\n";
     return "this";
 }
 
