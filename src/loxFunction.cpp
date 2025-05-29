@@ -15,20 +15,18 @@ Object LoxFunction::call(Interpreter& interpreter, std::vector<Object>& argument
         env->define(declaration->params[i].lexeme, arguments[i]);
     }
 
-    // try execute block. if return value caught:
+    // try execute block. if return value caught, save it
     // if isInitializer, return 'this' (LoxInstance)
-    // else return object thrown
+    // else return either object thrown or Object::NIL
     // (the Resolver prevents values being returned from initializers)
+    Object obj = Object::nil();
     try{
         interpreter.executeBlock(declaration->body, env);
     }
     catch (LoxReturn val){
-        if (isInitializer) return closure->getAt(0, "this");
-        else return val.obj;
+        obj = val.obj;
     }
-
-    // return default value: nil
-    return Object::nil();
+    return isInitializer ? closure->getAt(0, "this") : Object::nil();
 }
 
 std::string LoxFunction::toString(){
