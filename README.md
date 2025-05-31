@@ -4,8 +4,8 @@
 This is a completed C++ implemetation of the Lox interpreter as described in the first half of the book:  
 - **"Crafting Interpreters"**: https://craftinginterpreters.com/ by Robert Nystrom.  
 
-This implemetation is initialized, initially hosted on and tested on Codecrafters.io:  
-- **"Build your own Interpreter"** Challenge: https://app.codecrafters.io/courses/interpreter/overview.  
+This implemetation is initialized, hosted on and tested on Codecrafters.io:  
+- **"Build your own Interpreter"**: https://app.codecrafters.io/courses/interpreter/overview.  
 
 This repository was first initialized on 21 May 2025, and has fully implemented Lox and cleared all Codecrafters.io testcases by 30 May 2025. 
 Subsequent additions to the code may be done to add new features to the implemetation.
@@ -19,9 +19,13 @@ To fulfill the testing requirements as described in Codecrafters.io, the code ma
 - `./lox.sh evaluate test.lox`: Scans, parses and evaluates an expression as stored in `test.lox`, then prints out the value of the evaluation in `std::cout`.
 - `./lox.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.
 
-Additionally, the following mode has been added:
+Additionally, the following has been added:
 
-- `./lox.sh repl` / `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.
+- `./lox.sh repl` / `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.  
+  Two additional commands are available in REPL mode, in addition to all of the Lox syntax:
+  - `exit`: Exits the program.
+  - `multiline`: Toggles multiline input for the REPL. Multiline input allows for the user to type in an arbitrary number of lines of Lox code, and the code is executed when a blank line is entered.
+    *Note:* Due to constraints in the C++ STL, previous lines cannot be edited for multiline input.
 
 The following return values signify:
 - `0`: Operation successfully carried out.
@@ -35,10 +39,11 @@ To compile and run the project, the following dependencies are required:
 - *Any C++ Compiler.*
 - **CMake**: https://cmake.org/
 - **vcpkg**: https://vcpkg.io/en/
+    - The system environmental variable `VCPKG_ROOT` should be set to the root of this directory on your machine.
 - *Any command-line interface that executes `.sh` files.*
   - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
   - For Linux: *None.* Natively supported.  
 
 
 *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
-Rest assured that the latest version is completely functional and stable.
+The latest version is completely functional and stable.
