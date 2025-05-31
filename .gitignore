@@ -52,7 +52,10 @@ Mkfile.old
 dkms.conf
 
 # Local Test Files
-*.lox
+# *.lox
+
+# Shortcuts
+*.lnk
 
 build
 vcpkg_installed
