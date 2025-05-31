@@ -39,11 +39,11 @@ To compile and run the project, the following dependencies are required:
 - *Any C++ Compiler.*
 - **CMake**: https://cmake.org/
 - **vcpkg**: https://vcpkg.io/en/
-    - The system environmental variable `VCPKG_ROOT` should be set to the root of this directory on your machine.
+  - The system environmental variable `VCPKG_ROOT` should be set to the root of this directory on your machine.
 - *Any command-line interface that executes `.sh` files.*
   - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
   - For Linux: *None.* Natively supported.  
 
 
 *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
-The latest version is completely functional and stable.
+The latest version is functional and stable.
