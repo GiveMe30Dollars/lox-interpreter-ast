@@ -12,19 +12,21 @@ Subsequent additions to the code may be done to add new features to the implemet
 
 ## Usage
 
-To fulfill the testing requirements as described in Codecrafters.io, the code may be run from the command line in the following ways:  
+To fulfill the testing requirements as described in Codecrafters.io, the code may be run from the command line from this repository in the following ways:  
 
 - `./lox.sh tokenize test.lox`: Scans the string as stored in `test.lox`, then prints each resultant token on `std::cout`.  
 - `./lox.sh parse test.lox`: Scans and parses the string as stored in 'test.lox', then prints the resultant Abstract Syntax Tree as nested expressions in `std::cout`.  
 - `./lox.sh evaluate test.lox`: Scans, parses and evaluates an expression as stored in `test.lox`, then prints out the value of the evaluation in `std::cout`.
-- `./lox.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.
+- `./lox.sh run test.lox`: Executes a Lox program as stored in `test.lox`. The file is scanned, parsed, resolved for closures and method binding, then executed line-by-line.  
+
+`test.lox` may be a path to any file, relative to this repository.
 
 Additionally, the following has been added:
 
 - `./lox.sh repl` / `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.  
   Two additional commands are available in REPL mode, in addition to all of the Lox syntax:
   - `exit`: Exits the program.
-  - `multiline`: Toggles multiline input for the REPL. Multiline input allows for the user to type in an arbitrary number of lines of Lox code, and the code is executed when a blank line is entered.
+  - `multiline`: Toggles multiline input for the REPL. Multiline input allows for the user to type in an arbitrary number of lines of Lox code, and the code is executed when a blank line is entered.  
     *Note:* Due to constraints in the C++ STL, previous lines cannot be edited for multiline input.
 
 The following return values signify:
