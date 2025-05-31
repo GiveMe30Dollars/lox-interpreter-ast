@@ -11,20 +11,20 @@
 // main Lox class for scanning, parsing and executing Lox files
 #include "lox.hpp"
 
-// components of Lox for testcases
+// components of Lox for usecases
 #include "scanner.hpp"
 #include "stmtParser.hpp"
 #include "ASTPrinter.hpp"
 
 std::string read_file_contents(const std::string& filename);
 
-int usageInfo(){
+static inline int usageInfo(){
     std::cerr << "Usage: ./lox.sh tokenize <filename>" << std::endl;
-    std::cerr << "Usage: ./lox.sh parse <filename>" << std::endl;
-    std::cerr << "Usage: ./lox.sh evaluate <filename>" << std::endl;
-    std::cerr << "Usage: ./lox.sh run <filename>" << std::endl;
-    std::cerr << "Usage: ./lox.sh repl" << std::endl;
-    std::cerr << "Usage: ./lox.sh" << std::endl;
+    std::cerr << "    |  ./lox.sh parse <filename>" << std::endl;
+    std::cerr << "    |  ./lox.sh evaluate <filename>" << std::endl;
+    std::cerr << "    |  ./lox.sh run <filename>" << std::endl;
+    std::cerr << "    |  ./lox.sh repl" << std::endl;
+    std::cerr << "    |  ./lox.sh" << std::endl;
     return 1;
 }
 
@@ -85,15 +85,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     if (command == "repl"){
-        std::cout << " \n-----LOX REPL-----\nTo exit, type 'exit'.\n";
-        while(true){
-            std::string replInput = "";
-            std::getline(std::cin, replInput);
-            if (replInput == "exit") break;
-            Lox::run(replInput, true);
-            if (Lox::hasCompileError) std::cout << "returned code: 65\n";
-            if (Lox::hasRuntimeError) std::cout << "returned code: 70\n";
-        }
+        Lox::repl();
         return 0;
     }
     

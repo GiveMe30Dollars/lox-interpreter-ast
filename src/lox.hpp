@@ -12,6 +12,7 @@ class Lox{
         static Interpreter interpreter;
     public:
         static void run(std::string source, bool parseExpr = false);
+        static void repl(void);
         static bool hasCompileError;
         static bool hasRuntimeError;
 };
