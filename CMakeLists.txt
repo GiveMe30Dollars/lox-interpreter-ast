@@ -9,4 +9,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${./build}>)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp src/*.hpp)
 
-add_executable(loxInterpreter ${SOURCE_FILES})
+add_executable(interpreter ${SOURCE_FILES})
