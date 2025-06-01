@@ -8,7 +8,9 @@ This implemetation is initialized, hosted on and tested on Codecrafters.io:
 - **"Build your own Interpreter"**: https://app.codecrafters.io/courses/interpreter/overview.  
 
 This repository was first initialized on 21 May 2025, and has fully implemented Lox and cleared all Codecrafters.io testcases by 30 May 2025.  
-Subsequent additions to the code may be done to add new features to the implemetation.
+Subsequent additions to the code may be done to add new features to the implemetation.  
+
+As of 1 June 2025, this mirror repository has been disconnected from the original Codecrafters.io repository.
 
 ## Usage
 
@@ -45,6 +47,35 @@ To compile and run the project, the following dependencies are required:
 - *Any command-line interface that executes `.sh` files.*
   - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
   - For Linux: *None.* Natively supported.  
+
+## Known Issues
+
+- Memory leaks due to circular instance field definitions.  
+  As the original AST-based Lox interpreter is implemented in Java, for this implementation, non-literal objects in Lox have been implemented as `std::shared_ptr`, which is encapsulated in the wrapper class `Object` as a one-to-one representation of Lox first-class objects.  
+  This leads to instances retaining references to each other and thus never being released by `std::shared_ptr` garbage collection.  
+  Consider:
+  ```
+  class Foo {}
+
+  var i = 0;
+  while (i < 1000000) {
+
+    // beginning of scope
+    {
+      var foo = Foo();
+      var bar = Foo();
+      foo.bar = bar;
+      bar.foo = foo;
+    }
+    // end of scope
+    // reference count of foo and bar == 1;
+    // foo and bar are never released by std::shared_ptr garbage collection
+
+    i = i + 1;
+  }
+  ```  
+  This issue will not be addressed in this implementation.
+
 
 
 *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
