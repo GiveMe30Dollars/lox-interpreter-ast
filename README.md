@@ -45,8 +45,8 @@ To compile and run the project, the following dependencies are required:
 - **vcpkg**: https://vcpkg.io/en/
   - The system environmental variable `VCPKG_ROOT` should be set to the root of the vcpkg directory on your machine.
 - *Any command-line interface that executes `.sh` files.*
-  - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
-  - For Linux: *None.* Natively supported.  
+  - For Windows: **Git Bash**: https://git-scm.com/downloads
+  - For Linux and macOS: *None.* Natively supported.  
 
 ## Known Issues
 
