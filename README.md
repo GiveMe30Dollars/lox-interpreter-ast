@@ -1,5 +1,5 @@
 ![progress-banner](https://backend.codecrafters.io/progress/interpreter/0877c070-7800-493c-8aa4-f0dbca4625bb)
-# AST-Based Lox Interpreter In C++
+# AST-Based Lox Interpreter
 
 This is a completed C++ implemetation of the Lox interpreter as described in the first half of the book:  
 - **"Crafting Interpreters"**: https://craftinginterpreters.com/ by Robert Nystrom.  
