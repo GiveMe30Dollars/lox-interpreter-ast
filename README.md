@@ -25,7 +25,7 @@ To fulfill the testing requirements as described in Codecrafters.io, the code ma
 
 Additionally, the following has been added:
 
-- `./lox.sh test.lox`: identical to `./lox.sh run test.lox`. 
+- `./lox.sh test.lox`: Identical to `./lox.sh run test.lox`. 
 - `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.  
   Two additional commands are available in REPL mode, in addition to all of the Lox syntax:
   - `exit`: Exits the program.
