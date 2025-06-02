@@ -25,7 +25,8 @@ To fulfill the testing requirements as described in Codecrafters.io, the code ma
 
 Additionally, the following has been added:
 
-- `./lox.sh repl` / `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.  
+- `./lox.sh test.lox`: identical to `./lox.sh run test.lox`. 
+- `./lox.sh`: Opens REPL mode. User input is read and executed on a per-line basis. This is also the default behaviour for directly opening the compiled executable.  
   Two additional commands are available in REPL mode, in addition to all of the Lox syntax:
   - `exit`: Exits the program.
   - `multiline`: Toggles multiline input for the REPL. Multiline input allows for the user to type in an arbitrary number of lines of Lox code, and the code is executed when a blank line is entered.  
@@ -45,8 +46,8 @@ To compile and run the project, the following dependencies are required:
 - **vcpkg**: https://vcpkg.io/en/
   - The system environmental variable `VCPKG_ROOT` should be set to the root of the vcpkg directory on your machine.
 - *Any command-line interface that executes `.sh` files.*
-  - For Windows and macOS: **Git Bash**: https://git-scm.com/downloads
-  - For Linux: *None.* Natively supported.  
+  - For Windows: **Git Bash**: https://git-scm.com/downloads
+  - For Linux and macOS: *None.* Natively supported.  
 
 ## Known Issues
 
@@ -79,4 +80,4 @@ To compile and run the project, the following dependencies are required:
 
 
 *P.S.* Codecrafters.io tests code on a push-to-run basis, and thus necessitates pushing incomplete and often nonfunctional code onto this repository. This may be reflected in the commit history of this repository.  
-The latest version is functional and stable.
+The latest version is fully functional and stable.

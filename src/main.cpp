@@ -23,7 +23,7 @@ static inline int usageInfo(){
     std::cerr << "    |  ./lox.sh parse <filename>" << std::endl;
     std::cerr << "    |  ./lox.sh evaluate <filename>" << std::endl;
     std::cerr << "    |  ./lox.sh run <filename>" << std::endl;
-    std::cerr << "    |  ./lox.sh repl" << std::endl;
+    std::cerr << "    |  ./lox.sh <filename>" << std::endl;
     std::cerr << "    |  ./lox.sh" << std::endl;
     return 1;
 }
@@ -37,15 +37,20 @@ int main(int argc, char *argv[]) {
         return usageInfo();
     }
     std::string command;
+    std::string filePath;
     if (argc == 1) command = "repl";
     else {
         command = argv[1];
-        if (argc < 3 && command != "repl")
-            return usageInfo();
+        if (argc == 2){
+            command = "run";
+            filePath = argv[1];
+        } else {
+            filePath = argv[2];
+        }
     }
 
     if (command == "tokenize") {
-        std::string file_contents = read_file_contents(argv[2]);
+        std::string file_contents = read_file_contents(filePath);
           
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
@@ -54,7 +59,7 @@ int main(int argc, char *argv[]) {
     } 
 
     if (command == "parse"){
-        std::string file_contents = read_file_contents(argv[2]);
+        std::string file_contents = read_file_contents(filePath);
           
         Scanner scanner(file_contents);
         std::vector<Token> tokens = scanner.scan();
@@ -71,14 +76,14 @@ int main(int argc, char *argv[]) {
     }
 
     if (command == "evaluate"){
-        std::string file_contents = read_file_contents(argv[2]);
+        std::string file_contents = read_file_contents(filePath);
         Lox::run(file_contents, true);
         if (Lox::hasCompileError) return 65;
         if (Lox::hasRuntimeError) return 70;
         return 0;
     }
     if (command == "run"){
-        std::string file_contents = read_file_contents(argv[2]);
+        std::string file_contents = read_file_contents(filePath);
         Lox::run(file_contents);
         if (Lox::hasCompileError) return 65;
         if (Lox::hasRuntimeError) return 70;
