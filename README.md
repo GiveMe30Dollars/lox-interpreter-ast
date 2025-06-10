@@ -5,7 +5,9 @@ This is a completed C++ implemetation of the Lox interpreter as described in the
 - **"Crafting Interpreters"**: https://craftinginterpreters.com/ by Robert Nystrom.  
 
 This implemetation is initialized, hosted on and tested on Codecrafters.io:  
-- **"Build your own Interpreter"**: https://app.codecrafters.io/courses/interpreter/overview.  
+- **"Build your own Interpreter"**: https://app.codecrafters.io/courses/interpreter/overview.
+
+Sister project to the bytecode-based Lox interpreter: https://github.com/GiveMe30Dollars/lox-interpreter-bytecode
 
 This repository was first initialized on 21 May 2025, and has fully implemented Lox and cleared all Codecrafters.io testcases by 30 May 2025.  
 Subsequent additions to the code may be done to add new features to the implemetation.  
